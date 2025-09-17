@@ -8,7 +8,7 @@ import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 function Model() {
-  const gltf = useLoader(GLTFLoader, "/model/stul.glb");
+  const gltf = useLoader(GLTFLoader, "/models/stul.glb");
   return (
     <primitive
       object={gltf.scene}
@@ -39,7 +39,10 @@ export default function Scene() {
         <Model />
 
         {/* Controls */}
-        <OrbitControls />
+        <OrbitControls
+          minDistance={30}
+          maxDistance={100}
+        />
       </Suspense>
     </Canvas>
   )
