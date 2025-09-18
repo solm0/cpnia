@@ -2,26 +2,14 @@
 
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
-import Loader from "./loader";
 import { OrbitControls } from "@react-three/drei";
-import { useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import Loader from "./Loader";
 
-function Model() {
-  const gltf = useLoader(GLTFLoader, "/models/stul.glb");
-  return (
-    <primitive
-      object={gltf.scene}
-      scale={1}
-      position={[0, 3, 0]}
-      rotation={[0, 0, 0]}
-    />
-  )
-}
-
-export default function Scene() {
-  
-
+export default function Scene({
+  children
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
       <Suspense fallback={<Loader />}>
@@ -35,8 +23,7 @@ export default function Scene() {
           shadow-mapSize-height={1024} 
         />
 
-        {/* Models */}
-        <Model />
+        {children}
 
         {/* Controls */}
         <OrbitControls
