@@ -9,7 +9,7 @@ export const metadata = {
 export default function SacrificePage() {
   return (
     <Suspense>
-      <World worldId="sacrifice" />
+      <World worldKey="sacrifice" />
     </Suspense>
   )
 }

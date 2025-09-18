@@ -1,23 +1,23 @@
 'use client'
 
 import { useSearchParams } from "next/navigation";
-import MiniGame from "./games/MiniGame";
+import Game from "./games/Game";
 import WorldHome from "./maps/WorldHome";
 
 export default function World({
-  worldId
+  worldKey
 }: {
-  worldId: string;
+  worldKey: string;
 }) {
   const searchParam = useSearchParams();
-  const miniGame = searchParam.get('game');
+  const game = searchParam.get('game');
 
   return (
     <main className="w-full h-full">
-      {miniGame ? (
-        <MiniGame worldId={worldId} miniGameId={miniGame} label={`${miniGame} 시작`} />
+      {game ? (
+        <Game worldKey={worldKey} gameKey={game} />
       ): (
-        <WorldHome worldId={worldId} />
+        <WorldHome worldKey={worldKey} />
       )}
     </main>
   )

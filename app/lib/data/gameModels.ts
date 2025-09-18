@@ -1,10 +1,10 @@
-interface miniGameModelProp {
+interface gameModelProp {
   label: string;
   id: string;
   position: [number, number, number];
   rotation:  [number, number, number];
 }
-export const miniGameModels: Record<string, miniGameModelProp[]> = {
+export const gameModels: Record<string, gameModelProp[]> = {
   time: [
     {
       label: 'game 1',

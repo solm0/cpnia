@@ -9,7 +9,7 @@ export const metadata = {
 export default function TimePage() {
   return (
     <Suspense>
-      <World worldId="time" />
+      <World worldKey="time" />
     </Suspense>
   )
 }

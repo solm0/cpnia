@@ -9,13 +9,13 @@ import Label from "../util/Label";
 import Completed from "../util/Completed";
 
 export default function PlaceHolder({
-  scale, position, rotation, href, minigame, label, completed = null
+  scale, position, rotation, href, game, label, completed = null
 }: {
   scale?: number,
   position?: [number, number, number],
   rotation?: [number, number, number],
   href?: string;
-  minigame?: string;
+  game?: string;
   label?: string;
   completed?: boolean | null;
 }) {
@@ -23,9 +23,9 @@ export default function PlaceHolder({
   const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
   const router = useRouter();
 
-  if (minigame) {
+  if (game) {
     function handleClick() {
-      router.push(`/${href}?game=${minigame}`);
+      router.push(`/${href}?game=${game}`);
     }
 
     return (

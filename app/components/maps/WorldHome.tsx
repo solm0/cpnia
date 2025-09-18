@@ -1,21 +1,21 @@
 import PlaceHolder from "@/app/components/models/PlaceHolder";
 import Scene from "@/app/components/util/Scene"
 import { useGameStore } from "@/app/lib/state/gameState";
-import { miniGameModels } from "@/app/lib/data/minigameModels";
 import EntropyMap from "./EntropyMap";
 import TimeMap from "./TimeMap";
 import SacrificeMap from "./SacrificeMap";
+import { gameModels } from "@/app/lib/data/gameModels";
 
-function MinigameModel({
-  label, worldId, miniGameId, position, rotation,
+function GameModel({
+  label, worldKey, gameKey, position, rotation,
 }: {
   label: string;
-  worldId: string;
-  miniGameId: string;
+  worldKey: string;
+  gameKey: string;
   position: [number, number, number];
   rotation: [number, number, number];
 }) {
-  const completed = useGameStore((state) => state.worlds[worldId].miniGames[miniGameId]);
+  const completed = useGameStore((state) => state.worlds[worldKey].games[gameKey]);
 
   return (
     <group
@@ -24,8 +24,8 @@ function MinigameModel({
       rotation={rotation}
     >
       <PlaceHolder
-        minigame={miniGameId}
-        href={worldId}
+        game={gameKey}
+        href={worldKey}
         label={label}
         completed={completed}
       />
@@ -34,13 +34,13 @@ function MinigameModel({
 }
 
 export default function WorldHome({
-  worldId,
+  worldKey,
 }: {
-  worldId: string;
+  worldKey: string;
 }) {
   let map: React.ReactNode;
 
-  switch(worldId) {
+  switch(worldKey) {
     case 'time':
       map = <TimeMap />;
       break;
@@ -51,19 +51,19 @@ export default function WorldHome({
       map = <EntropyMap />;
       break;
     default:
-      <PlaceHolder label="no worldId" />
+      <PlaceHolder label="no worldKey" />
   }
   return (
     <Scene>
       {/* 공통 부분: 미니게임으로 들어가는 포탈 3개 */}
-      {miniGameModels[worldId].map(minigame => 
-        <MinigameModel
-          key={minigame.id}
-          label={minigame.label}
-          worldId={worldId}
-          miniGameId={minigame.id}
-          position={minigame.position}
-          rotation={minigame.rotation}
+      {gameModels[worldKey].map(game => 
+        <GameModel
+          key={game.id}
+          label={game.label}
+          worldKey={worldKey}
+          gameKey={game.id}
+          position={game.position}
+          rotation={game.rotation}
         />
       )}
 

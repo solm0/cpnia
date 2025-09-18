@@ -9,14 +9,15 @@ import { worldModels } from "./lib/data/worldModels";
 // localstorage에 넣기
 
 function WorldModel({
-  label, id, position, rotation,
+  label, worldKey, position, rotation,
 }: {
   label: string;
-  id: string;
+  worldKey: string;
   position: [number, number, number];
   rotation: [number, number, number];
 }) {
-  const completed = useGameStore((state) => state.isWorldCompleted(id));
+  console.log(worldKey)
+  const completed = useGameStore((state) => state.isWorldCompleted(worldKey));
 
   return (
     <group
@@ -25,7 +26,7 @@ function WorldModel({
       rotation={rotation}
     >
       <PlaceHolder
-        href={id}
+        href={worldKey}
         label={label}
         completed={completed}
       />
@@ -44,7 +45,7 @@ export default function Home() {
           <WorldModel
             key={world.id}
             label={world.label}
-            id={world.id}
+            worldKey={world.id}
             position={world.position}
             rotation={world.rotation}
           />

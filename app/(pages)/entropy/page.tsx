@@ -9,7 +9,7 @@ export const metadata = {
 export default function EntropyPage() {
   return (
     <Suspense>
-      <World worldId='entropy' />
+      <World worldKey='entropy' />
     </Suspense>
   )
 }
