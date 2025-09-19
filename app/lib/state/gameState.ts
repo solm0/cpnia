@@ -27,7 +27,7 @@ export const useGameStore = create<GameState>()(
             ...state.worlds,
             [worldKey]: {
               ...state.worlds[worldKey],
-              Games: {
+              games: {
                 ...state.worlds[worldKey].games,
                 [gameKey]: value,
               },
@@ -55,7 +55,6 @@ export const useGameStore = create<GameState>()(
       isWorldCompleted: (worldKey: string) => {
         const world = get().worlds[worldKey];
         if (!world) return false;
-        console.log(worldKey, world)
         return Object.values(world.games).every((done) => done);
       },
     }),

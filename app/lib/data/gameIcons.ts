@@ -1,10 +1,10 @@
-interface gameModelProp {
+interface gameIconProp {
   label: string;
   id: string;
   position: [number, number, number];
   rotation:  [number, number, number];
 }
-export const gameModels: Record<string, gameModelProp[]> = {
+export const gameIcons: Record<string, gameIconProp[]> = {
   time: [
     {
       label: 'game 1',

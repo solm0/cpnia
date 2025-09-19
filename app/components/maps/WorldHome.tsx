@@ -1,43 +1,21 @@
 import PlaceHolder from "@/app/components/models/PlaceHolder";
 import Scene from "@/app/components/util/Scene"
-import { useGameStore } from "@/app/lib/state/gameState";
 import EntropyMap from "./EntropyMap";
 import TimeMap from "./TimeMap";
 import SacrificeMap from "./SacrificeMap";
-import { gameModels } from "@/app/lib/data/gameModels";
-
-function GameModel({
-  label, worldKey, gameKey, position, rotation,
-}: {
-  label: string;
-  worldKey: string;
-  gameKey: string;
-  position: [number, number, number];
-  rotation: [number, number, number];
-}) {
-  const completed = useGameStore((state) => state.worlds[worldKey].games[gameKey]);
-
-  return (
-    <group
-      scale={1}
-      position={position}
-      rotation={rotation}
-    >
-      <PlaceHolder
-        game={gameKey}
-        href={worldKey}
-        label={label}
-        completed={completed}
-      />
-    </group>
-  )
-}
+import { gameIcons } from "@/app/lib/data/gameIcons";
+import GameIcon from "../interfaces/GameIcon";
+import Button from "../util/Button";
+import { useRouter } from "next/navigation";
+import { Html } from "@react-three/drei";
 
 export default function WorldHome({
   worldKey,
 }: {
   worldKey: string;
 }) {
+  const router = useRouter();
+
   let map: React.ReactNode;
 
   switch(worldKey) {
@@ -56,8 +34,8 @@ export default function WorldHome({
   return (
     <Scene>
       {/* 공통 부분: 미니게임으로 들어가는 포탈 3개 */}
-      {gameModels[worldKey].map(game => 
-        <GameModel
+      {gameIcons[worldKey].map(game => 
+        <GameIcon
           key={game.id}
           label={game.label}
           worldKey={worldKey}
@@ -66,6 +44,12 @@ export default function WorldHome({
           rotation={game.rotation}
         />
       )}
+      <Html>
+        <Button
+          onClick={() => router.push('/')}
+          label="첫화면으로"
+        />
+      </Html>
 
       {/* 개별 부분: 맵 */}
       {map}

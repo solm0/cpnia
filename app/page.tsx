@@ -1,56 +1,31 @@
 'use client'
 
 import Scene from "./components/util/Scene";
-import PlaceHolder from "./components/models/PlaceHolder";
-import Title from "./components/Title";
-import { useGameStore } from "./lib/state/gameState";
-import { worldModels } from "./lib/data/worldModels";
+import { worldIcons } from "./lib/data/worldIcons";
+import WorldIcon from "./components/interfaces/WorldIcon";
+import HomeMenu from "./components/interfaces/HomeMenu";
 
-// localstorage에 넣기
-
-function WorldModel({
-  label, worldKey, position, rotation,
-}: {
-  label: string;
-  worldKey: string;
-  position: [number, number, number];
-  rotation: [number, number, number];
-}) {
-  console.log(worldKey)
-  const completed = useGameStore((state) => state.isWorldCompleted(worldKey));
-
-  return (
-    <group
-      scale={1}
-      position={position}
-      rotation={rotation}
-    >
-      <PlaceHolder
-        href={worldKey}
-        label={label}
-        completed={completed}
-      />
-    </group>
-  )
-}
 
 export default function Home() {
   return (
-    <main className="flex flex-col w-full h-full">
-      <Scene>
-        <Title label="Cpland" />
-
-        {/* Models */}
-        {worldModels.map(world => 
-          <WorldModel
-            key={world.id}
-            label={world.label}
-            worldKey={world.id}
-            position={world.position}
-            rotation={world.rotation}
-          />
-        )}
-      </Scene>
+    <main className="relative w-full h-full">
+      <div className="w-full h-full relative z-0">
+        <Scene>
+          {/* Icons */}
+          {worldIcons.map(world => 
+            <WorldIcon
+              key={world.id}
+              label={world.label}
+              worldKey={world.id}
+              position={world.position}
+              rotation={world.rotation}
+            />
+          )}
+        </Scene>
+      </div>
+      <div className="absolute top-0 left-0 w-full h-full z-[999] pointer-events-none">
+        <HomeMenu />
+      </div>
     </main>
   );
 }
