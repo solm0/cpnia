@@ -6,7 +6,6 @@ import { useMemo } from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import Label from "../util/Label";
-import Completed from "../util/Completed";
 
 export default function PlaceHolder({
   scale, position, rotation, href, game, label, completed = null
@@ -36,8 +35,8 @@ export default function PlaceHolder({
         onClick={handleClick}
       >
         <primitive object={clonedScene} />
-        <Label text={label ?? null} />
-        {(completed !== null) && <Completed completed={completed} />}
+        <Label text={label ?? null} position={[0, 2.5,0]} />
+        {(completed !== null) && <Label text={completed ? 'completed!' : 'not completed'} position={[0, 2, 0]} />}
       </group>
     )
   } else {
@@ -49,8 +48,8 @@ export default function PlaceHolder({
         onClick={() => router.push(`/${href}`)}
       >
         <primitive object={clonedScene} />
-        <Label text={label ?? null} />
-        {(completed !== null) && <Completed completed={completed} />}
+        <Label text={label ?? null} position={[0, 2.5,0]} />
+        {(completed !== null) && <Label text={completed ? 'completed!' : 'not completed'} position={[0, 2, 0]} />}
       </group>
     )
   }

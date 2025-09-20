@@ -1,15 +1,21 @@
-import { Html } from "@react-three/drei";
+import { Text } from "@react-three/drei";
 
 export default function Label({
-  text = 'no label',
+  text = "no label",
+  position = [0,0,0],
 }: {
   text: string | null;
+  position?: [number, number, number]
 }) {
   return (
-    <Html distanceFactor={10}>
-      <div className="absolute top-30 -translate-x-1/2 text-center text-gray-700 text-[2rem] w-[20rem] break-keep">
-        {text}
-      </div>
-    </Html>
-  )
+    <Text
+      fontSize={0.4}
+      color="black"
+      anchorX="center"
+      anchorY="middle"
+      position={position}
+    >
+      {text}
+    </Text>
+  );
 }
