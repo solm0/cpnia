@@ -11,7 +11,11 @@ export default function Scene({
   children: React.ReactNode;
 }) {
   return (
-    <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+    <Canvas
+      shadows
+      camera={{ position: [0, 0, 5], fov: 50 }}
+      frameloop="always"
+    >
       <Suspense fallback={<Loader />}>
         {children}
 

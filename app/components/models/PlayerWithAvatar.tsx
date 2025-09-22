@@ -1,5 +1,5 @@
 import Model from "./Model";
-import { Group, Vector3, MathUtils } from "three";
+import { Group, Vector3 } from "three";
 import { useRef, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 
@@ -8,37 +8,21 @@ export default function PlayerWithAvatar() {
   const { camera } = useThree();
 
   // --- movement state ---
-  const forward = useRef(new Vector3(0, 0, -1)); // current forward direction
+  const forward = useRef(new Vector3(0, 0, -1));
   const velocity = useRef(new Vector3(0, 0, 0));
   const targetAngle = useRef(0);
 
   // --- key handling ---
+  const pressedKeys = useRef<Set<string>>(new Set());
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      switch (e.key) {
-        case "w":
-          velocity.current.copy(forward.current).multiplyScalar(0.1);
-          break;
-        case "s":
-          velocity.current.copy(forward.current).multiplyScalar(-0.1);
-          break;
-        case "a":
-          // rotate left 90°
-          forward.current.applyAxisAngle(new Vector3(0, 1, 0), Math.PI / 2);
-          targetAngle.current += Math.PI / 2;
-          velocity.current.copy(forward.current).multiplyScalar(0.1);
-          break;
-        case "d":
-          // rotate right 90°
-          forward.current.applyAxisAngle(new Vector3(0, 1, 0), -Math.PI / 2);
-          targetAngle.current -= Math.PI / 2;
-          velocity.current.copy(forward.current).multiplyScalar(0.1);
-          break;
-      }
+      console.log("keydown:", e.code);
+      pressedKeys.current.add(e.code);
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      velocity.current.set(0, 0, 0);
+      pressedKeys.current.delete(e.code);
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -50,16 +34,40 @@ export default function PlayerWithAvatar() {
   }, []);
 
   // --- main loop ---
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (!ref.current) return;
-
-    // Move avatar
-    ref.current.position.add(velocity.current);
-
-    // Rotate smoothly to face current direction
+    console.log({
+      keys: Array.from(pressedKeys.current),
+      forward: forward.current.toArray(),
+      velocity: velocity.current.toArray()
+    });
+  
+    velocity.current.set(0, 0, 0); // reset each frame
+  
+    if (pressedKeys.current.has("KeyW")) {
+      velocity.current.add(forward.current.clone().multiplyScalar(0.1));
+    }
+    if (pressedKeys.current.has("KeyS")) {
+      velocity.current.add(forward.current.clone().multiplyScalar(-0.1));
+    }
+    if (pressedKeys.current.has("KeyA")) {
+      forward.current.applyAxisAngle(new Vector3(0, 1, 0), Math.PI / 2 * delta);
+      forward.current.normalize();
+      targetAngle.current += Math.PI / 2 * delta;
+    }
+    if (pressedKeys.current.has("KeyD")) {
+      forward.current.applyAxisAngle(new Vector3(0, 1, 0), -Math.PI / 2 * delta);
+      forward.current.normalize();
+      targetAngle.current -= Math.PI / 2 * delta;
+    }
+  
+    // move
+    ref.current.position.add(velocity.current.clone().multiplyScalar(delta * 60));
+  
+    // smooth rotation
     ref.current.rotation.y += (targetAngle.current - ref.current.rotation.y) * 0.1;
-
-    // Camera follow
+  
+    // camera
     const offset = new Vector3(0, 5, 15);
     const camPos = ref.current.position.clone().sub(
       forward.current.clone().multiplyScalar(offset.z)
