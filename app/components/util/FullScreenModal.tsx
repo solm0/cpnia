@@ -1,4 +1,4 @@
-import Title from "../util/Title";
+import Title from "./Title";
 import Button from "./Button";
 
 export default function FullScreenModal({
