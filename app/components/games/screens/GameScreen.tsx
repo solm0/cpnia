@@ -60,7 +60,7 @@ export default function GameScreen({
         <SelectedGame onGameEnd={handleGameEnd} />
       </Scene>
 
-      {/* 게임 대시보드 */}
+      {/* 게임 인터페이스 */}
       <GameMenu worldKey={worldKey} gameKey={gameKey} npcData={npcData} />
     </main>
   )

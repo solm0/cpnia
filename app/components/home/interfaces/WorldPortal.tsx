@@ -3,7 +3,7 @@
 import PlaceHolder from "../../util/PlaceHolder";
 import { useGameStore } from "@/app/lib/state/gameState";
 
-export default function WorldIcon({
+export default function WorldPortal({
   label, worldKey, position, rotation,
 }: {
   label: string;

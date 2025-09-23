@@ -1,12 +1,7 @@
-// 카메라 무빙... 맵... 모델.소품.오디오.조명.npc.아바타
-
-import PlayerWithAvatar from "../games/PlayerWithAvatar";
-import Model from "../util/Model";
 import { useEffect, useRef } from "react";
 import * as THREE from 'three'
 
-export default function SacrificeMap() {
-
+export default function SacrificeLights() {
   const directionalLightRef = useRef<THREE.DirectionalLight>(null);
   const directionalTargetRef = useRef<THREE.Object3D>(null);
 
@@ -38,16 +33,6 @@ export default function SacrificeMap() {
         castShadow
       />
       <group ref={directionalTargetRef} position={[0, 0, 0]} />
-
-      <Model
-        src="/models/sacrifice-map.glb"
-        scale={5}
-        position={[-100,-129,200]}
-        rotation={[0,0,0]}
-      />
-
-      {/* 아바타 */}
-      <PlayerWithAvatar />
     </>
   )
 }

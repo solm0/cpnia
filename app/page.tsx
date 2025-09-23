@@ -1,8 +1,8 @@
 'use client'
 
 import Scene from "./components/util/Scene";
-import { worldIcons } from "./lib/data/worldIcons";
-import WorldIcon from "./components/home/interfaces/WorldIcon";
+import { worldPortals } from "./lib/data/worldPortals";
+import WorldPortal from "./components/home/interfaces/WorldPortal";
 import HomeMenu from "./components/home/interfaces/HomeMenu";
 
 
@@ -11,9 +11,8 @@ export default function Home() {
     <main className="relative w-full h-full">
       <div className="w-full h-full relative z-0">
         <Scene>
-          {/* Icons */}
-          {worldIcons.map(world => 
-            <WorldIcon
+          {worldPortals.map(world => 
+            <WorldPortal
               key={world.worldKey}
               label={world.label}
               worldKey={world.worldKey}

@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import Game from "./games/Game";
-import WorldHome from "./maps/WorldHome";
+import WorldScreen from "./maps/WorldScreen";
 
 export default function World({
   worldKey
@@ -15,6 +15,6 @@ export default function World({
   if (game) {
     return <Game worldKey={worldKey} gameKey={game} />
   } else {
-    return <WorldHome worldKey={worldKey} />
+    return <WorldScreen worldKey={worldKey} />
   }
 }

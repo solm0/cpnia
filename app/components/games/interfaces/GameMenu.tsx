@@ -1,4 +1,4 @@
-import { gameIcons } from "@/app/lib/data/gameIcons"
+import { gamePortals } from "@/app/lib/data/gamePortals"
 import Button from "../../util/Button";
 import { useRouter } from "next/navigation";
 import GameNpc from "../GameNpc";
@@ -11,7 +11,7 @@ export default function GameMenu({
   gameKey: string;
   npcData: Record<string, lineProp>;
 }) {
-  const gameName = gameIcons[worldKey].find(game => game.gameKey === gameKey)?.label;
+  const gameName = gamePortals[worldKey].find(game => game.gameKey === gameKey)?.label;
   const router = useRouter();
 
   // 게임 상태 - 일시정지 버튼, 점수

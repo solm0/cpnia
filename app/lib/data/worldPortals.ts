@@ -1,10 +1,10 @@
-interface worldIconProp {
+interface worldPortalProp {
   label: string;
   worldKey: string;
   position: [number, number, number];
   rotation:  [number, number, number];
 }
-export const worldIcons: worldIconProp[] = [
+export const worldPortals: worldPortalProp[] = [
   {
     label: "시간 기반 체제",
     worldKey: 'time',
