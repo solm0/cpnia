@@ -6,12 +6,14 @@ import { Mesh, MeshStandardMaterial } from "three";
 
 export default function MapNpc({
   name,
+  scale = 1,
   position = [0, -0.9, 0],
   rotation = [0, 0, 0],
   hoveredNpc, setHoveredNpc,
   setActiveNpc,
 }: {
   name: string;
+  scale?: number
   position?: [number, number, number];
   rotation?: [number, number, number];
   hoveredNpc: string | null;
@@ -68,7 +70,7 @@ export default function MapNpc({
   
   return (
     <group
-      scale={1}
+      scale={scale}
       position={position}
       rotation={rotation}
       onPointerEnter={(e: MouseEvent) => {

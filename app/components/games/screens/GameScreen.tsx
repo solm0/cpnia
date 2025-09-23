@@ -10,8 +10,7 @@ import W2G3 from "../games/W2G3";
 import W3G1 from "../games/W3G1";
 import W3G2 from "../games/W3G2";
 import W3G3 from "../games/W3G3";
-import Scene from "../../util/Scene";
-import GameMenu from "../interfaces/GameMenu";
+import { lineProp } from "@/app/lib/data/npc-default-lines";
 
 export default function GameScreen({
   worldKey, gameKey, handleGameEnd
@@ -21,6 +20,9 @@ export default function GameScreen({
   handleGameEnd: (result: boolean) => void;
 }) {
   type GameComponent = React.FC<{
+    worldKey: string;
+    gameKey: string;
+    npcData: Record<string, lineProp>;
     onGameEnd: (success: boolean) => void
   }>
   type GameEntry = {
@@ -54,14 +56,11 @@ export default function GameScreen({
   const npcData = { [npcName]: npcLines }
 
   return (
-    <main className="w-full h-full">
-      {/* 게임 */}
-      <Scene>
-        <SelectedGame onGameEnd={handleGameEnd} />
-      </Scene>
-
-      {/* 게임 인터페이스 */}
-      <GameMenu worldKey={worldKey} gameKey={gameKey} npcData={npcData} />
-    </main>
+    <SelectedGame
+      worldKey={worldKey}
+      gameKey={gameKey}
+      npcData={npcData}
+      onGameEnd={handleGameEnd}
+    />
   )
 }

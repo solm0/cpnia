@@ -28,11 +28,11 @@ export default function TimeMap() {
         <PlaceHolder label="시간기반체제의 맵" />
 
         {/* 게임 포탈 */}
-        {gamePortals['entropy'].map(game => 
+        {gamePortals['time'].map(game => 
           <GamePortalLayout
             key={game.gameKey}
             label={game.label}
-            worldKey={'entropy'}
+            worldKey={'time'}
             gameKey={game.gameKey}
             position={game.position}
             rotation={game.rotation}
@@ -50,6 +50,7 @@ export default function TimeMap() {
           <MapNpc
             key={npc.name}
             name={npc.name}
+            scale={1}
             position={npc.position}
             rotation={npc.rotation}
             hoveredNpc={hoveredNpc}

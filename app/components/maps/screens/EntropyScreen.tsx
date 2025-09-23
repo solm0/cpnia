@@ -50,6 +50,7 @@ export default function EntropyScreen() {
           <MapNpc
             key={npc.name}
             name={npc.name}
+            scale={1}
             position={npc.position}
             rotation={npc.rotation}
             hoveredNpc={hoveredNpc}

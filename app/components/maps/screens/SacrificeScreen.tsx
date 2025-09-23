@@ -56,6 +56,7 @@ export default function SacrificeScreen() {
           <MapNpc
             key={npc.name}
             name={npc.name}
+            scale={1}
             position={npc.position}
             rotation={npc.rotation}
             hoveredNpc={hoveredNpc}
