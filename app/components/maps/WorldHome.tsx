@@ -1,10 +1,10 @@
-import PlaceHolder from "@/app/components/models/PlaceHolder";
+import PlaceHolder from "../util/PlaceHolder";
 import Scene from "@/app/components/util/Scene"
 import EntropyMap from "./EntropyMap";
 import TimeMap from "./TimeMap";
 import SacrificeMap from "./SacrificeMap";
 import { gameIcons } from "@/app/lib/data/gameIcons";
-import GameIcon from "../interfaces/GameIcon";
+import GameIcon from "./interfaces/GameIcon";
 import Button from "../util/Button";
 import { useRouter } from "next/navigation";
 

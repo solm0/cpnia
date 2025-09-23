@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from "next/navigation";
-import PlaceHolder from "../../models/PlaceHolder";
+import PlaceHolder from "../../util/PlaceHolder";
 import CitizenshipScreen from "./CitizenshipScreen";
 import Button from "../../util/Button";
 import { useState } from "react";

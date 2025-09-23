@@ -1,7 +1,7 @@
 // 카메라 무빙... 맵... 모델.소품.오디오.조명.npc.아바타
 
-import PlayerWithAvatar from "../models/PlayerWithAvatar";
-import Model from "../models/Model";
+import PlayerWithAvatar from "../games/PlayerWithAvatar";
+import Model from "../util/Model";
 import { useEffect, useRef } from "react";
 import * as THREE from 'three'
 

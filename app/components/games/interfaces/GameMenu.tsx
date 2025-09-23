@@ -1,7 +1,7 @@
 import { gameIcons } from "@/app/lib/data/gameIcons"
-import Button from "../util/Button";
+import Button from "../../util/Button";
 import { useRouter } from "next/navigation";
-import GameNpc from "../models/GameNpc";
+import GameNpc from "../GameNpc";
 import { lineProp } from "@/app/lib/data/npc-default-lines";
 
 export default function GameMenu({

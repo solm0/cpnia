@@ -1,17 +1,18 @@
 'use client'
 
-import PlaceHolder from "../models/PlaceHolder";
 import { useGameStore } from "@/app/lib/state/gameState";
+import PlaceHolder from "../../util/PlaceHolder";
 
-export default function WorldIcon({
-  label, worldKey, position, rotation,
+export default function GameIcon({
+  label, worldKey, gameKey, position, rotation,
 }: {
   label: string;
   worldKey: string;
+  gameKey: string;
   position: [number, number, number];
   rotation: [number, number, number];
 }) {
-  const completed = useGameStore((state) => state.isWorldCompleted(worldKey));
+  const completed = useGameStore((state) => state.worlds[worldKey].games[gameKey]);
 
   return (
     <group
@@ -20,6 +21,7 @@ export default function WorldIcon({
       rotation={rotation}
     >
       <PlaceHolder
+        gameKey={gameKey}
         href={worldKey}
         label={label}
         completed={completed}

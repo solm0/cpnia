@@ -1,6 +1,6 @@
 import { Html } from "@react-three/drei";
 import { useState } from "react";
-import Button from "../util/Button";
+import Button from "../../util/Button";
 
 export default function PlaceHolderGame({
   onGameEnd

@@ -1,17 +1,17 @@
 // 게임 컴포넌트의 선택, 각 게임의 npc 데이터를 골라주는 컴포넌트
 
 import { defaultNpcLines } from "@/app/lib/data/npc-default-lines";
-import W1G1 from "../W1G1";
-import W1G2 from "../W1G2";
-import W1G3 from "../W1G3";
-import W2G1 from "../W2G1";
-import W2G2 from "../W2G2";
-import W2G3 from "../W2G3";
-import W3G1 from "../W3G1";
-import W3G2 from "../W3G2";
-import W3G3 from "../W3G3";
+import W1G1 from "../games/W1G1";
+import W1G2 from "../games/W1G2";
+import W1G3 from "../games/W1G3";
+import W2G1 from "../games/W2G1";
+import W2G2 from "../games/W2G2";
+import W2G3 from "../games/W2G3";
+import W3G1 from "../games/W3G1";
+import W3G2 from "../games/W3G2";
+import W3G3 from "../games/W3G3";
 import Scene from "../../util/Scene";
-import GameMenu from "../../interfaces/GameMenu";
+import GameMenu from "../interfaces/GameMenu";
 
 export default function GameScreen({
   worldKey, gameKey, handleGameEnd

@@ -1,4 +1,4 @@
-import Model from "./Model";
+import Model from "../util/Model";
 import { Group, Vector3 } from "three";
 import { useRef, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";

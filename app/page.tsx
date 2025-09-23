@@ -2,8 +2,8 @@
 
 import Scene from "./components/util/Scene";
 import { worldIcons } from "./lib/data/worldIcons";
-import WorldIcon from "./components/interfaces/WorldIcon";
-import HomeMenu from "./components/interfaces/HomeMenu";
+import WorldIcon from "./components/home/interfaces/WorldIcon";
+import HomeMenu from "./components/home/interfaces/HomeMenu";
 
 
 export default function Home() {

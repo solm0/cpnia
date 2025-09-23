@@ -1,9 +1,9 @@
 'use client'
 
-import Button from "../util/Button";
+import Button from "../../util/Button";
 import { useState } from "react";
 import { useGameStore } from "@/app/lib/state/gameState"
-import FullScreenModal from "../util/FullScreenModal";
+import FullScreenModal from "../../util/FullScreenModal";
 import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
 // import { temp } from "@/app/lib/ai/test";
 

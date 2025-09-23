@@ -1,4 +1,4 @@
-import PlaceHolder from "../../models/PlaceHolder";
+import PlaceHolder from "../../util/PlaceHolder";
 import Button from "../../util/Button";
 import { useRouter } from "next/navigation";
 import Scene from "../../util/Scene";
