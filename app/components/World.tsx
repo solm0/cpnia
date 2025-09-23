@@ -12,13 +12,9 @@ export default function World({
   const searchParam = useSearchParams();
   const game = searchParam.get('game');
 
-  return (
-    <main className="w-full h-full">
-      {game ? (
-        <Game worldKey={worldKey} gameKey={game} />
-      ): (
-        <WorldHome worldKey={worldKey} />
-      )}
-    </main>
-  )
+  if (game) {
+    return <Game worldKey={worldKey} gameKey={game} />
+  } else {
+    return <WorldHome worldKey={worldKey} />
+  }
 }

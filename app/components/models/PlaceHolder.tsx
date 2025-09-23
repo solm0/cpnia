@@ -8,13 +8,13 @@ import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import Label from "../util/Label";
 
 export default function PlaceHolder({
-  scale, position, rotation, href, game, label, completed = null
+  scale, position, rotation, href, gameKey, label, completed = null
 }: {
   scale?: number,
   position?: [number, number, number],
   rotation?: [number, number, number],
   href?: string;
-  game?: string;
+  gameKey?: string;
   label?: string;
   completed?: boolean | null;
 }) {
@@ -22,9 +22,9 @@ export default function PlaceHolder({
   const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
   const router = useRouter();
 
-  if (game) {
+  if (gameKey) {
     function handleClick() {
-      router.push(`/${href}?game=${game}`);
+      router.push(`/${href}?game=${gameKey}`);
     }
 
     return (

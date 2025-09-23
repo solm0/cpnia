@@ -7,7 +7,6 @@ import { gameIcons } from "@/app/lib/data/gameIcons";
 import GameIcon from "../interfaces/GameIcon";
 import Button from "../util/Button";
 import { useRouter } from "next/navigation";
-import { Html } from "@react-three/drei";
 
 export default function WorldHome({
   worldKey,
@@ -32,27 +31,30 @@ export default function WorldHome({
       <PlaceHolder label="no worldKey" />
   }
   return (
-    <Scene>
-      {/* 공통 부분: 미니게임으로 들어가는 포탈 3개 */}
-      {gameIcons[worldKey].map(game => 
-        <GameIcon
-          key={game.id}
-          label={game.label}
-          worldKey={worldKey}
-          gameKey={game.id}
-          position={game.position}
-          rotation={game.rotation}
-        />
-      )}
-      <Html>
+    <main className="w-full h-full">
+      <Scene>
+        {/* 공통 부분: 미니게임으로 들어가는 포탈 3개 */}
+        {gameIcons[worldKey].map(game => 
+          <GameIcon
+            key={game.gameKey}
+            label={game.label}
+            worldKey={worldKey}
+            gameKey={game.gameKey}
+            position={game.position}
+            rotation={game.rotation}
+          />
+        )}
+        
+        {/* 개별 부분: 맵 */}
+        {map}
+      </Scene>
+
+      <div className="absolute top-2/3 w-screen h-auto flex justify-center">
         <Button
           onClick={() => router.push('/')}
           label="첫화면으로"
         />
-      </Html>
-
-      {/* 개별 부분: 맵 */}
-      {map}
-    </Scene>
+      </div>
+    </main>
   )
 }

@@ -1,7 +1,5 @@
-import { generateObject } from "ai";
 import { generateText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { z } from 'zod';
 import test from "@/app/lib/data/prompts/test";
 
 // const Emotions = z.enum(["행복", "우울", "냉소", "화남"]);
@@ -25,7 +23,7 @@ import test from "@/app/lib/data/prompts/test";
 //   variations: z.array(VariationSchema) // 180 elements
 // });
 
-export async function GET(req, res) {
+export async function GET() {
   const prompt = JSON.stringify(test());
 
   try {

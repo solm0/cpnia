@@ -36,11 +36,11 @@ export default function PlayerWithAvatar() {
   // --- main loop ---
   useFrame((_, delta) => {
     if (!ref.current) return;
-    console.log({
-      keys: Array.from(pressedKeys.current),
-      forward: forward.current.toArray(),
-      velocity: velocity.current.toArray()
-    });
+    // console.log({
+    //   keys: Array.from(pressedKeys.current),
+    //   forward: forward.current.toArray(),
+    //   velocity: velocity.current.toArray()
+    // });
   
     velocity.current.set(0, 0, 0); // reset each frame
   
@@ -79,7 +79,11 @@ export default function PlayerWithAvatar() {
 
   return (
     <group ref={ref}>
-      <Model src="/models/avatar.glb" scale={8} rotation={[0, Math.PI, 0]} />
+      <Model
+        src="/models/avatar.glb"
+        scale={8}
+        rotation={[0, Math.PI, 0]}
+      />
     </group>
   );
 }

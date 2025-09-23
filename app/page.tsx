@@ -14,9 +14,9 @@ export default function Home() {
           {/* Icons */}
           {worldIcons.map(world => 
             <WorldIcon
-              key={world.id}
+              key={world.worldKey}
               label={world.label}
-              worldKey={world.id}
+              worldKey={world.worldKey}
               position={world.position}
               rotation={world.rotation}
             />

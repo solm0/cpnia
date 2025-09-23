@@ -4,6 +4,7 @@ import Button from "../util/Button";
 import { useState } from "react";
 import { useGameStore } from "@/app/lib/state/gameState"
 import FullScreenModal from "../util/FullScreenModal";
+import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
 // import { temp } from "@/app/lib/ai/test";
 
 export default function HomeMenu() {
@@ -14,12 +15,19 @@ export default function HomeMenu() {
   const sacrificeCompleted = useGameStore(state => state.isWorldCompleted('sacrifice'));
   const entropyCompleted = useGameStore(state => state.isWorldCompleted('entropy'));
 
+  const npcConfig = {
+    formality: '하십시오체',
+    verbosity: '투머치토커',
+    warmth: '적대',
+  }
+  const setNpcConfig = useNpcConfigStore(state => state.setNpcConfig)
+
   return (
     <>
       {/* 버튼들 */}
 
       <div className="relative top-2/3 flex flex-col items-center gap-4 h-auto w-auto pointer-events-auto">
-      <h1 className="text-center text-black text-5xl w-[20em] break-keep font-mono select-none">Cpnia</h1>
+        <h1 className="text-center text-black text-5xl w-[20em] break-keep font-mono select-none">Cpnia</h1>
         <Button
           onClick={() => setIsPurseOpen(true)}
           label="지갑"
@@ -32,6 +40,10 @@ export default function HomeMenu() {
           onClick={() => temp()}
           label="openAI"
         /> */}
+        <Button
+          onClick={() => setNpcConfig(npcConfig)}
+          label="temp set npcConfig"
+        />
       </div>
 
       {/* 모달들 */}

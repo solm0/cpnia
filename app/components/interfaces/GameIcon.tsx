@@ -21,7 +21,7 @@ export default function GameIcon({
       rotation={rotation}
     >
       <PlaceHolder
-        game={gameKey}
+        gameKey={gameKey}
         href={worldKey}
         label={label}
         completed={completed}

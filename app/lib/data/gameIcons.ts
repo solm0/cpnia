@@ -1,6 +1,6 @@
 interface gameIconProp {
   label: string;
-  id: string;
+  gameKey: string;
   position: [number, number, number];
   rotation:  [number, number, number];
 }
@@ -8,19 +8,19 @@ export const gameIcons: Record<string, gameIconProp[]> = {
   time: [
     {
       label: 'game 1',
-      id: 'game1',
+      gameKey: 'game1',
       position: [-5, 3, 0],
       rotation: [0, 0, 0]
     },
     {
       label: 'game 2',
-      id: 'game2',
+      gameKey: 'game2',
       position: [0, 3, 0],
       rotation: [0, 0, 0]
     },
     {
       label: 'game 3',
-      id: 'game3',
+      gameKey: 'game3',
       position: [5, 3, 0],
       rotation: [0, 0, 0]
     },
@@ -28,19 +28,19 @@ export const gameIcons: Record<string, gameIconProp[]> = {
   sacrifice: [
     {
       label: 'game 1',
-      id: 'game1',
+      gameKey: 'game1',
       position: [-5, 3, 0],
       rotation: [0, 0, 0]
     },
     {
       label: 'game 2',
-      id: 'game2',
+      gameKey: 'game2',
       position: [0, 3, 0],
       rotation: [0, 0, 0]
     },
     {
       label: 'game 3',
-      id: 'game3',
+      gameKey: 'game3',
       position: [5, 3, 0],
       rotation: [0, 0, 0]
     },
@@ -48,19 +48,19 @@ export const gameIcons: Record<string, gameIconProp[]> = {
   entropy: [
     {
       label: 'game 1',
-      id: 'game1',
+      gameKey: 'game1',
       position: [-5, 3, 0],
       rotation: [0, 0, 0]
     },
     {
       label: 'game 2',
-      id: 'game2',
+      gameKey: 'game2',
       position: [0, 3, 0],
       rotation: [0, 0, 0]
     },
     {
       label: 'game 3',
-      id: 'game3',
+      gameKey: 'game3',
       position: [5, 3, 0],
       rotation: [0, 0, 0]
     },
