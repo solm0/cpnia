@@ -12,9 +12,7 @@ export default function FindNpcLine({
   const npcLines = defaultNpcLines[worldKey]?.['map']?.[name];
   if (!npcLines) return <div>npc 데이터를 찾을 수 없습니다</div>
 
-  const formality = npcConfig.formality;
-  const verbosity = npcConfig.verbosity;
-  const warmth = npcConfig.warmth;
+  const {formality, verbosity, warmth } = npcConfig;
   if (!formality || !verbosity || !warmth) return;
 
   return (
