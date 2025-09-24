@@ -4,23 +4,18 @@ import Button from "../../util/Button";
 import { useState } from "react";
 import { useGameStore } from "@/app/lib/state/gameState"
 import FullScreenModal from "../../util/FullScreenModal";
-import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
+import { useRouter } from "next/navigation";
 // import { temp } from "@/app/lib/ai/test";
 
 export default function HomeMenu() {
+  const router = useRouter();
+
   const [isPurseOpen, setIsPurseOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
 
   const timeCompleted = useGameStore(state => state.isWorldCompleted('time'));
   const sacrificeCompleted = useGameStore(state => state.isWorldCompleted('sacrifice'));
   const entropyCompleted = useGameStore(state => state.isWorldCompleted('entropy'));
-
-  const npcConfig = {
-    formality: '하십시오체',
-    verbosity: '투머치토커',
-    warmth: '적대',
-  }
-  const setNpcConfig = useNpcConfigStore(state => state.setNpcConfig)
 
   return (
     <>
@@ -36,14 +31,14 @@ export default function HomeMenu() {
           onClick={() => setIsAboutOpen(true)}
           label="게임에 대해서"
         />
+        <Button
+          onClick={() => router.push('/interview')}
+          label="인터뷰"
+        />
         {/* <Button
           onClick={() => temp()}
           label="openAI"
         /> */}
-        <Button
-          onClick={() => setNpcConfig(npcConfig)}
-          label="temp set npcConfig"
-        />
       </div>
 
       {/* 모달들 */}
