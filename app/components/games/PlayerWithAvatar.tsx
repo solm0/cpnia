@@ -17,11 +17,32 @@ export default function PlayerWithAvatar() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // 입력창에 포커스가 있을 때는 무시
+      const active = document.activeElement as HTMLElement;
+      if (
+        active &&
+        (active.tagName === "INPUT" ||
+          active.tagName === "TEXTAREA" ||
+          active.isContentEditable)
+      ) {
+        return;
+      }
+
       console.log("keydown:", e.code);
       pressedKeys.current.add(e.code);
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
+      const active = document.activeElement as HTMLElement;
+      if (
+        active &&
+        (active.tagName === "INPUT" ||
+          active.tagName === "TEXTAREA" ||
+          active.isContentEditable)
+      ) {
+        return;
+      }
+
       pressedKeys.current.delete(e.code);
     };
 

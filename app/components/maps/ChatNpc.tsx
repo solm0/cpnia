@@ -4,13 +4,15 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { Mesh, MeshStandardMaterial } from "three";
 
-export default function MapNpc({
+// ChatNpc의 외형에 뭔가 차별화를 줘야함.
+
+export default function ChatNpc({
   name,
   scale = 1,
   position = [0, -0.9, 0],
   rotation = [0, 0, 0],
   hoveredNpc, setHoveredNpc,
-  setActiveNpc,
+  setIsChatOpen
 }: {
   name: string;
   scale?: number
@@ -18,7 +20,7 @@ export default function MapNpc({
   rotation?: [number, number, number];
   hoveredNpc: string | null;
   setHoveredNpc: (name: string | null) => void;
-  setActiveNpc: (name: string) => void;
+  setIsChatOpen: (isChatOpen: boolean) => void;
 }) {
   const gltf = useLoader(GLTFLoader, '/models/avatar.glb');
   const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
@@ -67,26 +69,28 @@ export default function MapNpc({
       }
     });
   }, [clonedScene, hoveredNpc, name]);
-  
+
   return (
-    <group
-      scale={scale}
-      position={position}
-      rotation={rotation}
-      onPointerEnter={(e: MouseEvent) => {
-        e.stopPropagation();
-        setHoveredNpc(name);
-      }}
-      onPointerLeave={(e: MouseEvent) => {
-        e.stopPropagation();
-        setHoveredNpc(null);
-      }}
-      onClick={(e: MouseEvent) => {
-        e.stopPropagation();
-        setActiveNpc(name);
-      }}
-    >
-      <primitive object={clonedScene} />
-    </group>
+    <>
+      <group
+        scale={scale}
+        position={position}
+        rotation={rotation}
+        onPointerEnter={(e: MouseEvent) => {
+          e.stopPropagation();
+          setHoveredNpc(name);
+        }}
+        onPointerLeave={(e: MouseEvent) => {
+          e.stopPropagation();
+          setHoveredNpc(null);
+        }}
+        onClick={(e: MouseEvent) => {
+          e.stopPropagation();
+          setIsChatOpen(true);
+        }}
+      >
+        <primitive object={clonedScene} />
+      </group>
+    </>
   )
 }

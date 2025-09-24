@@ -10,12 +10,19 @@ import { useState } from "react";
 import MapNpc from "../MapNpc";
 import { mapNpcs } from "@/app/lib/data/mapNpcs";
 import NpcLineModal from "../NpcLineModal";
+import { chatNpcs } from "@/app/lib/data/chatNpcs";
+import ChatNpc from "../ChatNpc";
+import ChatNpcScreen from "./ChatNpcScreen";
 
 export default function EntropyScreen() {
+  const worldKey = 'entropy'
   const router = useRouter();
 
   const [hoveredNpc, setHoveredNpc] = useState<string | null>(null);
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
+
+  const chatNpc = chatNpcs[worldKey];
+  const [isChatOpen, setIsChatOpen] = useState(false)
 
   return (
     <main className="w-full h-full">
@@ -28,11 +35,11 @@ export default function EntropyScreen() {
         <PlaceHolder label="엔트로피 체제의 맵" />
 
         {/* 게임 포탈 */}
-        {gamePortals['entropy'].map(game => 
+        {gamePortals[worldKey].map(game => 
           <GamePortalLayout
             key={game.gameKey}
             label={game.label}
-            worldKey={'entropy'}
+            worldKey={worldKey}
             gameKey={game.gameKey}
             position={game.position}
             rotation={game.rotation}
@@ -46,7 +53,7 @@ export default function EntropyScreen() {
         {/* 소품 */}
 
         {/* 맵 npc */}
-        {mapNpcs['entropy'].map(npc =>
+        {mapNpcs[worldKey].map(npc =>
           <MapNpc
             key={npc.name}
             name={npc.name}
@@ -59,7 +66,16 @@ export default function EntropyScreen() {
           />
         )}
 
-        {/* 프리토킹 npc */}
+        {/* 챗 npc */}
+        <ChatNpc
+          name={chatNpc.name}
+          scale={1}
+          position={chatNpc.position}
+          rotation={chatNpc.rotation}
+          hoveredNpc={hoveredNpc}
+          setHoveredNpc={setHoveredNpc}
+          setIsChatOpen={setIsChatOpen}
+        />
 
         {/* 플레이어 아바타 */}
         <PlayerWithAvatar />
@@ -74,15 +90,25 @@ export default function EntropyScreen() {
           label="첫화면으로"
         />
 
-        {/* 모달 */}
+        {/* 맵 npc 대사 모달 */}
         {activeNpc &&
           <NpcLineModal
-            worldKey="entropy"
+            worldKey={worldKey}
             name={activeNpc}
             setActiveNpc={setActiveNpc}
           />
         }
+
       </div>
+
+      {/* 챗 npc 채팅 모달 */}
+      {isChatOpen &&
+        <ChatNpcScreen
+          npcData={chatNpc}
+          worldKey={worldKey}
+          handleClose={setIsChatOpen}
+        />
+      }
     </main>
   )
 }
