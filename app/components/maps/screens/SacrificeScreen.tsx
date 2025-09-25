@@ -2,7 +2,7 @@ import { gamePortals } from "@/app/lib/data/gamePortals";
 import GamePortalLayout from "../interfaces/GamePortalLayout";
 import Button from "../../util/Button";
 import { useRouter } from "next/navigation";
-import PlayerWithAvatar from "../../games/PlayerWithAvatar";
+import PlayerWithAvatar from "../PlayerWithAvatar";
 import Model from "../../util/Model";
 import SacrificeLights from "../SacrificeLights";
 import Scene from "@/app/components/util/Scene"

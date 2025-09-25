@@ -1,4 +1,4 @@
-import PlayerWithAvatar from "../../games/PlayerWithAvatar";
+import PlayerWithAvatar from "../PlayerWithAvatar";
 import PlaceHolder from "../../util/PlaceHolder";
 import Scene from "../../util/Scene";
 import { gamePortals } from "@/app/lib/data/gamePortals";
