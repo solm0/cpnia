@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Button from "../../util/Button";
 import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const questions = [
   'ㅡㅡ연방 국가들의 시민권을 얻고 싶다고 하셨는데요. 이유가 뭐죠?',
@@ -31,6 +31,9 @@ export default function InterviewForms() {
   const [loading, setLoading] = useState(false);
   const setNpcConfig = useNpcConfigStore(state => state.setNpcConfig);
   const [data, setData] = useState<npcConfig>();
+
+  const searchParam = useSearchParams();
+  const worldTo = searchParam.get('to');
 
   async function onSubmit(input: string) {
     setLoading(true);
@@ -106,8 +109,8 @@ export default function InterviewForms() {
             <div className="flex flex-col gap-2">
               <p>{`결과: ${data.formality}, ${data.verbosity}, ${data.warmth}`}</p>
               <Button
-                onClick={() => router.push('/')}
-                label="홈으로"
+                onClick={() => router.push(`/${worldTo}`)}
+                label="입장하기"
               />
             </div>
           )

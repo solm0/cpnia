@@ -33,7 +33,7 @@ export default function PlaceHolder({
         scale={scale ?? 1}
         position={position ?? [0, 0, 0]}
         rotation={rotation ?? [0, 0, 0]}
-        onClick={handleClick}
+        onClick={href && handleClick}
       >
         <primitive object={clonedScene} />
         <Label text={label ?? null} position={[0, 2.5,0]} />
@@ -58,7 +58,7 @@ export default function PlaceHolder({
         scale={scale ?? 1}
         position={position ?? [0, 0, 0]}
         rotation={rotation ?? [0, 0, 0]}
-        onClick={() => router.push(`/${href}`)}
+        onClick={() => href && router.push(`/${href}`)}
       >
         <primitive object={clonedScene} />
         <Label text={label ?? null} position={[0, 2.5,0]} />

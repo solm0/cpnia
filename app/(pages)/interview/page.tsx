@@ -1,5 +1,6 @@
 import InterviewForms from "@/app/components/home/interview/InterviewForms";
 import InterviewScene from "@/app/components/home/interview/InterviewScene";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "인터뷰",
@@ -10,7 +11,9 @@ export default function InterviewPage() {
   return (
     <main className="absolute left-0 top-0 w-screen h-screen flex flex-col items-center justify-center gap-4">
       <InterviewScene />
-      <InterviewForms />
+      <Suspense>
+        <InterviewForms />
+      </Suspense>
     </main>
   )
 }

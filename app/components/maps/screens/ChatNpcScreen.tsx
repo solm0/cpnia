@@ -6,7 +6,6 @@ import { chatNpcBrains } from "@/app/lib/data/chatNpcBrain";
 import { chatNpcProp } from "@/app/lib/data/chatNpcs";
 import { useEntropyChatStore } from "@/app/lib/state/entropyChatState";
 import { useState } from "react";
-import ThreeDotLoader from "../../util/ThreeDotLoader";
 
 export default function ChatNpcScreen({
   npcData, worldKey, handleClose

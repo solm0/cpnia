@@ -4,12 +4,8 @@ import Button from "../../util/Button";
 import { useState } from "react";
 import { useGameStore } from "@/app/lib/state/gameState"
 import FullScreenModal from "../../util/FullScreenModal";
-import { useRouter } from "next/navigation";
-// import { temp } from "@/app/lib/ai/test";
 
 export default function HomeMenu() {
-  const router = useRouter();
-
   const [isPurseOpen, setIsPurseOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
 
@@ -31,14 +27,6 @@ export default function HomeMenu() {
           onClick={() => setIsAboutOpen(true)}
           label="게임에 대해서"
         />
-        <Button
-          onClick={() => router.push('/interview')}
-          label="인터뷰"
-        />
-        {/* <Button
-          onClick={() => temp()}
-          label="openAI"
-        /> */}
       </div>
 
       {/* 모달들 */}
