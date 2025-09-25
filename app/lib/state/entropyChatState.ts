@@ -12,6 +12,46 @@ interface ChatStore {
   clearMessages: () => void;
 }
 
+export const useTimeChatStore = create<ChatStore>() (
+  persist(
+    (set) => ({
+      messages: [],
+      addMessage: (newMessage) =>
+        set(state => ({
+          messages: [...state.messages, newMessage],
+        })),
+      clearMessages: () =>
+        set(() => ({
+          messages: [],
+        })),
+    }),
+    {
+      name: 'time-chat',
+    }
+  )
+)
+
+
+export const useSacrificeChatStore = create<ChatStore>() (
+  persist(
+    (set) => ({
+      messages: [],
+      addMessage: (newMessage) =>
+        set(state => ({
+          messages: [...state.messages, newMessage],
+        })),
+      clearMessages: () =>
+        set(() => ({
+          messages: [],
+        })),
+    }),
+    {
+      name: 'sacrifice-chat',
+    }
+  )
+)
+
+
 export const useEntropyChatStore = create<ChatStore>() (
   persist(
     (set) => ({

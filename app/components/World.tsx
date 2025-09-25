@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import Game from "./games/Game";
-import WorldScreen from "./maps/WorldScreen";
+import WorldScreen from "./maps/screens/WorldScreen";
 
 export default function World({
   worldKey

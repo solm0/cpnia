@@ -1,10 +1,8 @@
 import Button from "../../util/Button";
-import SmallScene from "../../util/SmallScene";
-import Model from "../../util/Model";
 import ChatNpcForm from "../interfaces/ChatNpcForm";
 import { chatNpcBrains } from "@/app/lib/data/chatNpcBrain";
 import { chatNpcProp } from "@/app/lib/data/chatNpcs";
-import { useEntropyChatStore } from "@/app/lib/state/entropyChatState";
+import { useTimeChatStore, useSacrificeChatStore, useEntropyChatStore } from "@/app/lib/state/entropyChatState";
 import { useState } from "react";
 
 export default function ChatNpcScreen({
@@ -15,63 +13,56 @@ export default function ChatNpcScreen({
   handleClose: (open: boolean) => void;
 }) {
   const npcBrain = chatNpcBrains[worldKey];
-  const messages = useEntropyChatStore((state) => state.messages);
+
+  type WorldKey = "time" | "sacrifice" | "entropy";
+
+  const storeMap = {
+    time: useTimeChatStore,
+    sacrifice: useSacrificeChatStore,
+    entropy: useEntropyChatStore,
+  } as const;
+
+  const key: WorldKey = worldKey as WorldKey;
+  const messages = storeMap[key](state => state.messages);
+
   const [loading, setLoading] = useState(false);
 
   return (
-    <div className="absolute top-0 left-0 w-screen h-screen bg-gray-100 flex flex-col items-center p-32 justify-between pointer-events-auto">
-      
-      {/* 아바타들의 아이콘 */}
-      <div className="w-56 absolute top-0 left-0">
-        <SmallScene>
-          <Model
-            src="/models/chat-npc.glb"
-            scale={3.6}
-            position={[0, -0.9, 0]}
-            rotation={[0, Math.PI, 0]}
-          />
-        </SmallScene>
-      </div>
-      <div className="w-56 absolute bottom-0 right-0">
-        <SmallScene>
-          <Model
-            src="/models/avatar.glb"
-            scale={3.6}
-            position={[0, -0.9, 0]}
-            rotation={[0, Math.PI, 0]}
-          />
-        </SmallScene>
-      </div>
+    <div className="absolute bottom-0 right-0 w-auto pr-8 h-2/3 bg-transparent flex flex-col items-end justify-between pointer-events-none text-sm gap-2">
 
-      {/* 채팅내역 */}
-      <div className="flex flex-col gap-2 w-full overflow-y-scroll">
+      <Button
+        onClick={() => handleClose(false)}
+        label="닫기"
+      />
+
+      {/* 채팅 */}
+      <div className="flex flex-col gap-2 overflow-y-scroll h-full w-96 pointer-events-auto mb-36">
         {messages.map((message, idx) => (
           <div
             key={idx}
-            className={`w-3/4 h-auto rounded-full px-4 py-2 bg-gray-200 text-gray-700 ${message.from === 'npc' ? 'self-start' : 'self-end'}`}
+            className={`
+              w-auto max-w-5/6 break-keep h-auto rounded-[1.4rem] px-4 py-2
+              ${message.from === 'npc' ? 'self-start bg-[#ffffff99] backdrop-blur-sm border border-gray-300 text-gray-700' : 'self-end bg-[#00000099] backdrop-blur-sm text-white border border-gray-700'}
+            `}
           >
             {message.text}
           </div>
         ))}
         {loading &&
-          <div className="animate-pulse w-3/4 h-auto rounded-full px-4 py-2 bg-gray-200 self-start">
+          <div className="animate-pulse w-auto h-auto rounded-full px-4 py-2 bg-gray-200 self-start">
             {loading && `${npcData.name}가 생각하고 있어요`}
           </div>
         }
-      </div>
 
-      {/* 인풋창 */}
-      <ChatNpcForm
-        npcData={npcData}
-        npcBrain={npcBrain}
-        loading={loading}
-        setLoading={setLoading}
-      />
-      
-      <Button
-        onClick={() => handleClose(false)}
-        label="닫기"
-      />
+        {/* 인풋창 */}
+        <ChatNpcForm
+          worldKey={worldKey}
+          npcData={npcData}
+          npcBrain={npcBrain}
+          loading={loading}
+          setLoading={setLoading}
+        />
+      </div>
     </div>
   )
 }

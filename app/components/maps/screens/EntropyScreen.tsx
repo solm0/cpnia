@@ -4,7 +4,6 @@ import Scene from "../../util/Scene";
 import { gamePortals } from "@/app/lib/data/gamePortals";
 import GamePortalLayout from "../interfaces/GamePortalLayout";
 import { useRouter } from "next/navigation";
-import Button from "../../util/Button";
 import SacrificeLights from "../SacrificeLights";
 import { useState } from "react";
 import MapNpc from "../MapNpc";
@@ -48,6 +47,15 @@ export default function EntropyScreen() {
           </GamePortalLayout>
         )}
 
+        {/* 홈 포탈 */}
+        <group
+          scale={1}
+          position={[15,0,-5]}
+          onClick={() => router.push('/')}
+        >
+          <PlaceHolder label="첫화면으로" />
+        </group>
+
         {/* 기타 모델들 */}
 
         {/* 소품 */}
@@ -85,11 +93,6 @@ export default function EntropyScreen() {
       
       {/* 월드 인터페이스 */}
       <div className="absolute top-2/3 w-screen h-auto flex justify-center">
-        <Button
-          onClick={() => router.push('/')}
-          label="첫화면으로"
-        />
-
         {/* 맵 npc 대사 모달 */}
         {activeNpc &&
           <NpcLineModal
@@ -98,7 +101,6 @@ export default function EntropyScreen() {
             setActiveNpc={setActiveNpc}
           />
         }
-
       </div>
 
       {/* 챗 npc 채팅 모달 */}

@@ -102,6 +102,10 @@ export default function InterviewForms() {
               label={loading ? "답변을 분석중입니다...": "다음"}
             />
           </form>
+          <Button
+            onClick={() => router.push(`/${worldTo}`)}
+            label="성격 형성 스킵하고 바로 입장하기"
+          />
         </>
       ): (
         <>

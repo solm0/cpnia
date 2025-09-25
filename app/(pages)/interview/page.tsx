@@ -1,6 +1,7 @@
-import InterviewForms from "@/app/components/home/interview/InterviewForms";
-import InterviewScene from "@/app/components/home/interview/InterviewScene";
+import InterviewForms from "@/app/components/maps/interview/InterviewForms";
+import InterviewScene from "@/app/components/maps/interview/InterviewScene";
 import { Suspense } from "react";
+import { Info } from 'lucide-react'
 
 export const metadata = {
   title: "인터뷰",
@@ -9,7 +10,14 @@ export const metadata = {
 
 export default function InterviewPage() {
   return (
-    <main className="absolute left-0 top-0 w-screen h-screen flex flex-col items-center justify-center gap-4">
+    <main className="absolute left-0 top-0 w-screen h-screen flex flex-col items-center justify-center gap-12">
+      <div className="text-sm text-gray-700 flex flex-col gap-2 text-center items-center">
+        <Info className="h-4 w-4" />
+        <p>당신은 입국심사실에 있습니다.</p>
+        <p>두 질문에 대한 당신의 대답이 모든 npc들의 성격에 영향을 미칩니다.</p>
+        <p>팁: 극단적인 말투로 답해 보세요.</p>
+        <p>(엄청 짧게 - 엄청 길게, 착하게 - 나쁘게, 극존칭 - 반말)</p>
+      </div>
       <InterviewScene />
       <Suspense>
         <InterviewForms />

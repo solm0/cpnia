@@ -3,12 +3,14 @@
 import { useEffect, useState, useRef } from "react";
 import { chatNpcProp } from "@/app/lib/data/chatNpcs";
 import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
-import { useEntropyChatStore } from "@/app/lib/state/entropyChatState";
 import { chatNpcLines } from "@/app/lib/data/chatNpcLines";
+import { chatPlayerLines } from "@/app/lib/data/chatPlayerLines";
+import { useTimeChatStore, useSacrificeChatStore, useEntropyChatStore, ChatMessage } from "@/app/lib/state/entropyChatState";
 
 export default function ChatNpcForm({
-  npcData, npcBrain, loading, setLoading,
+  worldKey, npcData, npcBrain, loading, setLoading,
 }: {
+  worldKey: string;
   npcData: chatNpcProp;
   npcBrain: string;
   loading: boolean;
@@ -18,18 +20,28 @@ export default function ChatNpcForm({
   const npcWorld = npcData.world;
 
   const [input, setInput] = useState('');
+  const [playerLines, setPlayerLines] = useState([1,2,3]);
 
   const npcConfig = useNpcConfigStore(state => state.npcConfig);
   const {formality, verbosity, warmth } = npcConfig;
-  
-  const message = useEntropyChatStore(state => state.messages);
-  const addMessage = useEntropyChatStore(state => state.addMessage);
+
+  type WorldKey = "time" | "sacrifice" | "entropy";
+
+  const storeMap = {
+    time: useTimeChatStore,
+    sacrifice: useSacrificeChatStore,
+    entropy: useEntropyChatStore,
+  } as const;
+
+  const key: WorldKey = worldKey as WorldKey; // cast incoming string
+  const messages = storeMap[key](state => state.messages);
+  const addMessage = storeMap[key](state => state.addMessage);
 
   // npc 첫 대사
   const firstLineAdded = useRef(false);
 
   useEffect(() => {
-    if (!firstLineAdded.current && message.length === 0) {
+    if (!firstLineAdded.current && messages.length === 0) {
       if (!formality || !verbosity || !warmth) return;
       const npcLine = chatNpcLines[formality]?.[verbosity]?.[warmth]?.[0] ?? 'npc 대사를 찾을 수 없습니다';
       addMessage({ from: 'npc', text: npcLine });
@@ -94,16 +106,37 @@ export default function ChatNpcForm({
           e.preventDefault();
           handleSubmit();
         }}
-        className="flex flex-col gap-2 w-full items-end"
+        className="flex flex-col gap-2 w-full items-end fixed right-8 bottom-8"
       >
+        {/* 채팅창 */}
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="w-96 h-10 rounded-full bg-gray-200 p-4 truncate"
+          className="w-96 h-10 rounded-full bg-[#00000099] backdrop-blur-sm text-white border border-gray-700 p-4 truncate"
           disabled={loading}
           placeholder={`${npcName}에게 물어보기. Enter를 쳐서 전송`}
         />
+
+        {/* 질문 선택지 */}
+        <div className="flex gap-2 w-auto h-auto">
+          {playerLines.map(index => {
+            const line = chatPlayerLines[formality ?? '하십시오체'][index];
+            return (
+              <div
+                key={index}
+                onClick={() => {
+                  onSubmit(line);
+                  setPlayerLines(prev => prev.filter(i => i !== index));
+                }}
+                className="w-auto h-10 rounded-full bg-[#00000099] backdrop-blur-sm text-white border border-gray-700 p-4 flex items-center hover:bg-[#00000080]"
+              >
+                {line}
+              </div>
+            )
+          }
+          )}
+        </div>
       </form>
     </>
   )

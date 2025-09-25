@@ -76,23 +76,10 @@ export default function Home() {
         {isFocused &&
           <div className="absolute left-3/5 w-96 break-keep text-gray-700 text-center h-full flex flex-col justify-center gap-12 items-center pointer-events-auto">
             <p>{worldPortals.find(world => world.worldKey === focusedWorld)?.description}</p>
-            <div className="flex flex-col gap-2">
-              <Button
-                label="바로 입장하기"
-                onClick={() => router.push(`/${focusedWorld}`)}
-              />
-              <p className="text-sm">또는</p>
-              <Link href={`/interview?to=${focusedWorld}`} className="text-sm hover:text-gray-400">
-                주민 성격 형성하고 입장하기
-              </Link>
-            </div>
             <Button
-              label="돌아가기"
-              onClick={() => {
-                unFocusPortal();
-                setIsFocused(false);
-              }}
-            />
+                label="입장하기"
+                onClick={() => router.push(`/interview?to=${focusedWorld}`)}
+              />
             <div className="flex gap-2">
               <Button
                 label="<"
@@ -117,6 +104,13 @@ export default function Home() {
                 }}
               />
             </div>
+            <Button
+              label="돌아가기"
+              onClick={() => {
+                unFocusPortal();
+                setIsFocused(false);
+              }}
+            />
           </div>}
       </div>
     </main>
