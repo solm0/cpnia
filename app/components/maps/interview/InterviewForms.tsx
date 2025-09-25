@@ -4,11 +4,7 @@ import { useState } from "react"
 import Button from "../../util/Button";
 import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
 import { useRouter, useSearchParams } from "next/navigation";
-
-const questions = [
-  'ㅡㅡ연방 국가들의 시민권을 얻고 싶다고 하셨는데요. 이유가 뭐죠?',
-  '당신은 시민권을 얻기 위해 어떤 노력을 할 것인가요?'
-]
+import { useUserNameStore } from "@/app/lib/state/userNameStore";
 
 interface npcConfig {
   formality: string,
@@ -23,6 +19,12 @@ const defaultNpcConfig = {
 }
 
 export default function InterviewForms() {
+  const userName = useUserNameStore(state => state.userName);
+  const questions = [
+    `${userName} 씨 되십니까? ㅡㅡ연방 국가들의 시민권을 얻고 싶다고 하셨는데요. 이유가 뭐죠?`,
+    '당신은 시민권을 얻기 위해 어떤 노력을 할 것인가요?'
+  ]
+
   const router = useRouter();
 
   const [input, setInput] = useState('');

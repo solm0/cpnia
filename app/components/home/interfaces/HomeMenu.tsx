@@ -4,6 +4,7 @@ import Button from "../../util/Button";
 import { useState } from "react";
 import { useGameStore } from "@/app/lib/state/gameState"
 import FullScreenModal from "../../util/FullScreenModal";
+import UserNameForm from "./UserNameForm";
 
 export default function HomeMenu() {
   const [isPurseOpen, setIsPurseOpen] = useState(false);
@@ -17,7 +18,7 @@ export default function HomeMenu() {
     <>
       {/* 버튼들 */}
 
-      <div className="relative top-2/3 flex flex-col items-center gap-4 h-auto w-auto pointer-events-auto">
+      <div className="relative top-3/5 flex flex-col items-center gap-8 h-auto w-auto pointer-events-auto">
         <h1 className="text-center text-black text-5xl w-[20em] break-keep font-mono select-none">Cpnia</h1>
         <Button
           onClick={() => setIsPurseOpen(true)}
@@ -27,6 +28,7 @@ export default function HomeMenu() {
           onClick={() => setIsAboutOpen(true)}
           label="게임에 대해서"
         />
+        <UserNameForm />
       </div>
 
       {/* 모달들 */}

@@ -3,7 +3,7 @@ import ChatNpcForm from "../interfaces/ChatNpcForm";
 import { chatNpcBrains } from "@/app/lib/data/chatNpcBrain";
 import { chatNpcProp } from "@/app/lib/data/chatNpcs";
 import { useTimeChatStore, useSacrificeChatStore, useEntropyChatStore } from "@/app/lib/state/entropyChatState";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function ChatNpcScreen({
   npcData, worldKey, handleClose
@@ -26,6 +26,12 @@ export default function ChatNpcScreen({
   const messages = storeMap[key](state => state.messages);
 
   const [loading, setLoading] = useState(false);
+
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
 
   return (
     <div className="absolute bottom-0 right-0 w-auto pr-8 h-2/3 bg-transparent flex flex-col items-end justify-between pointer-events-none text-sm gap-2">
@@ -53,6 +59,7 @@ export default function ChatNpcScreen({
             {loading && `${npcData.name}가 생각하고 있어요`}
           </div>
         }
+        <div ref={bottomRef} />
 
         {/* 인풋창 */}
         <ChatNpcForm

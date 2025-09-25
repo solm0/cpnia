@@ -90,7 +90,7 @@ export default function ChatNpcForm({
 
   function handleSubmit() {
     if (!input.trim()) {
-      alert('예상질문중에 고르거나 말을 입력해주시죠?');
+      alert('예시 질문중에 고르거나 말을 입력해주시죠?');
       return;
     }
     onSubmit(input.trim());
