@@ -2,9 +2,7 @@ import { gamePortals } from "@/app/lib/data/gamePortals";
 import GamePortalLayout from "../interfaces/GamePortalLayout";
 import ChatNpc from "../ChatNpc";
 import { useRouter } from "next/navigation";
-import PlayerWithAvatar from "../PlayerWithAvatar";
 import Model from "../../util/Model";
-import SacrificeLights from "../SacrificeLights";
 import Scene from "@/app/components/util/Scene"
 import PlaceHolder from "../../util/PlaceHolder";
 import { useState } from "react";
@@ -13,6 +11,7 @@ import { mapNpcs } from "@/app/lib/data/mapNpcs";
 import MapNpc from "../MapNpc";
 import { chatNpcs } from "@/app/lib/data/chatNpcs";
 import ChatNpcScreen from "./ChatNpcScreen";
+import Player from "../Avatar";
 
 export default function SacrificeScreen() {
   const worldKey = 'sacrifice';
@@ -26,11 +25,7 @@ export default function SacrificeScreen() {
 
   return (
     <main className="w-full h-full">
-      {/* 월드 씬 */}
       <Scene>
-        {/* 빛 */}
-        <SacrificeLights />
-
         {/* 지형 */}
         <Model
           src="/models/sacrifice-map.glb"
@@ -92,7 +87,7 @@ export default function SacrificeScreen() {
         />
 
         {/* 플레이어 아바타 */}
-        <PlayerWithAvatar />
+        <Player position={[0,0,0]} />
 
         {/* 배경음악 */}
       </Scene>

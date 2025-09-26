@@ -2,7 +2,7 @@
 
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
-import { OrbitControls } from "@react-three/drei";
+import SacrificeLights from "../maps/SacrificeLights";
 import Loader from "./Loader";
 
 export default function Scene({
@@ -17,13 +17,8 @@ export default function Scene({
       frameloop="always"
     >
       <Suspense fallback={<Loader />}>
+        <SacrificeLights />
         {children}
-
-        {/* Controls */}
-        <OrbitControls
-          minDistance={30}
-          maxDistance={100}
-        />
       </Suspense>
     </Canvas>
   )
