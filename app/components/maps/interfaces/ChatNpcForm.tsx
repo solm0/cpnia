@@ -5,7 +5,7 @@ import { chatNpcProp } from "@/app/lib/data/chatNpcs";
 import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
 import { chatNpcLines } from "@/app/lib/data/chatNpcLines";
 import { chatPlayerLines } from "@/app/lib/data/chatPlayerLines";
-import { useTimeChatStore, useSacrificeChatStore, useEntropyChatStore, ChatMessage } from "@/app/lib/state/entropyChatState";
+import { useTimeChatStore, useSacrificeChatStore, useEntropyChatStore } from "@/app/lib/state/entropyChatState";
 
 export default function ChatNpcForm({
   worldKey, npcData, npcBrain, loading, setLoading,

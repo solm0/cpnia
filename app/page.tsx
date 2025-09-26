@@ -12,7 +12,6 @@ import { Canvas } from "@react-three/fiber";
 import { useState } from "react";
 import Button from "./components/util/Button";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 export default function Home() {
   const router = useRouter();
