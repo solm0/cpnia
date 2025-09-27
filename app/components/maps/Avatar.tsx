@@ -141,17 +141,11 @@ export default function Player({ position }: { position: [number, number, number
         inputVelocity.y = 1; // jump
         playerGrounded.current = false;
         inJumpAction.current = true;
-      } else {
-        inputVelocity.y = 0;
       }
-      if (gamepad) {
-        if (gamepad.current.buttons[0] && !inJumpAction.current) {
-          inputVelocity.y = 1; // jump
-          playerGrounded.current = false;
-          inJumpAction.current = true;
-        } else {
-          inputVelocity.y = 0;
-        }
+      if (gamepad && gamepad.current.buttons[0] && !inJumpAction.current) {
+        inputVelocity.y = 1; // jump
+        playerGrounded.current = false;
+        inJumpAction.current = true;
       }
     } else {
       inputVelocity.y -= 3 * delta; // gravity

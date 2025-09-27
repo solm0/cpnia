@@ -2,7 +2,6 @@
 
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
-import SacrificeLights from "../maps/SacrificeLights";
 import Loader from "./Loader";
 
 export default function Scene({
@@ -17,7 +16,6 @@ export default function Scene({
       frameloop="always"
     >
       <Suspense fallback={<Loader />}>
-        <SacrificeLights />
         {children}
       </Suspense>
     </Canvas>
