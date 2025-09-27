@@ -6,6 +6,7 @@ import CitizenshipScreen from "./CitizenshipScreen";
 import Button from "../../util/Button";
 import { useState } from "react";
 import Scene from "../../util/Scene";
+import { OrbitControls } from "@react-three/drei";
 
 export default function GameEndScreen({
   success, worldKey, gameKey, showCitizenship
@@ -32,6 +33,7 @@ export default function GameEndScreen({
               rotation={[0, 0, 0]}
               label={`${gameKey} 성공!`}
             />
+            <OrbitControls minDistance={30} maxDistance={100} />
           </Scene>
           <div className="absolute top-2/3 w-screen h-auto flex justify-center">
             <Button
@@ -51,6 +53,7 @@ export default function GameEndScreen({
               rotation={[0, 0, 0]}
               label={`${gameKey} 성공!`}
             />
+            <OrbitControls minDistance={30} maxDistance={100} />
           </Scene>
           <div className="absolute top-2/3 w-screen h-auto flex justify-center">
             <Button
@@ -72,6 +75,7 @@ export default function GameEndScreen({
           rotation={[0, 0, 0]}
           label={`${gameKey} 실패! 아직 멀었다네 이방인이여...`}
         />
+        <OrbitControls minDistance={30} maxDistance={100} />
       </Scene>
       <div className="absolute top-2/3 w-screen h-auto flex justify-center">
         <Button

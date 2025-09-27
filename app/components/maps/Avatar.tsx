@@ -138,11 +138,20 @@ export default function Player({ position }: { position: [number, number, number
     // --- jump & gravity ---
     if (playerGrounded.current) {
       if (pressedKeys.current.has("Space") && !inJumpAction.current) {
-        inputVelocity.y = 5; // jump
+        inputVelocity.y = 1; // jump
         playerGrounded.current = false;
         inJumpAction.current = true;
       } else {
         inputVelocity.y = 0;
+      }
+      if (gamepad) {
+        if (gamepad.current.buttons[0] && !inJumpAction.current) {
+          inputVelocity.y = 1; // jump
+          playerGrounded.current = false;
+          inJumpAction.current = true;
+        } else {
+          inputVelocity.y = 0;
+        }
       }
     } else {
       inputVelocity.y -= 3 * delta; // gravity

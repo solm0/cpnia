@@ -3,6 +3,7 @@ import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
 import { lineProp } from "@/app/lib/data/npc-default-lines";
 import { useState } from "react";
+import { OrbitControls } from "@react-three/drei";
 
 export default function W2G1({
   worldKey, gameKey, npcData, onGameEnd
@@ -24,6 +25,7 @@ export default function W2G1({
           setClick={setClick}
           onGameEnd={onGameEnd}
         />
+        <OrbitControls minDistance={30} maxDistance={100} />
       </Scene>
 
       {/* 게임 인터페이스 */}
