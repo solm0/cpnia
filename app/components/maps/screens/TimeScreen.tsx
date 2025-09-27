@@ -8,12 +8,13 @@ import { chatNpcs } from "@/app/lib/data/chatNpcs";
 import { mapNpcs } from "@/app/lib/data/mapNpcs";
 import MapNpc from "../MapNpc";
 import { useState } from "react";
-import SacrificeLights from "../SacrificeLights";
+import SacrificeLights from "../sacrifice/SacrificeLights";
 import NpcLineModal from "../NpcLineModal";
 import ChatNpcScreen from "./ChatNpcScreen";
 import HomePortalLayout from "../interfaces/HomePortalLayout";
+import TimeMap from "../time/TimeMap";
 
-export default function TimeMap() {
+export default function TimeScreen() {
   const worldKey = 'time';
 
   const [hoveredNpc, setHoveredNpc] = useState<string | null>(null);
@@ -30,7 +31,7 @@ export default function TimeMap() {
         <SacrificeLights/>
 
         {/* 지형 */}
-        <PlaceHolder label="시간기반체제의 맵" />
+        <TimeMap />
 
         {/* 게임 포탈 */}
         {gamePortals[worldKey].map(game => 

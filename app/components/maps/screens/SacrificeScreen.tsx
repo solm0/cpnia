@@ -11,7 +11,7 @@ import MapNpc from "../MapNpc";
 import { chatNpcs } from "@/app/lib/data/chatNpcs";
 import ChatNpcScreen from "./ChatNpcScreen";
 import Player from "../Avatar";
-import SacrificeLights from "../SacrificeLights";
+import SacrificeLights from "../sacrifice/SacrificeLights";
 import HomePortalLayout from "../interfaces/HomePortalLayout";
 
 export default function SacrificeScreen() {

@@ -3,7 +3,7 @@ import PlaceHolder from "../../util/PlaceHolder";
 import Scene from "../../util/Scene";
 import { gamePortals } from "@/app/lib/data/gamePortals";
 import GamePortalLayout from "../interfaces/GamePortalLayout";
-import SacrificeLights from "../SacrificeLights";
+import SacrificeLights from "../sacrifice/SacrificeLights";
 import { useState } from "react";
 import MapNpc from "../MapNpc";
 import { mapNpcs } from "@/app/lib/data/mapNpcs";

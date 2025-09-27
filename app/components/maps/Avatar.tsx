@@ -21,6 +21,7 @@ function useFollowCam(
   const yaw = useMemo(() => new Object3D(), []);
   const pitch = useMemo(() => new Object3D(), []);
   const worldPosition = useMemo(() => new Vector3(), []);
+  const zoomDistance = useRef(offset[2]);
 
   function updateCameraFromKeys() {
     const rotateSpeed = 0.02;
@@ -42,11 +43,9 @@ function useFollowCam(
   }
 
   function onDocumentMouseWheel(e: WheelEvent) {
-    if (document.pointerLockElement) {
-      e.preventDefault();
-      const v = camera.position.z + e.deltaY * 0.005;
-      if (v >= 0.5 && v <= 5) camera.position.z = v;
-    }
+    e.preventDefault();
+    zoomDistance.current += e.deltaY * 0.01; // scroll up/down
+    zoomDistance.current = Math.min(Math.max(zoomDistance.current, 10), 300); // clamp between 2–50
   }
 
   useEffect(() => {
@@ -58,17 +57,22 @@ function useFollowCam(
     pitch.add(camera);
 
     pitch.rotation.x = -Math.PI / 12 
-    camera.position.set(offset[1], 0, offset[2]);
+    camera.position.set(0, 0, zoomDistance.current);
 
     document.addEventListener("wheel", onDocumentMouseWheel, { passive: false });
     return () => document.removeEventListener("wheel", onDocumentMouseWheel);
   }, [camera]);
 
+  const currentZoom = new Vector3();
   useFrame((_, delta) => {
     if (!ref.current) return;
     ref.current.getWorldPosition(worldPosition);
     pivot.position.lerp(worldPosition, delta * 5);
-    updateCameraFromKeys(); // rotate using IJLK
+
+    currentZoom.lerp(new Vector3(0, 0, zoomDistance.current), delta * 5);
+    camera.position.copy(currentZoom);
+
+    updateCameraFromKeys();
   });
 
   return { pivot, alt, yaw, pitch };
@@ -84,6 +88,7 @@ function Avatar() {
       <Model
         src="/models/avatar.glb"
         scale={8}
+        position={[0,0,0]}
         rotation={[0, Math.PI, 0]}
       />
     </group>
@@ -97,7 +102,7 @@ export default function Player({ position }: { position: [number, number, number
 
   const pressedKeys = useKeyboardControls();
   const gamepad = useGamepadControls();
-  const { yaw } = useFollowCam(group, [0, 1, 25], pressedKeys.current, gamepad.current);
+  const { yaw } = useFollowCam(group, [0, 1, 40], pressedKeys.current, gamepad.current);
 
   const inputVelocity = useMemo(() => new Vector3(), [])
 
