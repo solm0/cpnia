@@ -1,17 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import Model from "../util/Model";
-import { Euler, Group,  Object3D, Quaternion, Vector3 } from "three";
+import { Euler, Quaternion, Vector3, Object3D } from "three";
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
+import { RigidBody } from "@react-three/rapier";
 
+/* ---------------- FOLLOW CAM HOOK ---------------- */
 function useFollowCam(
-  ref: React.RefObject<Group | null>,
+  ref: React.RefObject<any>,
   offset: [number, number, number],
   pressedKeys: Set<string>,
   gamepad: {
-    axes: number[], // left & right sticks
-    buttons: Record<string, boolean>,
+    axes: number[];
+    buttons: Record<string, boolean>;
   }
 ) {
   const { scene, camera } = useThree();
@@ -25,7 +29,6 @@ function useFollowCam(
 
   function updateCameraFromKeys() {
     const rotateSpeed = 0.02;
-
     const deadzone = 0.5;
 
     if (pressedKeys.has("KeyJ") || (gamepad && gamepad.axes[2] < -deadzone)) {
@@ -44,8 +47,8 @@ function useFollowCam(
 
   function onDocumentMouseWheel(e: WheelEvent) {
     e.preventDefault();
-    zoomDistance.current += e.deltaY * 0.01; // scroll up/down
-    zoomDistance.current = Math.min(Math.max(zoomDistance.current, 10), 300); // clamp between 2–50
+    zoomDistance.current += e.deltaY * 0.01;
+    zoomDistance.current = Math.min(Math.max(zoomDistance.current, 10), 300);
   }
 
   useEffect(() => {
@@ -56,7 +59,7 @@ function useFollowCam(
     yaw.add(pitch);
     pitch.add(camera);
 
-    pitch.rotation.x = -Math.PI / 12 
+    pitch.rotation.x = -Math.PI / 12;
     camera.position.set(0, 0, zoomDistance.current);
 
     document.addEventListener("wheel", onDocumentMouseWheel, { passive: false });
@@ -66,7 +69,9 @@ function useFollowCam(
   const currentZoom = new Vector3();
   useFrame((_, delta) => {
     if (!ref.current) return;
-    ref.current.getWorldPosition(worldPosition);
+    const pos = ref.current.translation();
+    worldPosition.set(pos.x, pos.y, pos.z);
+
     pivot.position.lerp(worldPosition, delta * 5);
 
     currentZoom.lerp(new Vector3(0, 0, zoomDistance.current), delta * 5);
@@ -75,16 +80,13 @@ function useFollowCam(
     updateCameraFromKeys();
   });
 
-  return { pivot, alt, yaw, pitch };
+  return { yaw };
 }
 
+/* ---------------- AVATAR MODEL ---------------- */
 function Avatar() {
-  const ref = useRef<Group>(null);
-
-  // 아바타 애니메이션
-  
   return (
-    <group ref={ref}>
+    <group>
       <Model
         src="/models/avatar.glb"
         scale={8}
@@ -95,90 +97,101 @@ function Avatar() {
   );
 }
 
-export default function Player({ position }: { position: [number, number, number] }) {
-  const playerGrounded = useRef(false)
-  const inJumpAction = useRef(false)
-  const group = useRef<Group>(null!)
+/* ---------------- PLAYER ---------------- */
+export default function Player() {
+  const playerGrounded = useRef(false);
+  const inJumpAction = useRef(false);
+  const body = useRef<any>(null);
 
   const pressedKeys = useKeyboardControls();
   const gamepad = useGamepadControls();
-  const { yaw } = useFollowCam(group, [0, 1, 40], pressedKeys.current, gamepad.current);
+  const { yaw } = useFollowCam(body, [0, 1, 40], pressedKeys.current, gamepad.current);
 
-  const inputVelocity = useMemo(() => new Vector3(), [])
+  const inputVelocity = useMemo(() => new Vector3(), []);
 
   useFrame((_, delta) => {
-    if (!group.current) return;
+    if (!body.current) return;
 
-    // --- raw WASD input ---
     const deadzone = 0.5;
-    const speed = 1
+    const speed = 1;
 
-    // horizontal: right = +1, left = -1
+    // Input
     let horizontal = 0;
+    let vertical = 0;
     if (pressedKeys.current.has("KeyD")) horizontal += speed;
     if (pressedKeys.current.has("KeyA")) horizontal -= speed;
+    if (pressedKeys.current.has("KeyS")) vertical += speed;
+    if (pressedKeys.current.has("KeyW")) vertical -= speed;
+
     if (gamepad) {
       if (gamepad.current.axes[0] > deadzone) horizontal += speed;
       if (gamepad.current.axes[0] < -deadzone) horizontal -= speed;
-    }
-
-    // vertical: forward = -1, backward = +1
-    let vertical = 0;
-    if (pressedKeys.current.has("KeyS")) vertical += speed;
-    if (pressedKeys.current.has("KeyW")) vertical -= speed;
-    if (gamepad) {
       if (gamepad.current.axes[1] > deadzone) vertical += speed;
       if (gamepad.current.axes[1] < -deadzone) vertical -= speed;
     }
 
     const horizontalInput = new Vector3(horizontal, 0, vertical);
-  
-    // --- rotate input by current yaw ---
+
+    // Rotate by yaw
     if (horizontalInput.lengthSq() > 0) {
       horizontalInput.normalize();
       const yawQuat = new Quaternion().setFromEuler(new Euler(0, yaw.rotation.y, 0));
       horizontalInput.applyQuaternion(yawQuat);
     }
-  
-    // --- jump & gravity ---
+
+    // Jump & gravity
     if (playerGrounded.current) {
-      if (pressedKeys.current.has("Space") && !inJumpAction.current) {
-        inputVelocity.y = 1; // jump
-        playerGrounded.current = false;
-        inJumpAction.current = true;
-      }
-      if (gamepad && gamepad.current.buttons[0] && !inJumpAction.current) {
-        inputVelocity.y = 1; // jump
+      if ((pressedKeys.current.has("Space") || gamepad?.current.buttons[0]) && !inJumpAction.current) {
+        inputVelocity.y = 1;
         playerGrounded.current = false;
         inJumpAction.current = true;
       }
     } else {
-      inputVelocity.y -= 3 * delta; // gravity
+      inputVelocity.y -= 3 * delta;
     }
-  
-    // --- move avatar ---
+
+    // Move rigidbody
     const move = horizontalInput.clone();
     move.y = inputVelocity.y;
-    group.current.position.addScaledVector(move, delta * 40);
-  
-    // --- simple ground collision ---
-    if (group.current.position.y <= 0) {
-      group.current.position.y = 0;
+
+    const t = body.current.translation();
+    const newPos = {
+      x: t.x + move.x * delta * 40,
+      y: Math.max(0, t.y + move.y * delta * 40),
+      z: t.z + move.z * delta * 40,
+    };
+
+    body.current.setNextKinematicTranslation(newPos);
+
+    // Reset jump state on ground
+    if (newPos.y <= 0) {
       inputVelocity.y = 0;
       playerGrounded.current = true;
       inJumpAction.current = false;
     }
-  
-    // --- rotate avatar to face movement direction ---
+
+    // Rotate avatar to face movement
     if (horizontalInput.lengthSq() > 0) {
-      const targetQuat = new Quaternion().setFromUnitVectors(new Vector3(0, 0, -1), horizontalInput.clone().normalize());
-      group.current.quaternion.slerp(targetQuat, delta * 10);
+      const targetQuat = new Quaternion().setFromUnitVectors(
+        new Vector3(0, 0, -1),
+        horizontalInput.clone().normalize()
+      );
+
+      const currentQuat = body.current.rotation();
+      const currentThreeQuat = new Quaternion(currentQuat.x, currentQuat.y, currentQuat.z, currentQuat.w);
+
+      const slerped = new Quaternion().slerpQuaternions(currentThreeQuat, targetQuat, delta * 10);
+      body.current.setNextKinematicRotation(slerped);
     }
   });
 
   return (
-    <group ref={group} position={position}>
+    <RigidBody
+      ref={body}
+      colliders={'trimesh'}
+      type="kinematicPosition"
+    >
       <Avatar />
-    </group>
-  )
+    </RigidBody>
+  );
 }

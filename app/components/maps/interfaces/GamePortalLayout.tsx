@@ -5,13 +5,11 @@ import Label from "../../util/Label";
 import { useRouter } from "next/navigation";
 
 export default function GamePortalLayout({
-  label, worldKey, gameKey, position, rotation, children
+  label, worldKey, gameKey, children
 }: {
   label: string;
   worldKey: string;
   gameKey: string;
-  position: [number, number, number];
-  rotation: [number, number, number];
   children: React.ReactNode;
 }) {
   const router = useRouter();
@@ -22,8 +20,6 @@ export default function GamePortalLayout({
   return (
     <group
       scale={1}
-      position={position}
-      rotation={rotation}
       onClick={() => router.push(`/${worldKey}?game=${gameKey}`)}
     >
       <Label text={label ?? null} position={[0, 2.5,0]}/>

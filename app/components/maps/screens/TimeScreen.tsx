@@ -1,4 +1,4 @@
-import Player from "../Avatar";
+import Player from "../Player";
 import PlaceHolder from "../../util/PlaceHolder";
 import Scene from "../../util/Scene";
 import { gamePortals } from "@/app/lib/data/gamePortals";
@@ -13,6 +13,7 @@ import NpcLineModal from "../NpcLineModal";
 import ChatNpcScreen from "./ChatNpcScreen";
 import HomePortalLayout from "../interfaces/HomePortalLayout";
 import TimeMap from "../time/TimeMap";
+import { Physics, RigidBody } from "@react-three/rapier";
 
 export default function TimeScreen() {
   const worldKey = 'time';
@@ -27,66 +28,83 @@ export default function TimeScreen() {
     <main className="w-full h-full">
       {/* 월드 씬 */}
       <Scene>
-        {/* 빛 */}
-        <SacrificeLights/>
+        <Physics debug gravity={[0,-9,0]}>
 
-        {/* 지형 */}
-        <TimeMap />
+          {/* 빛 */}
+          <SacrificeLights/>
 
-        {/* 게임 포탈 */}
-        {gamePortals[worldKey].map(game => 
-          <GamePortalLayout
-            key={game.gameKey}
-            label={game.label}
-            worldKey={worldKey}
-            gameKey={game.gameKey}
-            position={game.position}
-            rotation={game.rotation}
+          {/* 지형 */}
+          <TimeMap />
+
+          {/* 게임 포탈 */}
+          {gamePortals[worldKey].map(game => 
+            <RigidBody
+              key={game.gameKey}
+              position={game.position}
+              rotation={game.rotation}
+              type="fixed"
+            >
+              <GamePortalLayout
+                label={game.label}
+                worldKey={worldKey}
+                gameKey={game.gameKey}
+              >
+                <PlaceHolder />
+              </GamePortalLayout>
+            </RigidBody>
+          )}
+
+          {/* 홈 포탈 */}
+          <RigidBody
+            position={[15,0,-5]}
+            rotation={[0,0,0]}
+            type="fixed"
           >
-            <PlaceHolder />
-          </GamePortalLayout>
-        )}
+            <HomePortalLayout label="첫화면으로">
+              <PlaceHolder />
+            </HomePortalLayout>
+          </RigidBody>
 
-        {/* 홈 포탈 */}
-        <HomePortalLayout
-          label="첫화면으로"
-        >
-          <PlaceHolder />
-        </HomePortalLayout>
+          {/* 기타 모델들 */}
 
-        {/* 기타 모델들 */}
+          {/* 소품 */}
 
-        {/* 소품 */}
+          {/* 맵 npc */}
+          {mapNpcs[worldKey].map(npc =>
+            <RigidBody
+              key={npc.name}
+              position={npc.position}
+              rotation={npc.rotation}
+              colliders={'cuboid'}
+              type="fixed"
+            >
+              <MapNpc
+                name={npc.name}
+                hoveredNpc={hoveredNpc}
+                setHoveredNpc={setHoveredNpc}
+                setActiveNpc={setActiveNpc}
+              />
+            </RigidBody>
+          )}
 
-        {/* 맵 npc */}
-        {mapNpcs[worldKey].map(npc =>
-          <MapNpc
-            key={npc.name}
-            name={npc.name}
-            scale={1}
-            position={npc.position}
-            rotation={npc.rotation}
-            hoveredNpc={hoveredNpc}
-            setHoveredNpc={setHoveredNpc}
-            setActiveNpc={setActiveNpc}
-          />
-        )}
+          {/* 챗 npc */}
+          <RigidBody
+            position={chatNpc.position}
+            rotation={chatNpc.rotation}
+            colliders={'cuboid'}
+            type="fixed"
+          >
+            <ChatNpc
+              name={chatNpc.name}
+              hoveredNpc={hoveredNpc}
+              setHoveredNpc={setHoveredNpc}
+              setIsChatOpen={setIsChatOpen}
+            />
+          </RigidBody>
 
-        {/* 챗 npc */}
-        <ChatNpc
-          name={chatNpc.name}
-          scale={1}
-          position={chatNpc.position}
-          rotation={chatNpc.rotation}
-          hoveredNpc={hoveredNpc}
-          setHoveredNpc={setHoveredNpc}
-          setIsChatOpen={setIsChatOpen}
-        />
-
-        {/* 플레이어 아바타 */}
-        <Player
-          position={[0,0,0]}
-        />
+          {/* 플레이어 아바타 */}
+          <Player />
+        </Physics>
       </Scene>
       
       {/* --- 월드 인터페이스 --- */}

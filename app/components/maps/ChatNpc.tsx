@@ -8,16 +8,10 @@ import { Mesh, MeshStandardMaterial } from "three";
 
 export default function ChatNpc({
   name,
-  scale = 1,
-  position = [0, -0.9, 0],
-  rotation = [0, 0, 0],
   hoveredNpc, setHoveredNpc,
   setIsChatOpen
 }: {
   name: string;
-  scale?: number
-  position?: [number, number, number];
-  rotation?: [number, number, number];
   hoveredNpc: string | null;
   setHoveredNpc: (name: string | null) => void;
   setIsChatOpen: (isChatOpen: boolean) => void;
@@ -73,9 +67,7 @@ export default function ChatNpc({
   return (
     <>
       <group
-        scale={scale}
-        position={position}
-        rotation={rotation}
+        scale={8}
         onPointerEnter={(e: MouseEvent) => {
           e.stopPropagation();
           setHoveredNpc(name);
