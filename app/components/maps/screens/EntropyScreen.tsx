@@ -1,23 +1,19 @@
-import Player from "../Player";
+import Player from "../player/Player";
 import PlaceHolder from "../../util/PlaceHolder";
 import Scene from "../../util/Scene";
-import { gamePortals } from "@/app/lib/data/gamePortals";
-import GamePortalLayout from "../interfaces/GamePortalLayout";
 import SacrificeLights from "../sacrifice/SacrificeLights";
 import { useState } from "react";
-import MapNpc from "../MapNpc";
-import { mapNpcs } from "@/app/lib/data/mapNpcs";
 import NpcLineModal from "../NpcLineModal";
 import { chatNpcs } from "@/app/lib/data/chatNpcs";
-import ChatNpc from "../ChatNpc";
 import ChatNpcScreen from "./ChatNpcScreen";
-import HomePortalLayout from "../interfaces/HomePortalLayout";
-import { RigidBody, Physics } from "@react-three/rapier";
+import Portals from "../Portals";
+import { Physics } from "@react-three/rapier";
+import Npcs from "../Npcs";
 
 export default function EntropyScreen() {
   const worldKey = 'entropy'
 
-  const [hoveredNpc, setHoveredNpc] = useState<string | null>(null);
+
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
 
   const chatNpc = chatNpcs[worldKey];
@@ -35,75 +31,23 @@ export default function EntropyScreen() {
           {/* 지형 */}
           <PlaceHolder label="엔트로피 체제의 맵" />
 
-          {/* 게임 포탈 */}
-          {gamePortals[worldKey].map(game => 
-            <RigidBody
-              key={game.gameKey}
-              position={game.position}
-              rotation={game.rotation}
-              type="fixed"
-            >
-              <GamePortalLayout
-                key={game.gameKey}
-                label={game.label}
-                worldKey={worldKey}
-                gameKey={game.gameKey}
-              >
-                <PlaceHolder />
-              </GamePortalLayout>
-            </RigidBody>
-          )}
-
-          {/* 홈 포탈 */}
-          <RigidBody
-            position={[15,0,-5]}
-            rotation={[0,0,0]}
-          >
-            <HomePortalLayout label="첫화면으로" >
-              <PlaceHolder />
-            </HomePortalLayout>
-          </RigidBody>
+          {/* 포탈들 */}
+          <Portals worldKey={worldKey} />
 
           {/* 기타 모델들 */}
 
           {/* 소품 */}
 
-          {/* 맵 npc */}
-          {mapNpcs[worldKey].map(npc =>
-            <RigidBody
-              key={npc.name}
-              position={npc.position}
-              rotation={npc.rotation}
-              colliders={'cuboid'}
-              type="fixed"
-            >
-              <MapNpc
-                key={npc.name}
-                name={npc.name}
-                hoveredNpc={hoveredNpc}
-                setHoveredNpc={setHoveredNpc}
-                setActiveNpc={setActiveNpc}
-              />
-            </RigidBody>
-          )}
+          {/* npc들 */}
+          <Npcs
+            worldKey={worldKey}
+            setActiveNpc={setActiveNpc}
+            setIsChatOpen={setIsChatOpen}
+            chatNpc={chatNpc}
+          />
 
-          {/* 챗 npc */}
-          <RigidBody
-            position={chatNpc.position}
-            rotation={chatNpc.rotation}
-            colliders={'cuboid'}
-            type="fixed"
-          >
-            <ChatNpc
-              name={chatNpc.name}
-              hoveredNpc={hoveredNpc}
-              setHoveredNpc={setHoveredNpc}
-              setIsChatOpen={setIsChatOpen}
-            />
-
-            {/* 플레이어 아바타 */}
-            <Player />
-          </RigidBody>
+          {/* 플레이어 */}
+          <Player worldKey={worldKey} />
         </Physics>
       </Scene>
       

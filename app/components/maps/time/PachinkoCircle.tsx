@@ -4,7 +4,7 @@ export default function PachinkoCircle({
   center = [0, 0, 0],
   count = 6,
   distance = 5,
-  scale = 1,
+  scale = 0.7,
 }: {
   center?: [number, number, number];
   count?: number;

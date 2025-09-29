@@ -5,7 +5,6 @@ import PachinkoCircle from "./PachinkoCircle";
 
 export default function TimeMap() {
   const rouletteIslands1 = timeIsland['roulette1'];
-  const pachinkos = timeIsland['pachinko']
 
   return (
     <>
@@ -22,7 +21,7 @@ export default function TimeMap() {
       <PachinkoCircle
         count={8}
         distance={24}
-        center={[80,-95,50]}
+        center={[80,-97,50]}
       />
 
       {/* Stage 3. 룰렛 */}
@@ -45,13 +44,13 @@ export default function TimeMap() {
 
       {/* 계단 */}
       <CoinStairs
-        startPosition={[0,-5,10]}
-        endPosition={[50,-100,40]}
+        endPosition={[-100,-130,50]}
+        startPosition={[50,-100,50]}
         count={10}
       />
       <CoinStairs
-        startPosition={[50,-100,50]}
-        endPosition={[-100,-130,50]}
+        endPosition={[50,-107,40]}
+        startPosition={[-20,0,10]}
         count={10}
       />
     </>

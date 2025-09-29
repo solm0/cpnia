@@ -2,6 +2,7 @@ interface mapNpcProp {
   name: string;
   position: [number, number, number];
   rotation:  [number, number, number];
+  size?: [number, number, number];
 }
 export const mapNpcs: Record<string, mapNpcProp[]> = {
   time: [
