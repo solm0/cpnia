@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Euler, Quaternion, Vector3 } from "three";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
@@ -11,6 +11,8 @@ import { DebugBoundaries } from "./debogBoundaries";
 import { checkCollision } from "./checkCollision";
 import { Avatar } from "./Avatar";
 import { useFollowCam } from "./useFollowCam";
+import { useStairClimb } from "../time/useStairClimb";
+import { coinStairs } from "@/app/lib/data/coinStairs";
 
 const rectArea: Boundary[] = [
   { type: "rect", center: [103, 6], size: [233, 85] }
@@ -18,20 +20,28 @@ const rectArea: Boundary[] = [
 
 const circleArea: Boundary[] = [
   // { type: "circle", center: [0, 0], radius: 15 },
-  { type: "circle", center: [80,50], radius: 38 },
-  { type: "circle", center: [0,-37], radius: 40 }
+  { type: "circle", center: [80,50], radius: 38, y: -97 },
+  { type: "circle", center: [0,-37], radius: 40, y: 0 }
 ];
 
 export default function Player({
   worldKey,
   groundY = 0,
+  stairClimbMode,
+  currentStage, setCurrentStage,
+  clickedStair,
 }: {
   worldKey: string;
   groundY?: number;
+  stairClimbMode?: React.RefObject<boolean>;
+  currentStage?: number;
+  setCurrentStage?: (currentStage: number) => void;
+  clickedStair?: number | null;
 }) {
   const playerGrounded = useRef(false);
   const inJumpAction = useRef(false);
   const body = useRef<any>(null);
+  let isAutomated = stairClimbMode?.current || false;
 
   const pressedKeys = useKeyboardControls();
   const gamepad = useGamepadControls();
@@ -100,7 +110,9 @@ export default function Player({
 
     const newPos = {
       x: t.x + move.x * delta * 40,
-      y: Math.max(groundY, t.y + move.y * delta * 40),
+      y: isAutomated
+        ? t.y + move.y * delta * 40 // let stair animation control Y
+        : Math.max(groundY, t.y + move.y * delta * 40),
       z: t.z + move.z * delta * 40,
     };
 
@@ -113,10 +125,12 @@ export default function Player({
 
     let nextPos = newPos;
     
-    if (worldKey === 'time') {
-      nextPos = clampToBoundary(newPos, circleArea);
-    } else if (worldKey === 'sacrifice') {
-      nextPos = clampToBoundary(newPos, rectArea);
+    if (!isAutomated) {
+      if (worldKey === "time") {
+        nextPos = clampToBoundary(newPos, circleArea);
+      } else if (worldKey === "sacrifice") {
+        nextPos = clampToBoundary(newPos, rectArea);
+      }
     }
 
     if (!checkCollision(nextPos, worldKey)) {
@@ -137,6 +151,51 @@ export default function Player({
       body.current.setNextKinematicRotation(slerped);
     }
   });
+
+  const [stairData, setStairData] = useState<{
+    start: [number, number, number];
+    end: [number, number, number];
+    nextStage: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (stairClimbMode && currentStage != null && clickedStair != null && setCurrentStage) {
+      let startPos: [number, number, number];
+      let endPos: [number, number, number];
+      let nextStage: number;
+  
+      if (currentStage === clickedStair) {
+        startPos = coinStairs[clickedStair].bottom;
+        endPos = coinStairs[clickedStair].top;
+        nextStage = currentStage + 1;
+      } else if (currentStage > clickedStair) {
+        startPos = coinStairs[clickedStair].top;
+        endPos = coinStairs[clickedStair].bottom;
+        nextStage = currentStage - 1;
+      } else {
+        startPos = [0, 0, 0];
+        endPos = [0, 0, 0];
+        nextStage = 0;
+      }
+      setStairData({ start: startPos, end: endPos, nextStage });
+      console.log(stairData?.start, stairData?.end, stairData?.nextStage, groundY)
+    }
+  }, [stairClimbMode, currentStage, clickedStair]);
+  
+  useStairClimb(
+    body,
+    stairData?.start ?? [0, 0, 0],
+    stairData?.end ?? [0, 0, 0],
+    10,
+    stairClimbMode!,
+    () => {
+      if (stairData && setCurrentStage) {
+        setCurrentStage(stairData.nextStage);
+        console.log(groundY)
+      }
+      isAutomated = false;
+    }
+  );
 
   return (
     <>

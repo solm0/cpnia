@@ -1,7 +1,3 @@
-// 처음 position, 끝 position을 넣어주면
-// 그것의 중간값을 count로 나눠서
-// count만큼 동전을 렌더.
-
 import ClonedModel from "../../util/ClonedModels";
 
 export default function CoinStairs({

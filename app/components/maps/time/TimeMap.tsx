@@ -2,9 +2,23 @@ import { timeIsland } from "@/app/lib/data/timeIslands"
 import ClonedModel from "../../util/ClonedModels"
 import CoinStairs from "./CoinStairs";
 import PachinkoCircle from "./PachinkoCircle";
+import { RigidBody } from "@react-three/rapier";
+import { coinStairs } from "@/app/lib/data/coinStairs";
 
-export default function TimeMap() {
+export default function TimeMap({
+  stairClimbMode,
+  setClickedStair,
+}: {
+  stairClimbMode?: React.RefObject<boolean>;
+  setClickedStair: (clickedStair: number | null) => void;
+}) {
   const rouletteIslands1 = timeIsland['roulette1'];
+
+  function handleClickStair(clickedStair: number) {
+    setClickedStair(clickedStair);
+    if (stairClimbMode) stairClimbMode.current = true;
+    console.log('start stairclimb', stairClimbMode, clickedStair)
+  }
 
   return (
     <>
@@ -41,18 +55,26 @@ export default function TimeMap() {
           rotation={island.rotation}
         />
       )}
+      <RigidBody type="fixed" colliders={'ball'}>
+        <mesh position={[0,0,-37]}>
+          <sphereGeometry args={[12, 10]} />
+          <meshStandardMaterial transparent opacity={0} />
+        </mesh>
+      </RigidBody>
 
       {/* 계단 */}
-      <CoinStairs
-        endPosition={[-100,-130,50]}
-        startPosition={[50,-100,50]}
-        count={10}
-      />
-      <CoinStairs
-        endPosition={[50,-107,40]}
-        startPosition={[-20,0,10]}
-        count={10}
-      />
+      {coinStairs.map((coinStair, idx) => (
+        <group
+          key={idx}
+          onClick={() => handleClickStair(idx)}
+        >
+          <CoinStairs
+            endPosition={coinStair.bottom}
+            startPosition={coinStair.top}
+            count={10}
+          />
+        </group>
+      ))}
     </>
   )
 }

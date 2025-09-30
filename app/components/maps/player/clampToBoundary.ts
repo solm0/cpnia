@@ -1,17 +1,17 @@
 type Vec3 = { x: number; y: number; z: number };
 
 export type Boundary = {
-  type: string;
+  type: "circle" | "rect";
   center: [number, number];   // [x, z]
-  radius?: number;
-  size?: [number, number];
-  y?: number;
-}
+  radius?: number;            // for circle
+  size?: [number, number];    // for rect
+  y?: number;                 // floor height
+};
 
 export function clampToBoundary(nextPos: Vec3, boundaries: Boundary[]): Vec3 {
   const clamped = { ...nextPos };
 
-  // check if inside any circle
+  // 1. Check if inside any boundary
   for (const b of boundaries) {
     if (b.type === "circle") {
       const [cx, cz] = b.center;
@@ -21,10 +21,10 @@ export function clampToBoundary(nextPos: Vec3, boundaries: Boundary[]): Vec3 {
       const radius = b.radius ?? 0;
 
       if (dist <= radius) {
-        // ✅ already inside this circle
-        return clamped;
+        return { ...clamped, y: b.y ?? clamped.y };
       }
     }
+
     if (b.type === "rect") {
       const [cx, cz] = b.center;
       const [w, d] = b.size ?? [0, 0];
@@ -37,13 +37,12 @@ export function clampToBoundary(nextPos: Vec3, boundaries: Boundary[]): Vec3 {
         clamped.z >= cz - halfD &&
         clamped.z <= cz + halfD
       ) {
-        // ✅ inside this rect
-        return clamped;
+        return { ...clamped, y: b.y ?? clamped.y };
       }
     }
   }
 
-  // ❌ outside all boundaries → snap to nearest circle edge
+  // 2. Snap to nearest boundary edge if outside
   let nearest: { pos: Vec3; dist: number } | null = null;
 
   for (const b of boundaries) {
@@ -58,7 +57,7 @@ export function clampToBoundary(nextPos: Vec3, boundaries: Boundary[]): Vec3 {
         const scale = radius / dist;
         const candidate = {
           x: cx + dx * scale,
-          y: clamped.y,
+          y: b.y ?? clamped.y,
           z: cz + dz * scale,
         };
 
@@ -76,11 +75,10 @@ export function clampToBoundary(nextPos: Vec3, boundaries: Boundary[]): Vec3 {
 
       const candidate = {
         x: Math.max(cx - halfW, Math.min(clamped.x, cx + halfW)),
-        y: clamped.y,
+        y: b.y ?? clamped.y,
         z: Math.max(cz - halfD, Math.min(clamped.z, cz + halfD)),
       };
 
-      // distance from original position to candidate
       const dx = clamped.x - candidate.x;
       const dz = clamped.z - candidate.z;
       const dist = Math.sqrt(dx * dx + dz * dz);
