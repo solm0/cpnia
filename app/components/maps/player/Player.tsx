@@ -11,7 +11,6 @@ import { DebugBoundaries } from "./debogBoundaries";
 import { checkCollision } from "./checkCollision";
 import { Avatar } from "./Avatar";
 import { useFollowCam } from "./useFollowCam";
-import { useStairClimb } from "../time/useStairClimb";
 import { coinStairs } from "@/app/lib/data/coinStairs";
 
 const rectArea: Boundary[] = [
@@ -41,13 +40,13 @@ export default function Player({
   const playerGrounded = useRef(false);
   const inJumpAction = useRef(false);
   const body = useRef<any>(null);
-  let isAutomated = stairClimbMode?.current || false;
+  const isAutomated = stairClimbMode?.current || false;
 
   const pressedKeys = useKeyboardControls();
   const gamepad = useGamepadControls();
   const { yaw } = useFollowCam(
     body,
-    [0, 1, 40],
+    [0, 1, 20],
     pressedKeys.current,
     gamepad.current
   );
@@ -181,21 +180,6 @@ export default function Player({
       console.log(stairData?.start, stairData?.end, stairData?.nextStage, groundY)
     }
   }, [stairClimbMode, currentStage, clickedStair]);
-  
-  useStairClimb(
-    body,
-    stairData?.start ?? [0, 0, 0],
-    stairData?.end ?? [0, 0, 0],
-    10,
-    stairClimbMode!,
-    () => {
-      if (stairData && setCurrentStage) {
-        setCurrentStage(stairData.nextStage);
-        console.log(groundY)
-      }
-      isAutomated = false;
-    }
-  );
 
   return (
     <>

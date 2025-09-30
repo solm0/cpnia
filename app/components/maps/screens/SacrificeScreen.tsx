@@ -26,9 +26,9 @@ export default function SacrificeScreen() {
 
           {/* 지형 */}
           <Model
-            src="/models/sacrifice-map.glb"
+            src="/models/sacrifice.glb"
             scale={5}
-            position={[-100,-129,200]}
+            position={[-150,-129,420]}
             rotation={[0,0,0]}
           />
 

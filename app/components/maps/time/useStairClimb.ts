@@ -15,7 +15,8 @@ export function useStairClimb(
   const positionsRef = useRef<Vector3[]>([]);
   const currentStep = useRef(0);
   const progress = useRef(0);
-
+  
+  
   // Precompute stair positions
   useEffect(() => {
     const posArr: Vector3[] = [];
@@ -31,13 +32,21 @@ export function useStairClimb(
     progress.current = 0;
   }, [start, end, steps]);
 
+
   useFrame((_, delta) => {
     if (!bodyRef.current || !stairModeRef.current) return;
 
     const positions = positionsRef.current;
+
+    // If we're done, snap to the end position
     if (currentStep.current >= positions.length - 1) {
-      onComplete?.();
+      bodyRef.current.setNextKinematicTranslation({
+        x: end[0],
+        y: end[1],
+        z: end[2],
+      });
       stairModeRef.current = false;
+      onComplete?.();
       return;
     }
 
@@ -46,20 +55,24 @@ export function useStairClimb(
 
     // Increment progress; 0.5 seconds per step
     progress.current += delta / 0.5;
+
+    let tProgress = progress.current;
+    if (tProgress > 1) tProgress = 1;
+
+    // Smooth horizontal lerp
+    const x = from.x + (to.x - from.x) * tProgress;
+    const z = from.z + (to.z - from.z) * tProgress;
+
+    // Parabolic jump in y
+    const baseY = from.y + (to.y - from.y) * tProgress;
+    const jumpOffset = Math.sin(Math.PI * tProgress) * 2;
+    const y = baseY + jumpOffset;
+
+    bodyRef.current.setNextKinematicTranslation({ x, y, z });
+
     if (progress.current >= 1) {
       progress.current = 0;
       currentStep.current += 1;
     }
-
-    // Smooth horizontal lerp
-    const x = from.x + (to.x - from.x) * progress.current;
-    const z = from.z + (to.z - from.z) * progress.current;
-
-    // Parabolic jump in y
-    const baseY = from.y + (to.y - from.y) * progress.current;
-    const jumpOffset = 4 * progress.current * (1 - progress.current); // simple parabola
-    const y = baseY + jumpOffset;
-
-    bodyRef.current.setNextKinematicTranslation({ x, y, z });
   });
 }

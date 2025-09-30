@@ -1,4 +1,3 @@
-import Player from "../player/Player";
 import Scene from "../../util/Scene";
 import Npcs from "../Npcs";
 import { chatNpcs } from "@/app/lib/data/chatNpcs";
@@ -9,6 +8,7 @@ import ChatNpcScreen from "./ChatNpcScreen";
 import TimeMap from "../time/TimeMap";
 import { Physics } from "@react-three/rapier";
 import Portals from "../Portals";
+import PlayerWithStair from "../player/PlayerWithStair";
 
 export default function TimeScreen() {
   const worldKey = 'time';
@@ -18,16 +18,6 @@ export default function TimeScreen() {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const stairClimbMode = useRef(false);
-
-  // stage랑 groundY값을 저장해놓는다, 처음에는 무조건 card에서 시작한다.
-  // card -> 계단1, 올라가기
-  // pachinko -> 계단1 내려가기, 계단2 올라가기
-  // roulette -> 계단 2 내려가기
-  // -> TimeMap, Player
-
-  // 계단 클릭할때 선택된 계단, stage정보 확인 후 맞는 start,end 값을 넣어야됨.
-  // 내려보내고 후에 stage정보 바꿔야됨. 선택한 계단정보
-
   const groundYs = [ 120, -97, 0 ]
 
   const [currentStage, setCurrentStage] = useState(1);
@@ -62,7 +52,7 @@ export default function TimeScreen() {
           />
 
           {/* 플레이어 */}
-          <Player
+          <PlayerWithStair
             worldKey={worldKey}
             groundY={groundY}
             stairClimbMode={stairClimbMode}
