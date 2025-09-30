@@ -8,13 +8,16 @@ export default function MapNpc({
   name,
   hoveredNpc, setHoveredNpc,
   setActiveNpc,
+  model,
 }: {
   name: string;
   hoveredNpc: string | null;
   setHoveredNpc: (name: string | null) => void;
   setActiveNpc: (name: string) => void;
+  model?: string;
 }) {
-  const gltf = useLoader(GLTFLoader, '/models/avatar.glb');
+  const modelSrc = model ? model : '/models/avatar.glb';
+  const gltf = useLoader(GLTFLoader, modelSrc);
   const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
   
   // inject shader only once
@@ -64,7 +67,6 @@ export default function MapNpc({
   
   return (
     <group
-      scale={8}
       onPointerEnter={(e: MouseEvent) => {
         e.stopPropagation();
         setHoveredNpc(name);

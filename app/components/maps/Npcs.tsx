@@ -18,11 +18,12 @@ export default function Npcs({
   return (
     <>
       {/* 맵 npc */}
-      {mapNpcs[worldKey].map(npc =>
+      {mapNpcs[worldKey].map(npc => 
         <RigidBody
           key={npc.name}
           position={npc.position}
           rotation={npc.rotation}
+          scale={npc.scale ?? 8}
           colliders={'cuboid'}
           type="fixed"
         >
@@ -32,6 +33,7 @@ export default function Npcs({
             hoveredNpc={hoveredNpc}
             setHoveredNpc={setHoveredNpc}
             setActiveNpc={setActiveNpc}
+            model={npc.model}
           />
         </RigidBody>
       )}

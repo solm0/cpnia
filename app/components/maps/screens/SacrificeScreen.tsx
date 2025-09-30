@@ -9,6 +9,8 @@ import ChatNpcScreen from "./ChatNpcScreen";
 import Player from "../player/Player";
 import SacrificeLights from "../sacrifice/SacrificeLights";
 import { Physics, RigidBody } from '@react-three/rapier'
+import NpcLineModalMain from "../NpcLineModalMain";
+import { useStageStore } from "@/app/lib/state/SacrificeStageStore";
 
 export default function SacrificeScreen() {
   const worldKey = 'sacrifice';
@@ -16,6 +18,9 @@ export default function SacrificeScreen() {
 
   const chatNpc = chatNpcs[worldKey];
   const [isChatOpen, setIsChatOpen] = useState(false)
+
+  const stage = useStageStore((s) => s.stage);
+  const setStage = useStageStore((s) => s.setStage);
 
   return (
     <main className="w-full h-full">
@@ -68,15 +73,23 @@ export default function SacrificeScreen() {
       </div>
 
       {/* 맵 npc 인터페이스 */}
-      <div className="absolute top-2/3 w-screen h-auto flex justify-center">
-        {activeNpc &&
-          <NpcLineModal
-            worldKey={worldKey}
-            name={activeNpc}
-            setActiveNpc={setActiveNpc}
-          />
-        }
-      </div>
+      {activeNpc &&
+        <div className="absolute top-2/3 w-screen h-auto flex justify-center">
+          {activeNpc !== '피자커팅기' ? (
+            <NpcLineModal
+              worldKey={worldKey}
+              name={activeNpc ?? 'npc없음'}
+              setActiveNpc={setActiveNpc}
+            />
+          ): (
+            <NpcLineModalMain
+              name={activeNpc ?? '피자커팅기'}
+              setActiveNpc={setActiveNpc}
+              worldKey={worldKey}
+            />
+          )}
+        </div>
+      }
 
       {/* 챗 npc 인터페이스 */}
       {isChatOpen &&

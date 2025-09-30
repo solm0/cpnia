@@ -3,6 +3,8 @@ interface mapNpcProp {
   position: [number, number, number];
   rotation:  [number, number, number];
   size?: [number, number, number];
+  scale?: number;
+  model?: string;
 }
 export const mapNpcs: Record<string, mapNpcProp[]> = {
   time: [
@@ -38,6 +40,13 @@ export const mapNpcs: Record<string, mapNpcProp[]> = {
       position: [2,0,5],
       rotation: [0, Math.PI ,0],
     },
+    {
+      name: '피자커팅기',
+      model: '/models/cutter.gltf',
+      position: [80,-6,0],
+      rotation: [0,Math.PI/2, 0],
+      scale: 2
+    }
   ],
   entropy: [
     {
