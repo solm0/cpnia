@@ -25,6 +25,7 @@ export default function MapNpc({
     clonedScene.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
+        mesh.castShadow = mesh.receiveShadow = true;
   
         // clone the material so each NPC is independent
         mesh.material = (mesh.material as MeshStandardMaterial).clone();

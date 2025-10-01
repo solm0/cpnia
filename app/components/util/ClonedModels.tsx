@@ -1,7 +1,8 @@
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
+import { Mesh } from "three";
 
 export default function ClonedModel({
   src,
@@ -15,7 +16,16 @@ export default function ClonedModel({
   rotation?: [number, number, number];
 }) {
   const gltf = useLoader(GLTFLoader, src);
-  const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene])
+  const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
+
+  useEffect(() => {
+    clonedScene.traverse((child) => {
+      if ((child as Mesh).isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+  }, [clonedScene]);
 
   return (
     <primitive
@@ -24,5 +34,5 @@ export default function ClonedModel({
       position={position}
       rotation={rotation}
     />
-  )
+  );
 }

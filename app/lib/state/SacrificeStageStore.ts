@@ -15,7 +15,7 @@ export const useStageStore = create<StageState>()(
       resetStage: () => set({ stage: 0 }),
     }),
     {
-      name: "stage-storage", // key in localStorage
+      name: "sacrifice-stage-storage", // key in localStorage
     }
   )
 );

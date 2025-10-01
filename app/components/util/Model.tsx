@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import * as THREE from "three";
 
 export default function Model({
   src,
@@ -14,6 +16,16 @@ export default function Model({
 }) {
   const gltf = useLoader(GLTFLoader, src);
 
+  // set cast/receiveShadow on meshes
+  useEffect(() => {
+    gltf.scene.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+  }, [gltf]);
+
   return (
     <primitive
       object={gltf.scene}
@@ -21,5 +33,5 @@ export default function Model({
       position={position}
       rotation={rotation}
     />
-  )
+  );
 }

@@ -1,38 +1,20 @@
-import { useEffect, useRef } from "react";
-import * as THREE from 'three'
-
 export default function SacrificeLights() {
-  const directionalLightRef = useRef<THREE.DirectionalLight>(null);
-  const directionalTargetRef = useRef<THREE.Object3D>(null);
-
-  useEffect(() => {
-    if (directionalLightRef.current && directionalTargetRef.current) {
-      directionalLightRef.current.target = directionalTargetRef.current;
-      directionalLightRef.current.castShadow = true;
-
-      // Shadow settings
-      directionalLightRef.current.shadow.mapSize.width = 2048;
-      directionalLightRef.current.shadow.mapSize.height = 2048;
-      directionalLightRef.current.shadow.camera.near = 1;
-      directionalLightRef.current.shadow.camera.far = 200;
-      directionalLightRef.current.shadow.camera.left = -50;
-      directionalLightRef.current.shadow.camera.right = 50;
-      directionalLightRef.current.shadow.camera.top = 50;
-      directionalLightRef.current.shadow.camera.bottom = -50;
-    }
-  }, []);
-
   return (
     <>
-      <ambientLight intensity={1} />
+      <ambientLight intensity={0.01} color={'orange'} />
       <directionalLight
-        ref={directionalLightRef}
-        intensity={2}
-        position={[50, 50, 50]} // not directly above, set an angle
-        color={0xffffff}
+        intensity={5}
+        position={[0, 10, 0]} // not directly above, set an angle
+        color={'purple'}
         castShadow
       />
-      <group ref={directionalTargetRef} position={[0, 0, 0]} />
+      <directionalLight
+        intensity={5}
+        position={[50, 10, 0]} // not directly above, set an angle
+        color={'orange'}
+        castShadow
+      />
+      <group position={[0, 0, 0]} />
     </>
   )
 }

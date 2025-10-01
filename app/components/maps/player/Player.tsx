@@ -7,14 +7,15 @@ import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { RigidBody } from "@react-three/rapier";
 import { Boundary, clampToBoundary } from "@/app/components/maps/player/clampToBoundary";
-import { DebugBoundaries } from "./debogBoundaries";
+// import { DebugBoundaries } from "./debogBoundaries";
 import { checkCollision } from "./checkCollision";
 import { Avatar } from "./Avatar";
 import { useFollowCam } from "./useFollowCam";
 import { coinStairs } from "@/app/lib/data/coinStairs";
+import { CuboidCollider } from "@react-three/rapier";
 
 const rectArea: Boundary[] = [
-  { type: "rect", center: [103, 6], size: [233, 85] }
+  { type: "rect", center: [120, -6], size: [233, 85] }
 ];
 
 const circleArea: Boundary[] = [
@@ -46,7 +47,7 @@ export default function Player({
   const gamepad = useGamepadControls();
   const { yaw } = useFollowCam(
     body,
-    [0, 1, 20],
+    [0, 5, 20],
     pressedKeys.current,
     gamepad.current
   );
@@ -185,14 +186,15 @@ export default function Player({
     <>
       <RigidBody
         ref={body}
-        colliders={'trimesh'}
         type="kinematicPosition"
+        colliders={false} // turn off auto-generated colliders
       >
+        {/* add a cuboid collider that matches player size */}
+        <mesh visible={false} castShadow receiveShadow>
+          <CuboidCollider args={[0.5, 1, 0.5]} /> 
+        </mesh>
         <Avatar />
       </RigidBody>
-
-      {worldKey === "time" && <DebugBoundaries boundaries={circleArea} />}
-      {worldKey === "sacrifice" && <DebugBoundaries boundaries={rectArea} />}
     </>
   );
 }

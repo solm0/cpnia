@@ -12,6 +12,7 @@ import { Canvas } from "@react-three/fiber";
 import { useState } from "react";
 import Button from "./components/util/Button";
 import { useRouter } from "next/navigation";
+import { Environment } from "@react-three/drei";
 
 export default function Home() {
   const router = useRouter();
@@ -67,6 +68,7 @@ export default function Home() {
               setFocusedWorld={setFocusedWorld}
             />
           )}
+          <Environment files={'/images/sky3.hdr'} background={true} backgroundIntensity={1} />
         </SceneWithRef>
       </Canvas>
       </div>

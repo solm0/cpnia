@@ -1,3 +1,6 @@
+// checkCollision 함수륾 만들고 playerWithStairs에서 부른다.
+
+import { RigidBody } from "@react-three/rapier";
 import ClonedModel from "../../util/ClonedModels";
 
 export default function PachinkoCircle({
@@ -36,13 +39,19 @@ export default function PachinkoCircle({
   return (
     <>
       {items.map((item, i) => (
-        <ClonedModel
+        <RigidBody
           key={i}
-          src="/models/pachinko.glb"
-          scale={item.scale}
+          type="fixed"
           position={item.position}
           rotation={item.rotation}
-        />
+          colliders={'cuboid'}
+        >
+          <ClonedModel
+            key={i}
+            src="/models/pachinko.glb"
+            scale={item.scale}
+          />
+        </RigidBody>
       ))}
     </>
   );

@@ -10,7 +10,7 @@ import Player from "../player/Player";
 import SacrificeLights from "../sacrifice/SacrificeLights";
 import { Physics, RigidBody } from '@react-three/rapier'
 import NpcLineModalMain from "../NpcLineModalMain";
-import { useStageStore } from "@/app/lib/state/SacrificeStageStore";
+import { Environment } from "@react-three/drei";
 
 export default function SacrificeScreen() {
   const worldKey = 'sacrifice';
@@ -19,13 +19,11 @@ export default function SacrificeScreen() {
   const chatNpc = chatNpcs[worldKey];
   const [isChatOpen, setIsChatOpen] = useState(false)
 
-  const stage = useStageStore((s) => s.stage);
-  const setStage = useStageStore((s) => s.setStage);
-
   return (
     <main className="w-full h-full">
       <Scene>
         <Physics debug gravity={[0,-9,0]}>
+          <color attach="background" args={["magenta"]} />
           {/* 빛 */}
           <SacrificeLights/>
 
@@ -33,12 +31,12 @@ export default function SacrificeScreen() {
           <Model
             src="/models/sacrifice.glb"
             scale={5}
-            position={[-150,-129,420]}
+            position={[-150,-123.5,420]}
             rotation={[0,0,0]}
           />
 
           <RigidBody type="fixed">
-            <mesh position={[103, -1.2, 6]} >
+            <mesh position={[120, -6.5, -6]} >
               <boxGeometry args={[233, 2, 85]} /> {/* give it a thin height */}
               <meshStandardMaterial transparent opacity={0} />
             </mesh>
@@ -62,6 +60,7 @@ export default function SacrificeScreen() {
           {/* 플레이어 */}
           <Player worldKey={worldKey}/>
         </Physics>
+        <Environment files={'/images/kitchen.hdr'} background={true} backgroundIntensity={0.2} environmentIntensity={0.5} />
       </Scene>
 
       {/* --- 월드 인터페이스 --- */}

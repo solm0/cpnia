@@ -27,41 +27,52 @@ export default function NpcLineModalMain({
   }
 
   console.log(stage)
-  stage >= 3 && setStage(0)
+  stage === 4 && setStage(0)
 
   return (
-    <div className="flex flex-col gap-2 w-full items-start">
-      <p>{name} says:</p>
-      <p>{lines[index] ?? 'no npc line'}</p>
+    <div className="flex flex-col gap-2 w-full items-center">
+        <p className="z-10">{name} says:</p>
+        <p className="z-10">{lines[index] ?? 'no npc line'}</p>
 
-      {index+1 === lines.length ? (
-        // 마지막 대사면
-        <div className="flex gap-2">
-          <Button
-            onClick={() => {
-              setStage(stage+1);
-              router.push(`/${worldKey}?game=${gameKeymap[stage]}`)
-            }}
-            label="응"
-          />
-          <Button
-            onClick={() => setActiveNpc(null)}
-            label="아니"
-          />
-        </div>
-      ): (
-        // 마지막 대사가 아니면
-        <div className="flex gap-2">
-          <Button
-            onClick={() => setIndex(index+1)}
-            label="다음"
-          />
-          <Button
-            onClick={() => setActiveNpc(null)}
-            label="닫기"
-          />
-        </div>
-      )}
+        {index+1 === lines.length ? (
+          // 마지막 대사면
+          <div className="flex gap-2 z-10">
+            <Button
+              onClick={() => {
+                setStage(stage+1);
+                if (stage === 2) {
+                  // 세번째게임은 재료통으로 가서 직접 게임포탈을 찾아야됨.
+                  //setStage도 게임에서 해야됨.
+                  setActiveNpc(null)
+                } else {
+                  router.push(`/${worldKey}?game=${gameKeymap[stage]}`)
+                }
+              }}
+              label="응"
+            />
+            <Button
+              onClick={() => {
+                if (stage === 3) {
+                  setStage(9);
+                }
+                setActiveNpc(null)
+              }}
+              label="아니"
+            />
+          </div>
+        ): (
+          // 마지막 대사가 아니면
+          <div className="flex gap-2 z-10">
+            <Button
+              onClick={() => setIndex(index+1)}
+              label="다음"
+            />
+            <Button
+              onClick={() => setActiveNpc(null)}
+              label="닫기"
+            />
+          </div>
+        )}
     </div>
   )
 }
