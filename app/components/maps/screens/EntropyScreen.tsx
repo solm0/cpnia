@@ -1,7 +1,7 @@
 import Player from "../player/Player";
 import PlaceHolder from "../../util/PlaceHolder";
 import Scene from "../../util/Scene";
-import SacrificeLights from "../sacrifice/SacrificeLights";
+import { EntropyLights } from "../Lights";
 import { useState } from "react";
 import NpcLineModal from "../NpcLineModal";
 import { chatNpcs } from "@/app/lib/data/chatNpcs";
@@ -9,6 +9,7 @@ import ChatNpcScreen from "./ChatNpcScreen";
 import Portals from "../Portals";
 import { Physics } from "@react-three/rapier";
 import Npcs from "../Npcs";
+import { EntropyEffects } from "../Effects";
 
 export default function EntropyScreen() {
   const worldKey = 'entropy'
@@ -26,7 +27,7 @@ export default function EntropyScreen() {
         <Physics debug gravity={[0,-9,0]}>
 
           {/* 빛 */}
-          <SacrificeLights/>
+          <EntropyLights />
 
           {/* 지형 */}
           <PlaceHolder label="엔트로피 체제의 맵" />
@@ -49,6 +50,9 @@ export default function EntropyScreen() {
           {/* 플레이어 */}
           <Player worldKey={worldKey} />
         </Physics>
+
+        {/* 효과 */}
+        <EntropyEffects />
       </Scene>
       
       {/* --- 월드 인터페이스 --- */}

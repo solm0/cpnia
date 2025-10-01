@@ -7,10 +7,10 @@ import Npcs from "../Npcs";
 import { chatNpcs } from "@/app/lib/data/chatNpcs";
 import ChatNpcScreen from "./ChatNpcScreen";
 import Player from "../player/Player";
-import SacrificeLights from "../sacrifice/SacrificeLights";
+import { SacrificeLights } from "../Lights";
 import { Physics, RigidBody } from '@react-three/rapier'
 import NpcLineModalMain from "../NpcLineModalMain";
-import { Environment } from "@react-three/drei";
+import { SacrificeEffects } from "../Effects";
 
 export default function SacrificeScreen() {
   const worldKey = 'sacrifice';
@@ -23,7 +23,7 @@ export default function SacrificeScreen() {
     <main className="w-full h-full">
       <Scene>
         <Physics debug gravity={[0,-9,0]}>
-          <color attach="background" args={["magenta"]} />
+          
           {/* 빛 */}
           <SacrificeLights/>
 
@@ -36,7 +36,7 @@ export default function SacrificeScreen() {
           />
 
           <RigidBody type="fixed">
-            <mesh position={[120, -6.5, -6]} >
+            <mesh receiveShadow castShadow position={[120, -6.5, -6]} >
               <boxGeometry args={[233, 2, 85]} /> {/* give it a thin height */}
               <meshStandardMaterial transparent opacity={0} />
             </mesh>
@@ -60,7 +60,9 @@ export default function SacrificeScreen() {
           {/* 플레이어 */}
           <Player worldKey={worldKey}/>
         </Physics>
-        <Environment files={'/images/kitchen.hdr'} background={true} backgroundIntensity={0.2} environmentIntensity={0.5} />
+        
+        {/* 효과 */}
+        <SacrificeEffects />
       </Scene>
 
       {/* --- 월드 인터페이스 --- */}

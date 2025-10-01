@@ -2,14 +2,14 @@ import Scene from "../../util/Scene";
 import Npcs from "../Npcs";
 import { chatNpcs } from "@/app/lib/data/chatNpcs";
 import { useState, useRef } from "react";
-import TimeLights from "../time/TimeLights";
+import { TimeLights } from "../Lights";
 import NpcLineModal from "../NpcLineModal";
 import ChatNpcScreen from "./ChatNpcScreen";
 import TimeMap from "../time/TimeMap";
 import { Physics } from "@react-three/rapier";
 import Portals from "../Portals";
 import PlayerWithStair from "../player/PlayerWithStair";
-import { Environment } from "@react-three/drei";
+import { TimeEffects } from "../Effects";
 
 export default function TimeScreen() {
   const worldKey = 'time';
@@ -62,8 +62,9 @@ export default function TimeScreen() {
             clickedStair={clickedStair}
           />
         </Physics>
-        <color attach="background" args={["black"]} />
-        <Environment files={'/images/bay.hdr'} background={false} environmentIntensity={0.01} />
+
+        {/* 효과 */}
+        <TimeEffects />
       </Scene>
       
       {/* --- 월드 인터페이스 --- */}
