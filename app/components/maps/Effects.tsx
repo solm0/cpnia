@@ -5,7 +5,7 @@ import { BlendFunction } from 'postprocessing'
 export function HomeEffects() {
   return (
     <>
-      <Environment files={'/images/sky3.hdr'} background={true} backgroundIntensity={1} backgroundRotation={[0,-1,0]} />
+      <Environment files={'/hdri/sky.hdr'} background={true} backgroundIntensity={1} backgroundRotation={[0,-1,0]} />
       <EffectComposer>
         <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} blendFunction={BlendFunction.COLOR_DODGE} />
         <ChromaticAberration
@@ -22,7 +22,7 @@ export function TimeEffects() {
   return (
     <>
       <color attach="background" args={["black"]} />
-      <Environment files={'/images/bay.hdr'} background={false} environmentIntensity={0.01} />
+      <Environment files={'/hdri/bay.hdr'} background={false} environmentIntensity={0.01} />
       <EffectComposer>
         <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} />
         <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
@@ -38,7 +38,7 @@ export function SacrificeEffects() {
   return (
     <>
       <color attach="background" args={["magenta"]} />
-      <Environment files={'/images/kitchen.hdr'} background={true} backgroundIntensity={0.2} environmentIntensity={0.5} />
+      <Environment files={'/hdri/kitchen.hdr'} background={true} backgroundIntensity={0.2} environmentIntensity={0.5} />
       <EffectComposer>
         <DepthOfField focusDistance={0} focalLength={0.1} bokehScale={8} height={480} />
         <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} blendFunction={BlendFunction.ADD} />

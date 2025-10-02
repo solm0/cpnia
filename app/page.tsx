@@ -78,7 +78,7 @@ export default function Home() {
         {!isFocused && <HomeMenu />}
         {isFocused &&
           <div className="absolute left-3/5 w-96 break-keep text-gray-700 text-center h-full flex flex-col justify-center gap-12 items-center pointer-events-auto">
-            <p>{worldPortals.find(world => world.worldKey === focusedWorld)?.description}</p>
+            <p className="font-bold">{worldPortals.find(world => world.worldKey === focusedWorld)?.description}</p>
             <div className="flex">
               <Button
                 label="<"

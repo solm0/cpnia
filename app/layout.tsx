@@ -2,8 +2,13 @@ import type { Metadata } from "next";
 import { Nanum_Gothic_Coding } from "next/font/google";
 import "./globals.css";
 
-const nanumGothicCoding = Nanum_Gothic_Coding({
+const nanumGothicCodingBold = Nanum_Gothic_Coding({
   weight: "700",
+  subsets: ['latin']
+});
+
+const nanumGothicCoding = Nanum_Gothic_Coding({
+  weight: "400",
   subsets: ['latin']
 });
 
@@ -20,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${nanumGothicCoding.className} antialiased flex items-center justify-center w-screen h-screen`}
+        className={`${nanumGothicCodingBold.className} ${nanumGothicCoding.className} antialiased font-mono flex items-center justify-center w-screen h-screen`}
       >
         {children}
       </body>
