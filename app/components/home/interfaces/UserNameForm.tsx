@@ -20,7 +20,7 @@ export default function UserNameForm() {
 
   return (
     <div className="flex flex-col gap-2 items-center">
-      <label htmlFor="form" className="text-sm text-gray-700">당신의 이름은??</label>
+      <label htmlFor="form" className="text-sm text-white">당신의 이름은??</label>
       <form
         id="form"
         onSubmit={(e) => {
@@ -32,13 +32,14 @@ export default function UserNameForm() {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="w-96 h-10 text-center rounded-full bg-[#00000099] backdrop-blur-sm text-white border border-gray-700 p-4 truncate"
+          className="w-96 h-10 text-center bg-gradient-to-r from-transparent to-transparent via-[#00000099] backdrop-blur-sm text-white p-4 truncate"
           placeholder={userName ?? '베일에 싸인 이방인'}
         />
       </form>
       <Button
         onClick={() => onSubmit(input.trim())}
-        label="확인"
+        label="OK"
+        small={true}
       />
     </div>
   )

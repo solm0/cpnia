@@ -17,17 +17,23 @@ export default function HomeMenu() {
   return (
     <>
       {/* 버튼들 */}
+      
+      
 
       <div className="relative top-3/5 flex flex-col items-center gap-8 h-auto w-auto pointer-events-auto">
         <h1 className="text-center text-black text-5xl w-[20em] break-keep font-mono select-none">Cpnia</h1>
-        <Button
-          onClick={() => setIsPurseOpen(true)}
-          label="지갑"
-        />
-        <Button
-          onClick={() => setIsAboutOpen(true)}
-          label="게임에 대해서"
-        />
+
+        <div className="flex flex-col gap-2">
+          <Button
+            onClick={() => setIsPurseOpen(true)}
+            label="지갑"
+          />
+          <Button
+            onClick={() => setIsAboutOpen(true)}
+            label="게임에 대해서"
+          />
+        </div>
+
         <UserNameForm />
       </div>
 

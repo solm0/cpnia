@@ -14,7 +14,7 @@ export const worldPortals: worldPortalProp[] = [
     rotation: [0, Math.PI/3, 0]
   },
   {
-    label: "희생 기반 체제",
+    label: "피자슛",
     worldKey: 'sacrifice',
     description: '이 국가에서는 공동체를 위해 주기적 희생이 필요하고 시민은 피자 재료가 된다.',
     position: [0, 3, -10],

@@ -15,6 +15,7 @@ export default function NpcLineModal({
       <Button
         onClick={() => setActiveNpc(null)}
         label="닫기"
+        worldKey={worldKey}
       />
     </div>
   )

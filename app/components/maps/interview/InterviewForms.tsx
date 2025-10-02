@@ -20,10 +20,6 @@ const defaultNpcConfig = {
 
 export default function InterviewForms() {
   const userName = useUserNameStore(state => state.userName);
-  const questions = [
-    `${userName} 씨 되십니까? ㅡㅡ연방 국가들의 시민권을 얻고 싶다고 하셨는데요. 이유가 뭐죠?`,
-    '당신은 시민권을 얻기 위해 어떤 노력을 할 것인가요?'
-  ]
 
   const router = useRouter();
 
@@ -36,6 +32,17 @@ export default function InterviewForms() {
 
   const searchParam = useSearchParams();
   const worldTo = searchParam.get('to');
+  if (!worldTo) return;
+  const worldNameMap:{[worldKey: string]: string} = {
+    'time': '시간기반체제국가',
+    'sacrifice': '피자슛',
+    'entropy': '엔트로피체제국가'
+  }
+
+  const questions = [
+    `${userName} 님은 왜 ${worldNameMap[worldTo] ?? ''}에 가시나요?`,
+    '시민권을 얻으려고 하는 이유는 무엇인가요?'
+  ]
 
   async function onSubmit(input: string) {
     setLoading(true);
@@ -81,7 +88,7 @@ export default function InterviewForms() {
   }
 
   return (
-    <div className="flex flex-col gap-2 items-center break-keep text-gray-700 text-sm">
+    <div className="flex flex-col gap-8 items-center break-keep text-gray-700 text-sm">
       {phase <= 2 ? (
         <>
           <label htmlFor="form">
@@ -96,18 +103,15 @@ export default function InterviewForms() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="w-96 h-10 rounded-full bg-gray-200 p-4 truncate"
+              className="w-96 h-10 text-center bg-gradient-to-r from-transparent to-transparent via-[#00000099] backdrop-blur-sm text-white p-4 truncate"
               disabled={loading}
+              placeholder="답변을 적어주세요"
             />
             <Button
               onClick={handleClick}
               label={loading ? "답변을 분석중입니다...": "다음"}
             />
           </form>
-          <Button
-            onClick={() => router.push(`/${worldTo}`)}
-            label="성격 형성 스킵하고 바로 입장하기"
-          />
         </>
       ): (
         <>

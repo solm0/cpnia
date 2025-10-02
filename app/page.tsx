@@ -12,7 +12,6 @@ import { Canvas } from "@react-three/fiber";
 import { useState } from "react";
 import Button from "./components/util/Button";
 import { useRouter } from "next/navigation";
-import { Environment } from "@react-three/drei";
 import { HomeEffects } from "./components/maps/Effects";
 
 export default function Home() {
@@ -80,41 +79,46 @@ export default function Home() {
         {isFocused &&
           <div className="absolute left-3/5 w-96 break-keep text-gray-700 text-center h-full flex flex-col justify-center gap-12 items-center pointer-events-auto">
             <p>{worldPortals.find(world => world.worldKey === focusedWorld)?.description}</p>
-            <Button
-                label="입장하기"
-                onClick={() => router.push(`/interview?to=${focusedWorld}`)}
-              />
-            <div className="flex gap-2">
+            <div className="flex">
               <Button
                 label="<"
                 onClick={() => {
                   const currentIndex = worldPortals.findIndex(world => world.worldKey === focusedWorld);
                   const prevIndex = (currentIndex - 1 + worldPortals.length) % worldPortals.length;
-
+                  
                   focusPortal(worldPortals[prevIndex].position, worldPortals[prevIndex].rotation);
                   const prevWorldKey = worldPortals[prevIndex].worldKey;
                   setFocusedWorld(prevWorldKey);
                 }}
+                small={true}
               />
               <Button
                 label=">"
                 onClick={() => {
                   const currentIndex = worldPortals.findIndex(world => world.worldKey === focusedWorld);
                   const nextIndex = (currentIndex + 1) % worldPortals.length;
-
+                  
                   focusPortal(worldPortals[nextIndex].position, worldPortals[nextIndex].rotation);
                   const nextWorldKey = worldPortals[nextIndex].worldKey;
                   setFocusedWorld(nextWorldKey);
                 }}
+                small={true}
               />
             </div>
-            <Button
-              label="돌아가기"
-              onClick={() => {
-                unFocusPortal();
-                setIsFocused(false);
-              }}
-            />
+
+            <div className="flex flex-col gap-2">
+              <Button
+                  label="입장하기"
+                  onClick={() => router.push(`/interview?to=${focusedWorld}`)}
+                />
+              <Button
+                label="뒤로"
+                onClick={() => {
+                  unFocusPortal();
+                  setIsFocused(false);
+                }}
+              />
+            </div>
           </div>}
       </div>
     </main>

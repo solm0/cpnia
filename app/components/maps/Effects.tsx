@@ -1,11 +1,19 @@
 import { Environment } from "@react-three/drei";
-import { EffectComposer, DepthOfField, Bloom, Noise, Pixelation, Vignette} from "@react-three/postprocessing";
+import { EffectComposer, DepthOfField, Bloom, Noise, Pixelation, Vignette, ChromaticAberration, BrightnessContrast} from "@react-three/postprocessing";
 import { BlendFunction } from 'postprocessing'
 
 export function HomeEffects() {
   return (
     <>
-      <Environment files={'/images/sky3.hdr'} background={true} backgroundIntensity={1} />
+      <Environment files={'/images/sky3.hdr'} background={true} backgroundIntensity={1} backgroundRotation={[0,-1,0]} />
+      <EffectComposer>
+        <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} blendFunction={BlendFunction.COLOR_DODGE} />
+        <ChromaticAberration
+          blendFunction={BlendFunction.NORMAL} // blend mode
+          offset={[0.001, 0.001]} // color offset
+        />
+        <BrightnessContrast opacity={1} blendFunction={BlendFunction.OVERLAY} />
+      </EffectComposer>
     </>
   )
 }

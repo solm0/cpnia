@@ -1,15 +1,50 @@
 export default function Button({
-  onClick, label
+  onClick, label, worldKey, small
 }: {
   onClick: (param?: number | string) => void;
   label: string;
+  worldKey?: string;
+  small?: boolean;
 }) {
-  return (
-    <button
-      onClick={() => onClick?.()}
-      className="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 break-keep w-auto pointer-events-auto"
-    >
-      {label}
-    </button>
-  )
+  switch (worldKey) {
+    case 'time':
+      return (
+        <button
+          onClick={() => onClick?.()}
+          className="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 break-keep w-auto pointer-events-auto"
+        >
+          {label}
+        </button>
+      )
+    case 'sacrifice':
+      return (
+        <button
+          onClick={() => onClick?.()}
+          className="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 break-keep w-auto pointer-events-auto"
+        >
+          {label}
+        </button>
+      )
+    case 'sacrifice':
+      return (
+        <button
+          onClick={() => onClick?.()}
+          className="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 break-keep w-auto pointer-events-auto"
+        >
+          {label}
+        </button>
+      )
+    default:
+      return (
+        <div
+          className={`h-10 ${small ? 'w-10' : 'w-auto min-w-40'} relative flex flex-col items-center justify-center`}
+          onClick={() => onClick?.()}
+        >
+          {!small && <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80" />}
+          <p className="text-white text-sm h-10 flex items-center">{label}</p>
+          {!small && <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-90" />}
+          <div className="absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-30 active:opacity-30 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+        </div>
+      )
+  }
 }

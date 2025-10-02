@@ -22,7 +22,7 @@ export default function SacrificeScreen() {
   return (
     <main className="w-full h-full">
       <Scene>
-        <Physics debug gravity={[0,-9,0]}>
+        <Physics gravity={[0,-9,0]}>
           
           {/* 빛 */}
           <SacrificeLights/>

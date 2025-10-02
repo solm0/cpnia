@@ -7,17 +7,17 @@ export const timeIsland: Record<string, timeIslandProp[]> = {
   roulette1: [
     {
       scale: 0.005,
-      position: [50,-30,-50],
+      position: [50,-10,-50],
       rotation: [0,0,0]
     },
     {
       scale: 0.005,
-      position: [-50,-40,-50],
+      position: [-50,-20,-50],
       rotation: [0,0,0]
     },
     {
       scale: 0.005,
-      position: [0,-50,0],
+      position: [0,-30,0],
       rotation: [0,0,0]
     },
   ],
