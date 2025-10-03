@@ -97,8 +97,56 @@ export default function ChatNpcForm({
     setInput("");
   }
 
+  function PlayerAnswerOptions() {
+    return (
+      <div className="relative flex flex-col items-start w-auto h-auto border-2 border-[#ffffff70] bg-black p-4 gap-2">
+        <div className="absolute top-0 left-0 w-full h-full -z-10" />
+        
+        {playerLines.map(index => {
+          const line = chatPlayerLines[formality ?? '하십시오체'][index];
+  
+          return (
+            <div
+              key={index}
+              onClick={() => {
+                setInput(line);
+                setPlayerLines(prev => prev.filter(i => i !== index));
+              }}
+              className="w-full text-lime-400 hover:opacity-50 transition-opacity flex items-center"
+            >
+              {`> ${line}`}
+            </div>
+          )
+        }
+        )}
+      </div>
+    )
+  }
+
+  function PlayerAnswerInput() {
+    return (
+      <div className="h-10 w-full shrink-0 flex gap-4 items-center">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="w-full h-full text-right max-w-6/7 text-lime-400 truncate focus:outline-none border-b"
+          disabled={loading}
+          placeholder={`${npcName}에게 물어보기`}
+        />
+        <button
+          type="button"
+          onClick={() => handleSubmit()}
+          className="h-full px-4 flex items-center border-1 border-[#ffffff70] pointer-events-auto hover:opacity-50 transition-opacity cursor-pointer"
+        >
+          전송
+        </button>
+      </div>
+    )
+  }
+
   return (
-    <>
+    <div className="fixed">
       <label htmlFor="form" className="hidden">{`${npcName}에게 물어보기`}</label>
       <form
         id='form'
@@ -106,38 +154,11 @@ export default function ChatNpcForm({
           e.preventDefault();
           handleSubmit();
         }}
-        className="flex flex-col gap-2 w-full items-end fixed right-8 bottom-8"
+        className="shrink-0 fixed flex flex-col gap-4 w-full h-28 px-5 bottom-8"
       >
-        {/* 채팅창 */}
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="w-96 h-10 rounded-full bg-[#00000099] backdrop-blur-sm text-white border border-gray-700 p-4 truncate"
-          disabled={loading}
-          placeholder={`${npcName}에게 물어보기. Enter를 쳐서 전송`}
-        />
-
-        {/* 질문 선택지 */}
-        <div className="flex gap-2 w-auto h-auto">
-          {playerLines.map(index => {
-            const line = chatPlayerLines[formality ?? '하십시오체'][index];
-            return (
-              <div
-                key={index}
-                onClick={() => {
-                  onSubmit(line);
-                  setPlayerLines(prev => prev.filter(i => i !== index));
-                }}
-                className="w-auto h-10 rounded-full bg-[#00000099] backdrop-blur-sm text-white border border-gray-700 p-4 flex items-center hover:bg-[#00000080]"
-              >
-                {line}
-              </div>
-            )
-          }
-          )}
-        </div>
+        <PlayerAnswerInput />
+        {playerLines.length != 0 && <PlayerAnswerOptions />}
       </form>
-    </>
+    </div>
   )
 }

@@ -16,7 +16,6 @@ export default function Model({
 }) {
   const gltf = useLoader(GLTFLoader, src);
 
-  // set cast/receiveShadow on meshes
   useEffect(() => {
     gltf.scene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {

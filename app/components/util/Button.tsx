@@ -37,7 +37,7 @@ export default function Button({
     default:
       return (
         <div
-          className={`h-10 ${small ? 'w-10' : 'w-auto min-w-40'} relative flex flex-col items-center justify-center`}
+          className={`h-10 ${small ? 'w-10' : 'w-auto min-w-40'} relative flex flex-col items-center justify-center pointer-events-auto`}
           onClick={() => onClick?.()}
         >
           {!small && <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80" />}

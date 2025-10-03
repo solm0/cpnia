@@ -3,8 +3,8 @@ import Npcs from "../Npcs";
 import { chatNpcs } from "@/app/lib/data/chatNpcs";
 import { useState, useRef } from "react";
 import { TimeLights } from "../Lights";
-import NpcLineModal from "../NpcLineModal";
-import ChatNpcScreen from "./ChatNpcScreen";
+import { TimeNpcLineModal } from "../interfaces/NpcLineModal";
+import ChatNpcScreen from "../interfaces/ChatNpcScreen";
 import TimeMap from "../time/TimeMap";
 import { Physics } from "@react-three/rapier";
 import Portals from "../Portals";
@@ -76,9 +76,9 @@ export default function TimeScreen() {
       </div>
 
       {/* 맵 npc 인터페이스 */}
-      <div className="absolute top-2/3 w-screen h-auto flex justify-center">
+      <div className="absolute top-2/3 w-screen h-auto">
         {activeNpc &&
-          <NpcLineModal
+          <TimeNpcLineModal
             worldKey={worldKey}
             name={activeNpc}
             setActiveNpc={setActiveNpc}

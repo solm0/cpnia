@@ -2,10 +2,10 @@ import Model from "../../util/Model";
 import Scene from "@/app/components/util/Scene"
 import Portals from "../Portals";
 import { useState } from "react";
-import NpcLineModal from "../NpcLineModal";
+import { SacrificeNpcLineModal } from "../interfaces/NpcLineModal";
 import Npcs from "../Npcs";
 import { chatNpcs } from "@/app/lib/data/chatNpcs";
-import ChatNpcScreen from "./ChatNpcScreen";
+import ChatNpcScreen from "../interfaces/ChatNpcScreen";
 import Player from "../player/Player";
 import { SacrificeLights } from "../Lights";
 import { Physics, RigidBody } from '@react-three/rapier'
@@ -77,7 +77,7 @@ export default function SacrificeScreen() {
       {activeNpc &&
         <div className="absolute top-2/3 w-screen h-auto flex justify-center">
           {activeNpc !== '피자커팅기' ? (
-            <NpcLineModal
+            <SacrificeNpcLineModal
               worldKey={worldKey}
               name={activeNpc ?? 'npc없음'}
               setActiveNpc={setActiveNpc}

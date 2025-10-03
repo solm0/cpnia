@@ -88,10 +88,10 @@ export default function InterviewForms() {
   }
 
   return (
-    <div className="flex flex-col gap-8 items-center break-keep text-gray-700 text-sm">
+    <div className="flex flex-col gap-8 items-center break-keep text-gray-700 text-sm pointer-events-auto">
       {phase <= 2 ? (
         <>
-          <label htmlFor="form">
+          <label htmlFor="form" className="font-bold">
             {phase === 1 ? questions[0] : questions[1]}
           </label>
           <form

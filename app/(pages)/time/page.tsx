@@ -8,8 +8,13 @@ export const metadata = {
 
 export default function TimePage() {
   return (
-    <Suspense>
-      <World worldKey="time" />
-    </Suspense>
+    <>
+      <Suspense>
+        <World worldKey="time" />
+      </Suspense>
+      <audio controls autoPlay className="absolute top-0 left-0">
+        <source src="/audio/entropy_bg.mp3" />
+      </audio>
+    </>
   )
 }

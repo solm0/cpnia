@@ -5,9 +5,6 @@ import { useState } from "react";
 import { useGameStore } from "@/app/lib/state/gameState"
 import FullScreenModal from "../../util/FullScreenModal";
 import UserNameForm from "./UserNameForm";
-import SmallScene from "../../util/SmallScene";
-import Model from "../../util/Model";
-import { OrbitControls } from "@react-three/drei";
 import CardModel from "./CardModel";
 
 export default function HomeMenu() {

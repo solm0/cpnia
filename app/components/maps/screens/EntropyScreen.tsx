@@ -3,9 +3,9 @@ import PlaceHolder from "../../util/PlaceHolder";
 import Scene from "../../util/Scene";
 import { EntropyLights } from "../Lights";
 import { useState } from "react";
-import NpcLineModal from "../NpcLineModal";
+import { EntropyNpcLineModal } from "../interfaces/NpcLineModal";
 import { chatNpcs } from "@/app/lib/data/chatNpcs";
-import ChatNpcScreen from "./ChatNpcScreen";
+import ChatNpcScreen from "../interfaces/ChatNpcScreen";
 import Portals from "../Portals";
 import { Physics } from "@react-three/rapier";
 import Npcs from "../Npcs";
@@ -66,7 +66,7 @@ export default function EntropyScreen() {
       {/* 맵 npc 인터페이스 */}
       <div className="absolute top-2/3 w-screen h-auto flex justify-center">
         {activeNpc &&
-          <NpcLineModal
+          <EntropyNpcLineModal
             worldKey={worldKey}
             name={activeNpc}
             setActiveNpc={setActiveNpc}

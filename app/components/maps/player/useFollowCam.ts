@@ -58,8 +58,8 @@ export function useFollowCam(
     pitch.rotation.x = -Math.PI / 12;
     camera.position.set(0, 0, zoomDistance.current);
 
-    document.addEventListener("wheel", onDocumentMouseWheel, { passive: false });
-    return () => document.removeEventListener("wheel", onDocumentMouseWheel);
+    window.addEventListener("wheel", onDocumentMouseWheel, { passive: false });
+    return () => window.removeEventListener("wheel", onDocumentMouseWheel);
   }, [camera]);
 
   const currentZoom = new Vector3();
