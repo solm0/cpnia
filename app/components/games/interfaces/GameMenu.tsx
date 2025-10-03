@@ -1,8 +1,8 @@
-import { gamePortals } from "@/app/lib/data/gamePortals"
+import { gamePortals } from "@/app/lib/data/positions/gamePortals"
 import Button from "../../util/Button";
 import { useRouter } from "next/navigation";
 import GameNpc from "../GameNpc";
-import { lineProp } from "@/app/lib/data/npc-default-lines";
+import { lineProp } from "@/app/lib/data/lines/mapNpcLines";
 
 export default function GameMenu({
   worldKey, gameKey, npcData, score

@@ -4,7 +4,7 @@ import Scene from "../../util/Scene";
 import { EntropyLights } from "../Lights";
 import { useState } from "react";
 import { EntropyNpcLineModal } from "../interfaces/NpcLineModals";
-import { chatNpcs } from "@/app/lib/data/chatNpcs";
+import { chatNpcs } from "@/app/lib/data/positions/chatNpcs";
 import ChatNpcScreen from "../interfaces/chatnpc/ChatNpcScreen";
 import Portals from "../Portals";
 import { Physics } from "@react-three/rapier";

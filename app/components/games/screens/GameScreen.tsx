@@ -1,6 +1,6 @@
 // 게임 컴포넌트의 선택, 각 게임의 npc 데이터를 골라주는 컴포넌트
 
-import { defaultNpcLines } from "@/app/lib/data/npc-default-lines";
+import { mapNpcLines } from "@/app/lib/data/lines/mapNpcLines";
 import W1G1 from "../games/W1G1";
 import W1G2 from "../games/W1G2";
 import W1G3 from "../games/W1G3";
@@ -10,7 +10,7 @@ import W2G3 from "../games/W2G3";
 import W3G1 from "../games/W3G1";
 import W3G2 from "../games/W3G2";
 import W3G3 from "../games/W3G3";
-import { lineProp } from "@/app/lib/data/npc-default-lines";
+import { lineProp } from "@/app/lib/data/lines/mapNpcLines";
 
 export default function GameScreen({
   worldKey, gameKey, handleGameEnd
@@ -51,7 +51,7 @@ export default function GameScreen({
   if (!SelectedGame) return <div>게임을 찾을 수 없습니다</div>
   
   const npcName = gameMap[worldKey]?.[gameKey].npcName;
-  const npcLines = defaultNpcLines[worldKey]?.['game']?.[npcName];
+  const npcLines = mapNpcLines[worldKey]?.['game']?.[npcName];
   if (!npcName || !npcLines) return <div>npc 데이터를 찾을 수 없습니다</div>
   const npcData = { [npcName]: npcLines }
 

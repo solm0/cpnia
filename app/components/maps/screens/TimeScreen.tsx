@@ -1,6 +1,6 @@
 import Scene from "../../util/Scene";
 import Npcs from "../Npcs";
-import { chatNpcs } from "@/app/lib/data/chatNpcs";
+import { chatNpcs } from "@/app/lib/data/positions/chatNpcs";
 import { useState, useRef } from "react";
 import { TimeLights } from "../Lights";
 import { TimeNpcLineModal } from "../interfaces/NpcLineModals";

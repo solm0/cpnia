@@ -11,7 +11,7 @@ import { Boundary, clampToBoundary } from "@/app/components/maps/player/clampToB
 import { checkCollision } from "./checkCollision";
 import { Avatar } from "./Avatar";
 import { useFollowCam } from "./useFollowCam";
-import { coinStairs } from "@/app/lib/data/coinStairs";
+import { coinStairs } from "@/app/lib/data/positions/coinStairs";
 import { CuboidCollider } from "@react-three/rapier";
 
 const rectArea: Boundary[] = [

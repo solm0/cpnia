@@ -1,6 +1,6 @@
 import ChatNpcForm from "./ChatNpcForm";
-import { chatNpcBrains } from "@/app/lib/data/chatNpcBrain";
-import { chatNpcProp } from "@/app/lib/data/chatNpcs";
+import { chatNpcBrains } from "@/app/lib/data/prompts/chatNpcBrain";
+import { chatNpcProp } from "@/app/lib/data/positions/chatNpcs";
 import { useTimeChatStore, useSacrificeChatStore, useEntropyChatStore } from "@/app/lib/state/entropyChatState";
 import { useState, useRef, useEffect } from "react";
 import Button from "../../../util/Button";

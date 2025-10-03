@@ -1,7 +1,7 @@
 import Model from "../util/Model";
 import SmallScene from "../util/SmallScene";
 import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
-import { lineProp } from "@/app/lib/data/npc-default-lines";
+import { lineProp } from "@/app/lib/data/lines/mapNpcLines";
 
 export default function GameNpc({
   npcData

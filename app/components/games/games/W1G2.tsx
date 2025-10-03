@@ -1,7 +1,7 @@
 import PlaceHolderGame from "./PlaceHolderGame";
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
-import { lineProp } from "@/app/lib/data/npc-default-lines";
+import { lineProp } from "@/app/lib/data/lines/mapNpcLines";
 import { useState } from "react";
 import { OrbitControls } from "@react-three/drei";
 

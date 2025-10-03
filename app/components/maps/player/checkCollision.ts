@@ -1,7 +1,7 @@
-import { chatNpcs } from "@/app/lib/data/chatNpcs";
-import { mapNpcs } from "@/app/lib/data/mapNpcs";
-import { gamePortals } from "@/app/lib/data/gamePortals";
-import { homePortals } from "@/app/lib/data/homePortals";
+import { chatNpcs } from "@/app/lib/data/positions/chatNpcs";
+import { mapNpcs } from "@/app/lib/data/positions/mapNpcs";
+import { gamePortals } from "@/app/lib/data/positions/gamePortals";
+import { homePortals } from "@/app/lib/data/positions/homePortals";
 
 export function checkCollision(nextPos: {x: number, y: number, z: number }, worldKey: string) {
   const obstacles = [

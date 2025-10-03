@@ -3,7 +3,7 @@
 'use client'
 
 import SceneWithRef from "./components/util/SceneWithRef";
-import { worldPortals } from "./lib/data/worldPortals";
+import { worldPortals } from "./lib/data/positions/worldPortals";
 import WorldPortal from "./components/home/interfaces/WorldPortal";
 import HomeMenu from "./components/home/interfaces/HomeMenu";
 import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";

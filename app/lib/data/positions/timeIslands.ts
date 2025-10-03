@@ -21,7 +21,4 @@ export const timeIsland: Record<string, timeIslandProp[]> = {
       rotation: [0,0,0]
     },
   ],
-  roulette2: [
-   
-  ],
 }

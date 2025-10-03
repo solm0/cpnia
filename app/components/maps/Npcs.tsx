@@ -1,9 +1,9 @@
 import MapNpc from "./MapNpc";
-import { mapNpcs } from "@/app/lib/data/mapNpcs";
+import { mapNpcs } from "@/app/lib/data/positions/mapNpcs";
 import ChatNpc from "./ChatNpc";
 import { RigidBody } from "@react-three/rapier";
 import { useState } from "react";
-import { chatNpcProp } from "@/app/lib/data/chatNpcs";
+import { chatNpcProp } from "@/app/lib/data/positions/chatNpcs";
 
 export default function Npcs({
   worldKey, setActiveNpc, setIsChatOpen, chatNpc

@@ -1,9 +1,9 @@
-import { timeIsland } from "@/app/lib/data/timeIslands"
+import { timeIsland } from "@/app/lib/data/positions/timeIslands"
 import ClonedModel from "../../util/ClonedModels"
 import CoinStairs from "./CoinStairs";
 import PachinkoCircle from "./PachinkoCircle";
 import { RigidBody } from "@react-three/rapier";
-import { coinStairs } from "@/app/lib/data/coinStairs";
+import { coinStairs } from "@/app/lib/data/positions/coinStairs";
 import { useRef } from "react";
 import { Object3D } from "three";
 import { useFrame } from "@react-three/fiber";

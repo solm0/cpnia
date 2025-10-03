@@ -1,4 +1,4 @@
-import { PizzaCutterLines } from "@/app/lib/data/pizzaCutterLine";
+import { PizzaCutterLines } from "@/app/lib/data/lines/pizzaCutterLine";
 import Button from "../util/Button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";

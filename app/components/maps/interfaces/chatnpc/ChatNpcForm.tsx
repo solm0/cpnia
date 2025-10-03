@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState, useRef } from "react";
-import { chatNpcProp } from "@/app/lib/data/chatNpcs";
+import { chatNpcProp } from "@/app/lib/data/positions/chatNpcs";
 import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
-import { chatNpcLines } from "@/app/lib/data/chatNpcLines";
+import { chatNpcLines } from "@/app/lib/data/lines/chatNpcLines";
 import { useTimeChatStore, useSacrificeChatStore, useEntropyChatStore } from "@/app/lib/state/entropyChatState";
 import { TimePlayerAnswerOptions, SacrificePlayerAnswerOptions, EntropyPlayerAnswerOptions } from "./PlayerAnswerOptions";
 import { TimePlayerAnswerInput, SacrificePlayerAnswerInput, EntropyPlayerAnswerInput } from "./PlayerAnswerInputs";

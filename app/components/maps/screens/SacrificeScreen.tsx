@@ -4,7 +4,7 @@ import Portals from "../Portals";
 import { useState } from "react";
 import { SacrificeNpcLineModal } from "../interfaces/NpcLineModals";
 import Npcs from "../Npcs";
-import { chatNpcs } from "@/app/lib/data/chatNpcs";
+import { chatNpcs } from "@/app/lib/data/positions/chatNpcs";
 import ChatNpcScreen from "../interfaces/chatnpc/ChatNpcScreen";
 import Player from "../player/Player";
 import { SacrificeLights } from "../Lights";

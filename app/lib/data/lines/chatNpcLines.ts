@@ -1,4 +1,4 @@
-import { lineProp } from "./npc-default-lines";
+import { lineProp } from "./mapNpcLines";
 
 export const chatNpcLines: lineProp = {
   "하십시오체": {

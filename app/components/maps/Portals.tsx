@@ -1,5 +1,5 @@
 import { RigidBody } from "@react-three/rapier";
-import { gamePortals } from "@/app/lib/data/gamePortals";
+import { gamePortals } from "@/app/lib/data/positions/gamePortals";
 import GamePortalLayout from "./interfaces/GamePortalLayout";
 import HomePortalLayout from "./interfaces/HomePortalLayout";
 import PlaceHolder from "../util/PlaceHolder";
