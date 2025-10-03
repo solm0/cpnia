@@ -48,7 +48,7 @@ export default function ChatNpcScreen({
           }}
         >
           <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#00000090] border-3 border-[#ffffff] blur-sm" />
-          <div className="w-full flex items-center h-10 shrink-0">
+          <div className="w-full flex items-center h-12 shrink-0">
             <p className="h-full flex items-center justify-center text-center grow border-1 border-[#ffffff70]">
               {npcName}와의 대화
             </p>
@@ -87,24 +87,26 @@ export default function ChatNpcScreen({
     case 'sacrifice':
       return (
         <div
-          className="text-white break-keep absolute top-8 right-8 w-[30rem] h-2/3 bg-transparent flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-[#ffffff70]"
+          className="text-white font-bold break-keep absolute top-8 right-8 p-4 w-[30rem] h-2/3 flex flex-col pointer-events-none items-center backdrop-blur-sm rounded-4xl"
           onWheel={(e) => {
             e.stopPropagation();
           }}
         >
-          <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#00000090] border-3 border-[#ffffff] blur-sm" />
-          <div className="w-full flex items-center h-10 shrink-0">
-            <p className="h-full flex items-center justify-center text-center grow border-1 border-[#ffffff70]">
+          <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#ae4bff95] blur-sm" />
+          <div className="w-full flex items-center h-12 shrink-0 pr-4">
+            <p className="h-full flex items-center justify-center text-center grow">
               {npcName}와의 대화
             </p>
             <Button
               onClick={() => handleClose(false)}
               label="닫기"
-              worldKey="time"
+              worldKey="sacrifice"
             />
           </div>
+
+          <div className="border-b-5 border-yellow-300 w-full border-double" ></div>
     
-          <div className="border-1 border-[#ffffff70] h-[calc(100%-2.5rem)] w-full pointer-events-auto">
+          <div className="h-[calc(100%-2.5rem)] w-full pointer-events-auto">
             <div className="h-[calc(100%-9rem)] flex flex-col gap-2 overflow-y-scroll">
               {/* 채팅 기록 */}
               {messages.map((msg, idx) => (

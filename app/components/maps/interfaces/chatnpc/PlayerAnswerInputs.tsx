@@ -37,7 +37,23 @@ export function SacrificePlayerAnswerInput({
   npcName: string;
   handleSubmit: () => void;
 }) {
-  return <div>dd</div>
+  return (
+    <div className="h-10 w-full shrink-0 flex gap-4 pr-6 items-center">
+      <input
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        className="w-full h-full text-right max-w-6/7 text-yellow-300 truncate focus:outline-none border-b"
+        disabled={loading}
+        placeholder={`${npcName}에게 물어보기`}
+      />
+      <Button
+        onClick={() => handleSubmit()}
+        label="전송"
+        worldKey="sacrifice"
+      />
+    </div>
+  )
 }
 
 export function EntropyPlayerAnswerInput({

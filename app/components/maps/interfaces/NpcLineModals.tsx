@@ -65,23 +65,63 @@ export function TimeNpcLineModal({
 }
 
 export function SacrificeNpcLineModal({
-  worldKey, name, setActiveNpc
+  worldKey, name, setActiveNpc, options,
 }: {
   worldKey: string;
   name: string;
   setActiveNpc: (name: string | null) => void;
+  options?: {label: string, function: () => void}[];
 }) {
-  const line = FindNpcLine(name, worldKey);
+  const lines = FindNpcLine(name, worldKey);
+  const [lineIndex, setLineIndex] = useState(0);
 
   return (
-    <div className="flex flex-col gap-2 w-full items-start">
-      <p>{name} says:</p>
-      <TypingText text={line[0] ?? 'npc line이 없음'} />
-      <Button
-        onClick={() => setActiveNpc(null)}
-        label="닫기"
-        worldKey={worldKey}
-      />
+    <div className="-translate-y-8 ml-8 rounded-4xl mb-8 w-[60rem] h-[18rem] backdrop-blur-sm font-bold text-white flex flex-col items-start p-4">
+      <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#ae4bff95] blur-sm rounded-4xl mix-blend-darken" />
+      
+      {/* 윗부분 */}
+      <div className="flex h-14 w-full shrink-0 gap-4 items-center px-5 rounded-t-4xl">
+        <div className="w-5 h-5 flex items-center justify-center">
+          <div className="absolute w-3 h-3 bg-yellow-300 rotate-45"/>
+          <div className="w-5 h-5 bg-yellow-300 opacity-50 rotate-45"/>
+        </div>
+        {name}
+      </div>
+
+      <div className="border-b-5 border-yellow-300 w-full border-double" ></div>
+
+      {/* 본문 */}
+      <div className="w-full h-full py-4 px-5 rounded-b-4xl">
+        <p className="max-w-[45rem] break-keep leading-7 overflow-y-scroll">
+          <TypingText text={lines[lineIndex] ?? 'npc line이 없음'} />
+        </p>
+
+        {options ? (
+          // 선택 버튼
+          options.map((option, idx) => 
+            <TimeOptionButton
+              key={idx}
+              onClick={option.function}
+              label={option.label}
+            />
+          )
+        ): (
+          // 다음 또는 종료 버튼
+          <div
+            className="fixed bottom-13 right-20 h-auto w-10 text-6xl animate-pulse"
+            onClick={() => {
+              if (lines.length > lineIndex+1) {
+                setLineIndex(lineIndex+1)
+              } else {
+                setActiveNpc(null)
+              }}
+            }
+          >
+            <p className="absolute text-yellow-300">&#9660;</p>
+            <p className="absolute text-yellow-300 translate-y-5 opacity-50">&#9660;</p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

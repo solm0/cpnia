@@ -75,7 +75,7 @@ export default function SacrificeScreen() {
 
       {/* 맵 npc 인터페이스 */}
       {activeNpc &&
-        <div className="absolute top-2/3 w-screen h-auto flex justify-center">
+        <div className="absolute top-2/3 w-screen h-auto">
           {activeNpc !== '피자커팅기' ? (
             <SacrificeNpcLineModal
               worldKey={worldKey}

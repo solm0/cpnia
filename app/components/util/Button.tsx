@@ -21,7 +21,7 @@ export default function Button({
       return (
         <button
           onClick={() => onClick?.()}
-          className="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 break-keep w-auto pointer-events-auto"
+          className="px-3 py-1 rounded-2xl bg-yellow-300 hover:opacity-50 transition-opacity text-gray-700 break-keep w-auto pointer-events-auto"
         >
           {label}
         </button>

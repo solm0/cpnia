@@ -8,7 +8,7 @@ export function TimePlayerChatBlock({text}: {text:string}) {
 
 export function SacrificePlayerChatBlock({text}: {text:string}) {
   return (
-    <div className='w-auto h-auto max-w-6/7 self-end text-lime-400 pr-6'>
+    <div className='w-auto h-auto max-w-6/7 self-end text-yellow-300 pr-6'>
       {text}
     </div>
   )
