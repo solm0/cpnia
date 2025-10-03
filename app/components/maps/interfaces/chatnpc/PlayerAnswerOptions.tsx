@@ -1,0 +1,56 @@
+import { chatPlayerLines } from "@/app/lib/data/chatPlayerLines";
+import { Dispatch, SetStateAction  } from "react";
+
+export function TimePlayerAnswerOptions({
+  playerLines, setPlayerLines, formality, setInput
+}: {
+  playerLines: number[];
+  setPlayerLines: Dispatch<SetStateAction<number[]>>;
+  formality: string | null;
+  setInput: (input: string) => void
+}) {
+  return (
+    <div className="relative flex flex-col items-start w-auto h-auto border-2 border-[#ffffff70] bg-black p-4 gap-2">
+      <div className="absolute top-0 left-0 w-full h-full -z-10" />
+      
+      {playerLines.map(index => {
+        const line = chatPlayerLines[formality ?? '하십시오체'][index];
+
+        return (
+          <div
+            key={index}
+            onClick={() => {
+              setInput(line);
+              setPlayerLines(prev => prev.filter(i => i !== index));
+            }}
+            className="w-full text-lime-400 hover:opacity-50 transition-opacity flex items-center"
+          >
+            {`> ${line}`}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+export function SacrificePlayerAnswerOptions({
+  playerLines, setPlayerLines, formality, setInput
+}: {
+  playerLines: number[];
+  setPlayerLines: Dispatch<SetStateAction<number[]>>;
+  formality: string | null;
+  setInput: (input: string) => void
+}) {
+  return <div>dd</div>
+}
+
+export function EntropyPlayerAnswerOptions({
+  playerLines, setPlayerLines, formality, setInput
+}: {
+  playerLines: number[];
+  setPlayerLines: Dispatch<SetStateAction<number[]>>;
+  formality: string | null;
+  setInput: (input: string) => void
+}) {
+  return <div>dd</div>
+}

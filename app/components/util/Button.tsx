@@ -10,8 +10,9 @@ export default function Button({
     case 'time':
       return (
         <button
+          type="button"
           onClick={() => onClick?.()}
-          className="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 break-keep w-auto pointer-events-auto"
+          className="h-full px-4 flex items-center border-1 border-[#ffffff70] pointer-events-auto hover:opacity-50 transition-opacity cursor-pointer"
         >
           {label}
         </button>

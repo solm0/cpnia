@@ -2,10 +2,10 @@ import Model from "../../util/Model";
 import Scene from "@/app/components/util/Scene"
 import Portals from "../Portals";
 import { useState } from "react";
-import { SacrificeNpcLineModal } from "../interfaces/NpcLineModal";
+import { SacrificeNpcLineModal } from "../interfaces/NpcLineModals";
 import Npcs from "../Npcs";
 import { chatNpcs } from "@/app/lib/data/chatNpcs";
-import ChatNpcScreen from "../interfaces/ChatNpcScreen";
+import ChatNpcScreen from "../interfaces/chatnpc/ChatNpcScreen";
 import Player from "../player/Player";
 import { SacrificeLights } from "../Lights";
 import { Physics, RigidBody } from '@react-three/rapier'
