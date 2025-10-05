@@ -1,4 +1,4 @@
-import { TypingText } from "../../../util/TypingText";
+import { TypingText } from "../TypingText";
 
 export function TimeNpcChatBlock({
   text, isLatest

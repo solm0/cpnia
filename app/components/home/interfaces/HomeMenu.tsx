@@ -6,6 +6,7 @@ import { useGameStore } from "@/app/lib/state/gameState"
 import FullScreenModal from "../../util/FullScreenModal";
 import UserNameForm from "./UserNameForm";
 import CardModel from "./CardModel";
+import { worldPortals } from "@/app/lib/data/positions/worldPortals";
 
 export default function HomeMenu() {
   const [isPurseOpen, setIsPurseOpen] = useState(false);
@@ -14,6 +15,10 @@ export default function HomeMenu() {
   const timeCompleted = useGameStore(state => state.isWorldCompleted('time'));
   const sacrificeCompleted = useGameStore(state => state.isWorldCompleted('sacrifice'));
   const entropyCompleted = useGameStore(state => state.isWorldCompleted('entropy'));
+
+  const timeWorldName = worldPortals.find(portal => portal.worldKey === 'time')?.worldName;
+  const sacrificeWorldName = worldPortals.find(portal => portal.worldKey === 'sacrifice')?.worldName;
+  const entropyWorldName = worldPortals.find(portal => portal.worldKey === 'entropy')?.worldName;
 
   return (
     <>
@@ -49,9 +54,9 @@ export default function HomeMenu() {
               <CardModel worldKey="entropy" isCompleted={entropyCompleted} />
             </div>
             <div className="flex h-10 font-bold text-white">
-              <div className="rounded-lg w-[23rem] flex justify-center">{timeCompleted ? '시간기반체제 시민권' : '???'}</div>
-              <div className="rounded-lg w-[23rem] flex justify-center">{sacrificeCompleted ? '피자슛 시민권' : '???'}</div>
-              <div className="rounded-lg w-[23rem] flex justify-center">{entropyCompleted ? '엔트로피체제 시민권': '???'}</div>
+              <div className="rounded-lg w-[23rem] flex justify-center">{timeCompleted ? `${timeWorldName} 시민권` : '???'}</div>
+              <div className="rounded-lg w-[23rem] flex justify-center">{sacrificeCompleted ? `${sacrificeWorldName} 시민권` : '???'}</div>
+              <div className="rounded-lg w-[23rem] flex justify-center">{entropyCompleted ? `${entropyWorldName} 시민권`: '???'}</div>
             </div>
           </div>
         </FullScreenModal>

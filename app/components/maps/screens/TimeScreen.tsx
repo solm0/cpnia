@@ -10,6 +10,7 @@ import { Physics } from "@react-three/rapier";
 import Portals from "../Portals";
 import PlayerWithStair from "../player/PlayerWithStair";
 import { TimeEffects } from "../Effects";
+import GlobalMenu from "../interfaces/GlobalMenu";
 
 export default function TimeScreen() {
   const worldKey = 'time';
@@ -68,12 +69,8 @@ export default function TimeScreen() {
       </Scene>
       
       {/* --- 월드 인터페이스 --- */}
-      {/* 조작법설명 */}
-      <div className="absolute top-0 left-0 w-full h-auto flex items-center flex-col">
-        <p>wasd:아바타이동</p>
-        <p>ijkl:카메라회전</p>
-        <p>space:점프</p>
-      </div>
+
+      <GlobalMenu worldKey={worldKey} />
 
       {/* 맵 npc 인터페이스 */}
       <div className="absolute top-2/3 w-screen h-auto">
@@ -87,15 +84,13 @@ export default function TimeScreen() {
       </div>
 
       {/* 챗 npc 인터페이스 */}
-      {isChatOpen &&
-        <ChatNpcScreen
-          npcData={chatNpc}
-          worldKey={worldKey}
-          handleClose={setIsChatOpen}
-        />
-      }
-
-      {/* 배경음악 */}
+      <ChatNpcScreen
+        npcData={chatNpc}
+        worldKey={worldKey}
+        setIsChatOpen={setIsChatOpen}
+        setActiveNpc={setActiveNpc}
+        isChatOpen={isChatOpen}
+      />
     </main>
   )
 }

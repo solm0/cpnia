@@ -7,14 +7,13 @@ export const metadata = {
 };
 
 export default function SacrificePage() {
+  const worldKey = 'sacrifice'
+
   return (
     <>
       <Suspense>
-        <World worldKey="sacrifice" />
+        <World worldKey={worldKey} />
       </Suspense>
-      <audio controls autoPlay className="absolute top-0 left-0">
-        <source src="/audio/entropy_bg.mp3" />
-      </audio>
     </>
   )
 }

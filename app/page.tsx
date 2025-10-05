@@ -48,6 +48,8 @@ export default function Home() {
   const [isFocused, setIsFocused] = useState(false);
   const [focusedWorld, setFocusedWorld] = useState<string | null>(null);
 
+  const worldData = worldPortals.find(world => world.worldKey === focusedWorld);
+
   return (
     <main className="relative w-full h-full">
       <div className="w-full h-full relative z-0">
@@ -60,7 +62,7 @@ export default function Home() {
           {worldPortals.map(world => 
             <WorldPortal
               key={world.worldKey}
-              label={world.label}
+              label={world.worldName}
               worldKey={world.worldKey}
               position={world.position}
               rotation={world.rotation}
@@ -78,7 +80,8 @@ export default function Home() {
         {!isFocused && <HomeMenu />}
         {isFocused &&
           <div className="absolute left-3/5 w-96 break-keep text-gray-700 text-center h-full flex flex-col justify-center gap-12 items-center pointer-events-auto">
-            <p className="font-bold">{worldPortals.find(world => world.worldKey === focusedWorld)?.description}</p>
+            <p className="font-bold">{worldData?.label}</p>
+            <p className="font-bold">{worldData?.description}</p>
             <div className="flex">
               <Button
                 label="<"

@@ -1,6 +1,6 @@
 import Button from "../../util/Button";
 import FindNpcLine from "./FindNpcLine";
-import { TypingText } from "../../util/TypingText";
+import { TypingText } from "./TypingText";
 import { TimeOptionButton, SacrificeOptionButton, EntropyOptionButton } from "./OptionButtons";
 import { useState } from "react";
 

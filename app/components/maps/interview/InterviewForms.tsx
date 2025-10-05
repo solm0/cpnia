@@ -5,6 +5,7 @@ import Button from "../../util/Button";
 import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserNameStore } from "@/app/lib/state/userNameStore";
+import { worldPortals } from "@/app/lib/data/positions/worldPortals";
 
 interface npcConfig {
   formality: string,
@@ -33,14 +34,9 @@ export default function InterviewForms() {
   const searchParam = useSearchParams();
   const worldTo = searchParam.get('to');
   if (!worldTo) return;
-  const worldNameMap:{[worldKey: string]: string} = {
-    'time': '시간기반체제국가',
-    'sacrifice': '피자슛',
-    'entropy': '엔트로피체제국가'
-  }
 
   const questions = [
-    `${userName} 님은 왜 ${worldNameMap[worldTo] ?? ''}에 가시나요?`,
+    `${userName} 님은 왜 ${worldPortals.find(portal => portal.worldKey === worldTo)?.worldName ?? ''}에 가시나요?`,
     '시민권을 얻으려고 하는 이유는 무엇인가요?'
   ]
 

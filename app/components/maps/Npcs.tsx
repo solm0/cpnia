@@ -34,6 +34,7 @@ export default function Npcs({
             setHoveredNpc={setHoveredNpc}
             setActiveNpc={setActiveNpc}
             model={npc.model}
+            closeIsChatOpen={setIsChatOpen}
           />
         </RigidBody>
       )}
@@ -50,6 +51,7 @@ export default function Npcs({
           hoveredNpc={hoveredNpc}
           setHoveredNpc={setHoveredNpc}
           setIsChatOpen={setIsChatOpen}
+          closeActiveNpc={setActiveNpc}
         />
       </RigidBody>
     </>

@@ -7,14 +7,16 @@ import Button from "../../../util/Button";
 import { TimeNpcChatBlock, SacrificeNpcChatBlock, EntropyNpcChatBlock } from "./NpcChatBlocks";
 import { TimePlayerChatBlock, SacrificePlayerChatBlock, EntropyPlayerChatBlock } from "./PlayerChatBlocks";
 import { TimeNpcLoadingBlock, SacrificeNpcLoadingBlock, EntropyNpcLoadingBlock } from "./NpcLoadingBlocks";
-
+import clsx from 'clsx';
 
 export default function ChatNpcScreen({
-  npcData, worldKey, handleClose
+  npcData, worldKey, setIsChatOpen, isChatOpen, setActiveNpc
 }: {
   npcData: chatNpcProp;
   worldKey: string;
-  handleClose: (open: boolean) => void;
+  setIsChatOpen: (open: boolean) => void;
+  isChatOpen: boolean;
+  setActiveNpc: (name: string | null) => void;
 }) {
   const npcName = npcData.name;
   const npcBrain = chatNpcBrains[worldKey];
@@ -38,144 +40,198 @@ export default function ChatNpcScreen({
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  let content:React.ReactNode = null;
+
   switch(worldKey) {
     case 'time':
-      return (
-        <div
-          className="text-white break-keep absolute top-8 right-8 w-[30rem] h-2/3 bg-transparent flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-[#ffffff70]"
-          onWheel={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#00000090] border-3 border-[#ffffff] blur-sm" />
-          <div className="w-full flex items-center h-12 shrink-0">
-            <p className="h-full flex items-center justify-center text-center grow border-1 border-[#ffffff70]">
-              {npcName}와의 대화
-            </p>
-            <Button
-              onClick={() => handleClose(false)}
-              label="닫기"
-              worldKey="time"
-            />
-          </div>
-    
-          <div className="border-1 border-[#ffffff70] h-[calc(100%-2.5rem)] w-full pointer-events-auto">
-            <div className="h-[calc(100%-9rem)] flex flex-col gap-2 overflow-y-scroll">
-              {/* 채팅 기록 */}
-              {messages.map((msg, idx) => (
-                msg.from === "npc"
-                ? <TimeNpcChatBlock key={idx} text={msg.text} isLatest={idx === messages.length - 1} />
-                : <TimePlayerChatBlock key={idx} text={msg.text} />
-              ))}
-              
-              {loading && <TimeNpcLoadingBlock name={npcName} /> }
-    
-              <div ref={bottomRef} />
+      content = (
+        <>
+          <div
+            className={clsx(
+              'text-white break-keep absolute top-8 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-[#ffffff70]',
+              isChatOpen === true ? 'w-[30rem] h-2/3 overflow-visible' : 'w-0 h-0 border-none overflow-hidden'
+            )}
+            onWheel={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#00000090] border-3 border-[#ffffff] blur-sm" />
+            <div className="w-full flex items-center h-12 shrink-0">
+              <p className="h-full flex items-center justify-start text-center grow border-1 border-[#ffffff70] pl-4">
+                {npcName}와의 대화
+              </p>
+              <Button
+                onClick={() => setIsChatOpen(false)}
+                label="닫기"
+                worldKey="time"
+              />
             </div>
-    
-            {/* 인풋창 */}
-            <ChatNpcForm
-              worldKey={worldKey}
-              npcData={npcData}
-              npcBrain={npcBrain}
-              loading={loading}
-              setLoading={setLoading}
-            />
+      
+            <div className="border-1 border-[#ffffff70] h-[calc(100%-3rem)] w-full pointer-events-auto">
+              <div className="h-[calc(100%-9rem)] flex flex-col gap-2 overflow-y-scroll">
+                {/* 채팅 기록 */}
+                {messages.map((msg, idx) => (
+                  msg.from === "npc"
+                  ? <TimeNpcChatBlock key={idx} text={msg.text} isLatest={idx === messages.length - 1} />
+                  : <TimePlayerChatBlock key={idx} text={msg.text} />
+                ))}
+                
+                {loading && <TimeNpcLoadingBlock name={npcName} /> }
+      
+                <div ref={bottomRef} />
+              </div>
+      
+              {/* 인풋창 */}
+              <ChatNpcForm
+                worldKey={worldKey}
+                npcData={npcData}
+                npcBrain={npcBrain}
+                loading={loading}
+                setLoading={setLoading}
+              />
+            </div>
           </div>
-        </div>
+          {!isChatOpen &&
+            <button
+              className="absolute top-8 right-8 w-14 h-14 flex items-center justify-center"
+              onClick={() => {
+                setIsChatOpen(true);
+                setActiveNpc(null);
+              }}
+            >
+              <div className="w-full h-full border-1 border-[#ffffff70] rounded-full"></div>
+            </button>
+          }
+        </>
       )
+      break;
     case 'sacrifice':
-      return (
-        <div
-          className="text-white font-bold break-keep absolute top-8 right-8 p-4 w-[30rem] h-2/3 flex flex-col pointer-events-none items-center backdrop-blur-sm rounded-4xl"
-          onWheel={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#ae4bff95] blur-sm" />
-          <div className="w-full flex items-center h-12 shrink-0 pr-4">
-            <p className="h-full flex items-center justify-center text-center grow">
-              {npcName}와의 대화
-            </p>
-            <Button
-              onClick={() => handleClose(false)}
-              label="닫기"
-              worldKey="sacrifice"
-            />
-          </div>
+      content = (
+        <>
+          <div
+            className={clsx(
+              "text-white font-bold break-keep absolute top-8 right-8 transition-[width,height] p-4 flex flex-col pointer-events-none items-center backdrop-blur-sm rounded-4xl",
+              isChatOpen === true ? 'w-[30rem] h-2/3 overflow-visible' : 'w-0 h-0 border-none overflow-hidden'
+            )}
+            onWheel={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#ae4bff95] blur-sm" />
+            <div className="w-full flex items-center h-12 shrink-0 pr-4">
+              <p className="h-full flex items-center justify-start text-center grow pl-4">
+                {npcName}와의 대화
+              </p>
+              <Button
+                onClick={() => setIsChatOpen(false)}
+                label="닫기"
+                worldKey="sacrifice"
+              />
+            </div>
 
-          <div className="border-b-5 border-yellow-300 w-full border-double" ></div>
-    
-          <div className="h-[calc(100%-2.5rem)] w-full pointer-events-auto">
-            <div className="h-[calc(100%-9rem)] flex flex-col gap-2 overflow-y-scroll">
-              {/* 채팅 기록 */}
-              {messages.map((msg, idx) => (
-                msg.from === "npc"
-                ? <SacrificeNpcChatBlock key={idx} text={msg.text} isLatest={idx === messages.length - 1} />
-                : <SacrificePlayerChatBlock key={idx} text={msg.text} />
-              ))}
-              
-              {loading && <SacrificeNpcLoadingBlock name={npcName} /> }
-    
-              <div ref={bottomRef} />
+            <div className="border-b-5 border-yellow-300 w-full border-double" ></div>
+      
+            <div className="h-[calc(100%-2.5rem)] w-full pointer-events-auto">
+              <div className="h-[calc(100%-9rem)] flex flex-col gap-2 overflow-y-scroll">
+                {/* 채팅 기록 */}
+                {messages.map((msg, idx) => (
+                  msg.from === "npc"
+                  ? <SacrificeNpcChatBlock key={idx} text={msg.text} isLatest={idx === messages.length - 1} />
+                  : <SacrificePlayerChatBlock key={idx} text={msg.text} />
+                ))}
+                
+                {loading && <SacrificeNpcLoadingBlock name={npcName} /> }
+      
+                <div ref={bottomRef} />
+              </div>
+      
+              {/* 인풋창 */}
+              <ChatNpcForm
+                worldKey={worldKey}
+                npcData={npcData}
+                npcBrain={npcBrain}
+                loading={loading}
+                setLoading={setLoading}
+              />
             </div>
-    
-            {/* 인풋창 */}
-            <ChatNpcForm
-              worldKey={worldKey}
-              npcData={npcData}
-              npcBrain={npcBrain}
-              loading={loading}
-              setLoading={setLoading}
-            />
           </div>
-        </div>
+          {!isChatOpen &&
+            <button
+              className="absolute top-8 right-8 w-14 h-14 flex items-center justify-center"
+              onClick={() => {
+                setIsChatOpen(true);
+                setActiveNpc(null);
+              }}
+            >
+              <div className="w-full h-full border-1 border-[#ffffff70] rounded-full"></div>
+            </button>
+          }
+        </>
       )
+      break;
     case 'entropy':
-      return (
-        <div
-          className="text-white break-keep absolute top-8 right-8 w-[30rem] h-2/3 bg-transparent flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-[#ffffff70]"
-          onWheel={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#00000090] border-3 border-[#ffffff] blur-sm" />
-          <div className="w-full flex items-center h-10 shrink-0">
-            <p className="h-full flex items-center justify-center text-center grow border-1 border-[#ffffff70]">
-              {npcName}와의 대화
-            </p>
-            <Button
-              onClick={() => handleClose(false)}
-              label="닫기"
-              worldKey="time"
-            />
-          </div>
-    
-          <div className="border-1 border-[#ffffff70] h-[calc(100%-2.5rem)] w-full pointer-events-auto">
-            <div className="h-[calc(100%-9rem)] flex flex-col gap-2 overflow-y-scroll">
-              {/* 채팅 기록 */}
-              {messages.map((msg, idx) => (
-                msg.from === "npc"
-                ? <EntropyNpcChatBlock key={idx} text={msg.text} isLatest={idx === messages.length - 1} />
-                : <EntropyPlayerChatBlock key={idx} text={msg.text} />
-              ))}
-              
-              {loading && <EntropyNpcLoadingBlock name={npcName} /> }
-    
-              <div ref={bottomRef} />
+      content = (
+        <>
+          <div
+            className={clsx(
+              "text-white break-keep absolute top-8 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-[#ffffff70]",
+              isChatOpen === true ? 'w-[30rem] h-2/3 overflow-visible' : 'w-0 h-0 border-none overflow-hidden'
+            )}
+            onWheel={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#00000090] border-3 border-[#ffffff] blur-sm" />
+            <div className="w-full flex items-center h-10 shrink-0">
+              <p className="h-full flex items-center justify-start text-center grow border-1 border-[#ffffff70] pl-4">
+                {npcName}와의 대화
+              </p>
+              <Button
+                onClick={() => setIsChatOpen(false)}
+                label="닫기"
+                worldKey="time"
+              />
             </div>
-    
-            {/* 인풋창 */}
-            <ChatNpcForm
-              worldKey={worldKey}
-              npcData={npcData}
-              npcBrain={npcBrain}
-              loading={loading}
-              setLoading={setLoading}
-            />
+      
+            <div className="border-1 border-[#ffffff70] h-[calc(100%-2.5rem)] w-full pointer-events-auto">
+              <div className="h-[calc(100%-9rem)] flex flex-col gap-2 overflow-y-scroll">
+                {/* 채팅 기록 */}
+                {messages.map((msg, idx) => (
+                  msg.from === "npc"
+                  ? <EntropyNpcChatBlock key={idx} text={msg.text} isLatest={idx === messages.length - 1} />
+                  : <EntropyPlayerChatBlock key={idx} text={msg.text} />
+                ))}
+                
+                {loading && <EntropyNpcLoadingBlock name={npcName} /> }
+      
+                <div ref={bottomRef} />
+              </div>
+      
+              {/* 인풋창 */}
+              <ChatNpcForm
+                worldKey={worldKey}
+                npcData={npcData}
+                npcBrain={npcBrain}
+                loading={loading}
+                setLoading={setLoading}
+              />
+            </div>
           </div>
-        </div>
+          {!isChatOpen &&
+            <button
+              className="absolute top-8 right-8 w-14 h-14 flex items-center justify-center"
+              onClick={() => {
+                setIsChatOpen(true);
+                setActiveNpc(null);
+              }}
+            >
+              <div className="w-full h-full border-1 border-[#ffffff70] rounded-full"></div>
+            </button>
+          }
+        </>
       )
+      break;
   }
-  
+
+  return content;
 }

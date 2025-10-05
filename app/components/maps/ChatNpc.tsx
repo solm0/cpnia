@@ -9,12 +9,14 @@ import { Mesh, MeshStandardMaterial } from "three";
 export default function ChatNpc({
   name,
   hoveredNpc, setHoveredNpc,
-  setIsChatOpen
+  setIsChatOpen,
+  closeActiveNpc,
 }: {
   name: string;
   hoveredNpc: string | null;
   setHoveredNpc: (name: string | null) => void;
   setIsChatOpen: (isChatOpen: boolean) => void;
+  closeActiveNpc: (name: string | null) => void;
 }) {
   const gltf = useLoader(GLTFLoader, '/models/avatar.glb');
   const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
@@ -80,6 +82,7 @@ export default function ChatNpc({
         onClick={(e: MouseEvent) => {
           e.stopPropagation();
           setIsChatOpen(true);
+          closeActiveNpc(null);
         }}
       >
         <primitive object={clonedScene} />

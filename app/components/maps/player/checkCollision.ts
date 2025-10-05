@@ -1,17 +1,19 @@
 import { chatNpcs } from "@/app/lib/data/positions/chatNpcs";
 import { mapNpcs } from "@/app/lib/data/positions/mapNpcs";
 import { gamePortals } from "@/app/lib/data/positions/gamePortals";
-import { homePortals } from "@/app/lib/data/positions/homePortals";
 
 export function checkCollision(nextPos: {x: number, y: number, z: number }, worldKey: string) {
-  const obstacles = [
+  const objects = [
     ...mapNpcs[worldKey],
     ...gamePortals[worldKey],
     chatNpcs[worldKey],
-    homePortals[worldKey],
   ];
 
+  const obstacles = objects.filter(object => object.position !=null && object.rotation !=null);
+
   for (const obs of obstacles) {
+    if (!obs.position) continue;
+    
     const [ox, oy, oz] = obs.position;
     const [sx, sy, sz] = obs.size?.map(v=>v/2) ?? [2,2,2];
     const px = nextPos.x;

@@ -9,12 +9,14 @@ export default function MapNpc({
   hoveredNpc, setHoveredNpc,
   setActiveNpc,
   model,
+  closeIsChatOpen,
 }: {
   name: string;
   hoveredNpc: string | null;
   setHoveredNpc: (name: string | null) => void;
   setActiveNpc: (name: string) => void;
   model?: string;
+  closeIsChatOpen: (isChatOpen: boolean) => void;
 }) {
   const modelSrc = model ? model : '/models/avatar.glb';
   const gltf = useLoader(GLTFLoader, modelSrc);
@@ -79,6 +81,7 @@ export default function MapNpc({
       onClick={(e: MouseEvent) => {
         e.stopPropagation();
         setActiveNpc(name);
+        closeIsChatOpen(false);
       }}
     >
       <primitive object={clonedScene} />

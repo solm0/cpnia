@@ -16,6 +16,7 @@
     "@react-three/postprocessing": "^3.0.4",
     "@react-three/rapier": "^2.1.0",
     "ai": "^5.0.48",
+    "clsx": "^2.1.1",
     "dotenv": "^17.2.2",
     "gsap": "^3.13.0",
     "lucide-react": "^0.544.0",

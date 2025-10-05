@@ -1,7 +1,6 @@
 import { RigidBody } from "@react-three/rapier";
 import { gamePortals } from "@/app/lib/data/positions/gamePortals";
 import GamePortalLayout from "./interfaces/GamePortalLayout";
-import HomePortalLayout from "./interfaces/HomePortalLayout";
 import PlaceHolder from "../util/PlaceHolder";
 
 export default function Portals({
@@ -9,10 +8,12 @@ export default function Portals({
 }: {
   worldKey: string;
 }) {
+  const visibleGamePortals = gamePortals[worldKey].filter(portal => portal.position != null && portal.rotation != null);
+  
   return (
     <>
       {/* 게임 포탈 */}
-      {gamePortals[worldKey].map(game => 
+      {visibleGamePortals.map(game => 
         <RigidBody
           key={game.gameKey}
           position={game.position}
@@ -28,17 +29,6 @@ export default function Portals({
           </GamePortalLayout>
         </RigidBody>
       )}
-
-      {/* 홈 포탈 */}
-      <RigidBody
-        position={[15,0,-5]}
-        rotation={[0,0,0]}
-        type="fixed"
-      >
-        <HomePortalLayout label="첫화면으로">
-          <PlaceHolder />
-        </HomePortalLayout>
-      </RigidBody>
     </>
   )
 }

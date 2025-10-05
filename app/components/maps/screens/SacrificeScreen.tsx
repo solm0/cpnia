@@ -11,6 +11,7 @@ import { SacrificeLights } from "../Lights";
 import { Physics, RigidBody } from '@react-three/rapier'
 import NpcLineModalMain from "../NpcLineModalMain";
 import { SacrificeEffects } from "../Effects";
+import GlobalMenu from "../interfaces/GlobalMenu";
 
 export default function SacrificeScreen() {
   const worldKey = 'sacrifice';
@@ -66,12 +67,8 @@ export default function SacrificeScreen() {
       </Scene>
 
       {/* --- 월드 인터페이스 --- */}
-      {/* 조작법설명 */}
-      <div className="absolute top-0 left-0 w-full h-auto flex items-center flex-col">
-        <p>wasd:아바타이동</p>
-        <p>ijkl:카메라회전</p>
-        <p>space:점프</p>
-      </div>
+
+      <GlobalMenu worldKey={worldKey} />
 
       {/* 맵 npc 인터페이스 */}
       {activeNpc &&
@@ -93,15 +90,13 @@ export default function SacrificeScreen() {
       }
 
       {/* 챗 npc 인터페이스 */}
-      {isChatOpen &&
-        <ChatNpcScreen
-          npcData={chatNpc}
-          worldKey={worldKey}
-          handleClose={setIsChatOpen}
-        />
-      }
-
-      {/* 배경음악 */}
+      <ChatNpcScreen
+        npcData={chatNpc}
+        worldKey={worldKey}
+        setIsChatOpen={setIsChatOpen}
+        setActiveNpc={setActiveNpc}
+        isChatOpen={isChatOpen}
+      />
     </main>
   )
 }
