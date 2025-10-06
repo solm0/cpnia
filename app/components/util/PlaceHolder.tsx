@@ -6,6 +6,7 @@ import { useMemo } from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import Label from "../util/Label";
+import { Mesh } from "three";
 
 export default function PlaceHolder({
   scale, position, rotation, href, gameKey, label, completed = null, onClick
@@ -20,50 +21,37 @@ export default function PlaceHolder({
   onClick?: (param?: number | string) => void;
 }) {
   const gltf = useLoader(GLTFLoader, '/models/placeholder.glb');
-  const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
+
+  // Clone the scene once and set shadows
+  const clonedScene = useMemo(() => {
+    const scene = clone(gltf.scene);
+    scene.traverse((child) => {
+      if (child instanceof Mesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+    return scene;
+  }, [gltf.scene]);
+
   const router = useRouter();
 
-  if (gameKey) {
-    function handleClick() {
-      router.push(`/${href}?game=${gameKey}`);
-    }
+  const handleClick = () => {
+    if (onClick) onClick();
+    else if (href && gameKey) router.push(`/${href}?game=${gameKey}`);
+    else if (href) router.push(`/${href}`);
+  };
 
-    return (
-      <group
-        scale={scale ?? 1}
-        position={position ?? [0, 0, 0]}
-        rotation={rotation ?? [0, 0, 0]}
-        onClick={href && handleClick}
-      >
-        <primitive object={clonedScene} />
-        <Label text={label ?? null} position={[0, 2.5,0]} />
-        {(completed !== null) && <Label text={completed ? 'completed!' : 'not completed'} position={[0, 2, 0]} />}
-      </group>
-    )
-  } else if (onClick) {
-    return (
-      <group
-        scale={scale ?? 1}
-        position={position ?? [0, 0, 0]}
-        rotation={rotation ?? [0, 0, 0]}
-        onClick={() => onClick?.()}
-      >
-        <primitive object={clonedScene} />
-        <Label text={label ?? null} position={[0, 2.5,0]} />
-      </group>
-    )
-  } else {
-    return (
-      <group
-        scale={scale ?? 1}
-        position={position ?? [0, 0, 0]}
-        rotation={rotation ?? [0, 0, 0]}
-        onClick={() => href && router.push(`/${href}`)}
-      >
-        <primitive object={clonedScene} />
-        <Label text={label ?? null} position={[0, 2.5,0]} />
-        {(completed !== null) && <Label text={completed ? 'completed!' : 'not completed'} position={[0, 2, 0]} />}
-      </group>
-    )
-  }
+  return (
+    <group
+      scale={scale ?? 1}
+      position={position ?? [0, 0, 0]}
+      rotation={rotation ?? [0, 0, 0]}
+      onClick={handleClick}
+    >
+      <primitive object={clonedScene} />
+      {label && <Label text={label} position={[0, 2.5, 0]} />}
+      {completed !== null && <Label text={completed ? 'completed!' : 'not completed'} position={[0, 2, 0]} />}
+    </group>
+  );
 }

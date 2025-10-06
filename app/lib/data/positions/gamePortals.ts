@@ -19,7 +19,7 @@ export const gamePortals: Record<string, gamePortalProp[]> = {
       label: 'game 2',
       gameKey: 'game2',
       gameName: '파친코에서 시간 따기',
-      position: [0, 3, -3],
+      position: [10, 3, -3],
       rotation: [0, 0, 0]
     },
     {

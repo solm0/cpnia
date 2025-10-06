@@ -30,7 +30,7 @@ export default function TimeScreen() {
     <main className="w-full h-full">
       {/* 월드 씬 */}
       <Scene>
-        <Physics debug gravity={[0,-9,0]}>
+        <Physics gravity={[0,-9,0]}>
 
           {/* 빛 */}
           <TimeLights />

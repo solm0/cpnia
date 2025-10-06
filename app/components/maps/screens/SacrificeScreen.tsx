@@ -12,6 +12,7 @@ import { Physics, RigidBody } from '@react-three/rapier'
 import NpcLineModalMain from "../NpcLineModalMain";
 import { SacrificeEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
+import Fire from "../Fire";
 
 export default function SacrificeScreen() {
   const worldKey = 'sacrifice';
@@ -30,9 +31,9 @@ export default function SacrificeScreen() {
 
           {/* 지형 */}
           <Model
-            src="/models/sacrifice.glb"
+            src="/models/shop.glb"
             scale={5}
-            position={[-150,-123.5,420]}
+            position={[-200,-123.5,420]}
             rotation={[0,0,0]}
           />
 
@@ -47,6 +48,12 @@ export default function SacrificeScreen() {
           <Portals worldKey={worldKey} />
 
           {/* 기타 모델들 */}
+          <Fire />
+          <Model
+            src="/models/pizza.glb"
+            position={[50, 2.8, 0]}
+            scale={3.5}
+          />
 
           {/* 소품 */}
 
@@ -59,7 +66,7 @@ export default function SacrificeScreen() {
           />
 
           {/* 플레이어 */}
-          <Player worldKey={worldKey}/>
+          <Player worldKey={worldKey} />
         </Physics>
         
         {/* 효과 */}

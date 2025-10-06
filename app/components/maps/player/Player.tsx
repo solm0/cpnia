@@ -7,7 +7,6 @@ import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { RigidBody } from "@react-three/rapier";
 import { Boundary, clampToBoundary } from "@/app/components/maps/player/clampToBoundary";
-// import { DebugBoundaries } from "./debogBoundaries";
 import { checkCollision } from "./checkCollision";
 import { Avatar } from "./Avatar";
 import { useFollowCam } from "./useFollowCam";
@@ -15,7 +14,7 @@ import { coinStairs } from "@/app/lib/data/positions/coinStairs";
 import { CuboidCollider } from "@react-three/rapier";
 
 const rectArea: Boundary[] = [
-  { type: "rect", center: [120, -6], size: [233, 85] }
+  { type: "rect", center: [140, -13], size: [365, 108] }
 ];
 
 const circleArea: Boundary[] = [
