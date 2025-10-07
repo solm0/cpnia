@@ -13,7 +13,7 @@ import { useFollowCam } from "./useFollowCam";
 import { useStairClimb } from "../time/useStairClimb";
 import { coinStairs } from "@/app/lib/data/positions/coinStairs";
 import { CuboidCollider } from "@react-three/rapier";
-import { DebugBoundaries } from "./debogBoundaries";
+// import { DebugBoundaries } from "./debogBoundaries";
 import { stagePositions } from "../time/TimeMap";
 
 const rectArea: Boundary[] = [
@@ -225,7 +225,7 @@ export default function PlayerWithStair({
         </mesh>
         <Avatar />
       </RigidBody>
-      <DebugBoundaries boundaries={circleArea} />
+      {/* <DebugBoundaries boundaries={circleArea} /> */}
     </>
   );
 }

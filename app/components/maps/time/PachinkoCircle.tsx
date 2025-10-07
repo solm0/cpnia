@@ -6,7 +6,7 @@ export default function PachinkoCircle({
   center = [0, 0, 0],
   count = 6,
   distance = 3,
-  scale = 1.2,
+  scale = 1,
   initialRotation = [0, degToRad(25), 0], // X, Y, Z rotation of the whole circle
 }: {
   center?: [number, number, number];
@@ -18,8 +18,8 @@ export default function PachinkoCircle({
   const items = [
     {
       position: [0, 13, 0] as [number, number, number],
-      rotation: [0, degToRad(120), 0] as [number, number, number],
-      scale: scale * 1.7,
+      rotation: [0, degToRad(100), 0] as [number, number, number],
+      scale: scale * 1.5,
     },
     ...Array.from({ length: count }).map((_, i) => {
       const angle = (i / count) * Math.PI * 2;
@@ -43,7 +43,10 @@ export default function PachinkoCircle({
           rotation={item.rotation}
           colliders="cuboid"
         >
-          <ClonedModel src="/models/pachinko.glb" scale={item.scale} />
+          <ClonedModel
+            src={i === 0 ? "/models/pachinko-big.glb" : "/models/pachinko-small.glb"}
+            scale={item.scale}
+          />
         </RigidBody>
       ))}
     </group>

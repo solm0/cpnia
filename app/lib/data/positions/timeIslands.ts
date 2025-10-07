@@ -6,8 +6,8 @@ interface timeIslandProp {
 export const timeIsland: Record<string, timeIslandProp[]> = {
   roulette1: [
     {
-      scale: 0.005,
-      position: [50,-10,-50],
+      scale: 0.008,
+      position: [50,-20,-50],
       rotation: [0,0,0]
     },
     {
@@ -16,7 +16,7 @@ export const timeIsland: Record<string, timeIslandProp[]> = {
       rotation: [0,0,0]
     },
     {
-      scale: 0.005,
+      scale: 0.007,
       position: [0,-30,0],
       rotation: [0,0,0]
     },

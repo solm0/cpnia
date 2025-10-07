@@ -52,12 +52,13 @@ export default function TimeMap({
 
       <PachinkoCircle
         count={8}
-        distance={13}
+        distance={14}
         center={[
           stagePositions.pachinko.x-2,
-          stagePositions.pachinko.y+39,
+          stagePositions.pachinko.y+39.3,
           stagePositions.pachinko.z+3.5
         ]}
+        scale={1.6}
       />
 
       {/* Stage 3. 룰렛 */}
@@ -70,6 +71,12 @@ export default function TimeMap({
           stagePositions.roulette.z,
         ]}
         rotation={[0,0,0]}
+      />
+
+      <Model
+        src="/models/roulette-island.glb"
+        position={[50,30,-30]}
+        scale={3}
       />
 
       {rouletteIslands1.map((island, idx) => 

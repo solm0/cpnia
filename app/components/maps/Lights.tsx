@@ -1,3 +1,5 @@
+import { stagePositions } from "./time/TimeMap"
+
 export function HomeLights() {
   return (
     <></>
@@ -49,6 +51,21 @@ export function TimeLights() {
         shadow-camera-bottom={-1000}
         shadow-camera-near={0.1}      // near/far clipping
         shadow-camera-far={100}
+      />
+      <spotLight
+        position={[stagePositions.pachinko.x-2, stagePositions.pachinko.y+70, stagePositions.pachinko.z+12]}
+        intensity={300}
+        color="lime"
+        angle={Math.PI}
+        penumbra={0.4}
+        distance={0}
+        decay={2}
+        castShadow
+        target-position={[
+          stagePositions.pachinko.x,
+          stagePositions.pachinko.y,
+          stagePositions.pachinko.z,
+        ]}
       />
     </>
   )

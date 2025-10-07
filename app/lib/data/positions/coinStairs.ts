@@ -23,7 +23,11 @@ export const coinStairs: coinStairProp[] = [
   },
   // 2-3
   {
-    top: [0,0,0],
+    top: [
+      stagePositions.roulette.x,
+      stagePositions.roulette.y+1.4,
+      stagePositions.roulette.z+37
+    ],
     bottom: [
       stagePositions.pachinko.x-40,
       stagePositions.pachinko.y+27.5,
