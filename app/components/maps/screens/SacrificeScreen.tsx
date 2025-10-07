@@ -23,7 +23,7 @@ export default function SacrificeScreen() {
 
   return (
     <main className="w-full h-full">
-      <Scene>
+      <Scene worldKey="sacrifice">
         <Physics gravity={[0,-9,0]}>
           
           {/* 빛 */}

@@ -4,38 +4,14 @@ import CoinStairs from "./CoinStairs";
 import PachinkoCircle from "./PachinkoCircle";
 import { RigidBody } from "@react-three/rapier";
 import { coinStairs } from "@/app/lib/data/positions/coinStairs";
-import { useRef } from "react";
-import { Object3D } from "three";
-import { useFrame } from "@react-three/fiber";
+import Model from "../../util/Model";
+import { degToRad } from "three/src/math/MathUtils.js";
+import { FloatingIsland } from "./FloatingIsland";
 
-function FloatingIsland({
-  src, scale, position, rotation, waitTime
-}: {
-  src: string;
-  scale: number;
-  position: [number, number, number];
-  rotation: [number, number, number];
-  waitTime: number;
-}) {
-  const ref = useRef<Object3D>(null);
-
-  useFrame(({ clock }) => {
-    if (ref.current) {
-      const t = clock.getElapsedTime();
-      ref.current.position.y = position[1] + Math.sin(t * (waitTime+1)/2) * 6;
-    }
-  });
-
-  return (
-    <group ref={ref}>
-      <ClonedModel
-        src={src}
-        scale={scale}
-        position={position}
-        rotation={rotation}
-      />
-    </group>
-  )
+export const stagePositions: Record<string, {x:number, y:number, z:number}> = {
+  card: { x:-50, y: -150, z: 100 },
+  pachinko: { x:120, y:-134.5, z:160 },
+  roulette: { x: 0, y: -1.4, z: -37},
 }
 
 export default function TimeMap({
@@ -56,26 +32,43 @@ export default function TimeMap({
   return (
     <>
       {/* Stage 1. 카드 */}
+      <Model
+        src="/models/card.glb"
+        scale={2}
+        position={[stagePositions.card.x, stagePositions.card.y, stagePositions.card.z]}
+        rotation={[0,degToRad(90),0]}
+      />
 
       {/* Stage 2. 파친코 */}
       <ClonedModel
-        src="/models/coin.gltf"
-        scale={0.01}
-        position={[80,-100,50]}
-        rotation={[0,0,0]}
+        src="/models/pachinko-stage.glb"
+        scale={2.2}
+        position={[
+          stagePositions.pachinko.x,
+          stagePositions.pachinko.y,
+          stagePositions.pachinko.z
+        ]}
       />
 
       <PachinkoCircle
         count={8}
-        distance={24}
-        center={[80,-97,50]}
+        distance={13}
+        center={[
+          stagePositions.pachinko.x-2,
+          stagePositions.pachinko.y+39,
+          stagePositions.pachinko.z+3.5
+        ]}
       />
 
       {/* Stage 3. 룰렛 */}
       <ClonedModel
         src="/models/roulette.gltf"
         scale={0.02}
-        position={[0,-1.4,-37]}
+        position={[
+          stagePositions.roulette.x,
+          stagePositions.roulette.y,
+          stagePositions.roulette.z,
+        ]}
         rotation={[0,0,0]}
       />
 
@@ -105,7 +98,7 @@ export default function TimeMap({
           <CoinStairs
             endPosition={coinStair.bottom}
             startPosition={coinStair.top}
-            count={10}
+            count={coinStair.count}
           />
         </group>
       ))}

@@ -1,17 +1,34 @@
+import { stagePositions } from "@/app/components/maps/time/TimeMap";
+
 export interface coinStairProp {
   top: [number,number,number];
   bottom: [number, number, number];
   count: number;
 }
+
 export const coinStairs: coinStairProp[] = [
   {
-    top: [50,-100,50],
-    bottom: [-100,-130,50],
-    count: 10,
+    // 1-2
+    top: [
+      stagePositions.pachinko.x-50,
+      stagePositions.pachinko.y+40,
+      stagePositions.pachinko.z+10
+    ],
+    bottom: [
+      stagePositions.card.x+30,
+      stagePositions.card.y+40,
+      stagePositions.card.z
+    ],
+    count: 5,
   },
+  // 2-3
   {
-    top: [-20,0,0],
-    bottom: [50,-107,40],
+    top: [0,0,0],
+    bottom: [
+      stagePositions.pachinko.x-40,
+      stagePositions.pachinko.y+27.5,
+      stagePositions.pachinko.z-20
+    ],
     count: 10,
   },
 ]

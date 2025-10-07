@@ -13,15 +13,17 @@ import { useFollowCam } from "./useFollowCam";
 import { useStairClimb } from "../time/useStairClimb";
 import { coinStairs } from "@/app/lib/data/positions/coinStairs";
 import { CuboidCollider } from "@react-three/rapier";
+import { DebugBoundaries } from "./debogBoundaries";
+import { stagePositions } from "../time/TimeMap";
 
 const rectArea: Boundary[] = [
   { type: "rect", center: [120, -6], size: [233, 85] }
 ];
 
 const circleArea: Boundary[] = [
-  // { type: "circle", center: [0, 0], radius: 15 },
-  { type: "circle", center: [80,50], radius: 38, y: -97 },
-  { type: "circle", center: [0,-37], radius: 40, y: 0 }
+  { type: "circle", center: [stagePositions.card.x+9, stagePositions.card.z+3], radius: 30, y: stagePositions.card.y+45 },
+  { type: "circle", center: [stagePositions.pachinko.x-5, stagePositions.pachinko.z], radius: 43, y: stagePositions.pachinko.y+39.5 },
+  { type: "circle", center: [stagePositions.roulette.x,stagePositions.roulette.z], radius: 40, y: stagePositions.roulette.y+1.4 },
 ];
 
 export default function PlayerWithStair({
@@ -156,6 +158,7 @@ export default function PlayerWithStair({
     start: [number, number, number];
     end: [number, number, number];
     nextStage: number;
+    count: number;
   } | null>(null);
 
   useEffect(() => {
@@ -163,22 +166,34 @@ export default function PlayerWithStair({
       let startPos: [number, number, number];
       let endPos: [number, number, number];
       let nextStage: number;
+      let count: number;
   
       if (currentStage === clickedStair) {
         startPos = coinStairs[clickedStair].bottom;
         endPos = coinStairs[clickedStair].top;
         nextStage = currentStage + 1;
+        if (clickedStair === 1) {
+          count = 11;
+        } else {
+          count= 6;
+        }
       } else if (currentStage > clickedStair) {
         startPos = coinStairs[clickedStair].top;
         endPos = coinStairs[clickedStair].bottom;
         nextStage = currentStage - 1;
+        if (clickedStair === 1) {
+          count = 11;
+        } else {
+          count= 6;
+        }
       } else {
         startPos = [0, 0, 0];
         endPos = [0, 0, 0];
         nextStage = 0;
+        count = 0;
       }
-      setStairData({ start: startPos, end: endPos, nextStage });
-      console.log(stairData?.start, stairData?.end, stairData?.nextStage, groundY)
+      
+      setStairData({ start: startPos, end: endPos, nextStage: nextStage, count: count });
     }
   }, [stairClimbMode, currentStage, clickedStair]);
   
@@ -186,7 +201,7 @@ export default function PlayerWithStair({
     body,
     stairData?.start ?? [0, 0, 0],
     stairData?.end ?? [0, 0, 0],
-    11,
+    stairData?.count ?? 11,
     stairClimbMode!,
     () => {
       if (stairData && setCurrentStage) {
@@ -210,6 +225,7 @@ export default function PlayerWithStair({
         </mesh>
         <Avatar />
       </RigidBody>
+      <DebugBoundaries boundaries={circleArea} />
     </>
   );
 }

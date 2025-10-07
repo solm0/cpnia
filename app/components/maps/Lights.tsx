@@ -59,7 +59,7 @@ export function SacrificeLights() {
     <>
       <ambientLight intensity={0.01} color={'orange'} />
       <directionalLight
-        intensity={3}
+        intensity={5}
         position={[150, 80, 50]} // not directly above, set an angle
         color={'purple'}
         castShadow

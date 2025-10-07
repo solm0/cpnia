@@ -17,12 +17,6 @@ const rectArea: Boundary[] = [
   { type: "rect", center: [140, -13], size: [365, 108] }
 ];
 
-const circleArea: Boundary[] = [
-  // { type: "circle", center: [0, 0], radius: 15 },
-  { type: "circle", center: [80,50], radius: 38, y: -97 },
-  { type: "circle", center: [0,-37], radius: 40, y: 0 }
-];
-
 export default function Player({
   worldKey,
   groundY = 0,
@@ -125,9 +119,7 @@ export default function Player({
     let nextPos = newPos;
     
     if (!isAutomated) {
-      if (worldKey === "time") {
-        nextPos = clampToBoundary(newPos, circleArea);
-      } else if (worldKey === "sacrifice") {
+      if (worldKey === "sacrifice") {
         nextPos = clampToBoundary(newPos, rectArea);
       }
     }

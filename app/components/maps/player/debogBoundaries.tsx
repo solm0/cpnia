@@ -21,12 +21,14 @@ export function DebugBoundaries({ boundaries }: { boundaries: Boundary[] }) {
 
         if (b.type === "circle") {
           const [cx, cz] = b.center;
+          const cy = b.y ?? 0;
+
           return (
             <Circle
               key={i}
               args={[b.radius ?? 1, 64]} // radius, segments
               rotation={[-Math.PI / 2, 0, 0]} // flat on ground
-              position={[cx, 0.05, cz]}
+              position={[cx, cy, cz]}
             >
               <meshBasicMaterial color="blue" wireframe transparent opacity={0.5} />
             </Circle>
