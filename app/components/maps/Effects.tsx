@@ -37,7 +37,7 @@ export function TimeEffects() {
 export function SacrificeEffects() {
   return (
     <>
-      <color attach="background" args={["black"]} />
+      <color attach="background" args={["blue"]} />
       <Environment files={'/hdri/kitchen.hdr'} background={false} environmentIntensity={0.05} />
       <EffectComposer>
         <DepthOfField focusDistance={0} focalLength={0.6} bokehScale={8} height={480} />

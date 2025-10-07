@@ -13,6 +13,8 @@ import NpcLineModalMain from "../NpcLineModalMain";
 import { SacrificeEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
 import Fire from "../Fire";
+import { stagePositions } from "@/app/lib/data/positions/stagePositions";
+import ClonedModel from "../../util/ClonedModels";
 
 export default function SacrificeScreen() {
   const worldKey = 'sacrifice';
@@ -32,9 +34,17 @@ export default function SacrificeScreen() {
           {/* 지형 */}
           <Model
             src="/models/shop.glb"
-            scale={5}
-            position={[-200,-123.5,420]}
+            scale={4.5}
+            position={[
+              stagePositions.shop.x,
+              stagePositions.shop.y,
+              stagePositions.shop.z
+            ]}
             rotation={[0,0,0]}
+          />
+
+          <ClonedModel
+            src="/models/lightbulb.gltf"
           />
 
           <RigidBody type="fixed">
@@ -49,11 +59,6 @@ export default function SacrificeScreen() {
 
           {/* 기타 모델들 */}
           <Fire />
-          <Model
-            src="/models/pizza.glb"
-            position={[50, 2.8, 0]}
-            scale={3.5}
-          />
 
           {/* 소품 */}
 

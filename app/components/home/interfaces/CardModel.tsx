@@ -4,7 +4,7 @@ import { Suspense, useMemo } from "react";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import SmallScene from "../../util/SmallScene";
 import { Loader, OrbitControls } from "@react-three/drei";
-import { MathUtils } from "three";
+import { degToRad } from "three/src/math/MathUtils.js";
 
 export default function CardModel({
   worldKey, isCompleted
@@ -26,7 +26,7 @@ export default function CardModel({
           <primitive
             object={clonedScene}
             position={[0,0,0]}
-            rotation={[MathUtils.degToRad(90), MathUtils.degToRad(30), MathUtils.degToRad(60)]}
+            rotation={[degToRad(90), degToRad(30), degToRad(60)]}
           />
           <OrbitControls
             enableZoom={false}

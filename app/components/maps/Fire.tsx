@@ -23,7 +23,7 @@ export default function Fire(){
 
   return (
     <primitive
-      position={[-160,-50,60]}
+      position={[-160,-30,30]}
       rotation={[0,degToRad(90),0]}
       scale={200}
       object={gltf.scene}

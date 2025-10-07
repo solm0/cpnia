@@ -43,7 +43,7 @@ export const mapNpcs: Record<string, mapNpcProp[]> = {
     {
       name: '피자커팅기',
       model: '/models/cutter.gltf',
-      position: [85,0,0],
+      position: [30,0,0],
       rotation: [0,0, 0],
       scale: 2
     }

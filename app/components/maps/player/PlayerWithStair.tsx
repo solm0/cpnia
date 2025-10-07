@@ -14,11 +14,7 @@ import { useStairClimb } from "../time/useStairClimb";
 import { coinStairs } from "@/app/lib/data/positions/coinStairs";
 import { CuboidCollider } from "@react-three/rapier";
 // import { DebugBoundaries } from "./debogBoundaries";
-import { stagePositions } from "../time/TimeMap";
-
-const rectArea: Boundary[] = [
-  { type: "rect", center: [120, -6], size: [233, 85] }
-];
+import { stagePositions } from "@/app/lib/data/positions/stagePositions";
 
 const circleArea: Boundary[] = [
   { type: "circle", center: [stagePositions.card.x+9, stagePositions.card.z+3], radius: 30, y: stagePositions.card.y+45 },
@@ -130,8 +126,6 @@ export default function PlayerWithStair({
     if (!isAutomated) {
       if (worldKey === "time") {
         nextPos = clampToBoundary(newPos, circleArea);
-      } else if (worldKey === "sacrifice") {
-        nextPos = clampToBoundary(newPos, rectArea);
       }
     }
 

@@ -7,12 +7,7 @@ import { coinStairs } from "@/app/lib/data/positions/coinStairs";
 import Model from "../../util/Model";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { FloatingIsland } from "./FloatingIsland";
-
-export const stagePositions: Record<string, {x:number, y:number, z:number}> = {
-  card: { x:-50, y: -150, z: 100 },
-  pachinko: { x:120, y:-134.5, z:160 },
-  roulette: { x: 0, y: -1.4, z: -37},
-}
+import { stagePositions } from "@/app/lib/data/positions/stagePositions";
 
 export default function TimeMap({
   stairClimbMode,

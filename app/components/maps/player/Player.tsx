@@ -12,9 +12,10 @@ import { Avatar } from "./Avatar";
 import { useFollowCam } from "./useFollowCam";
 import { coinStairs } from "@/app/lib/data/positions/coinStairs";
 import { CuboidCollider } from "@react-three/rapier";
+// import { DebugBoundaries } from "./debogBoundaries";
 
 const rectArea: Boundary[] = [
-  { type: "rect", center: [140, -13], size: [365, 108] }
+  { type: "rect", center: [90, -10], size: [365, 130] }
 ];
 
 export default function Player({
@@ -186,6 +187,7 @@ export default function Player({
         </mesh>
         <Avatar />
       </RigidBody>
+      {/* <DebugBoundaries boundaries={rectArea} /> */}
     </>
   );
 }

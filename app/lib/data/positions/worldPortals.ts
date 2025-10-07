@@ -10,7 +10,7 @@ export const worldPortals: worldPortalProp[] = [
   {
     label: "시간 기반 체제",
     worldKey: 'time',
-    worldName: '시간기반체제아직이름없음ㅠ',
+    worldName: '온 타임',
     description: '이 국가에서는 모든 시민은 시간을 가지고 태어나며, 화폐 대신 시간을 사용한다. 카지노에서 도박으로 시간을 증식한다.',
     position: [-12, 3, 0],
     rotation: [0, Math.PI/3, 0]

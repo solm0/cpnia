@@ -1,4 +1,4 @@
-import { stagePositions } from "@/app/components/maps/time/TimeMap";
+import { stagePositions } from "./stagePositions"
 
 export interface coinStairProp {
   top: [number,number,number];
