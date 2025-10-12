@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Euler, Quaternion, Vector3 } from "three";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { act, useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
@@ -10,9 +10,7 @@ import { Boundary, clampToBoundary } from "@/app/components/maps/player/clampToB
 import { checkCollision } from "./checkCollision";
 import { Avatar } from "./Avatar";
 import { useFollowCam } from "./useFollowCam";
-import { coinStairs } from "@/app/lib/data/positions/coinStairs";
 import { CuboidCollider } from "@react-three/rapier";
-// import { DebugBoundaries } from "./debogBoundaries";
 
 const rectArea: Boundary[] = [
   { type: "rect", center: [90, -10], size: [365, 130] }
@@ -21,21 +19,14 @@ const rectArea: Boundary[] = [
 export default function Player({
   worldKey,
   groundY = 0,
-  stairClimbMode,
-  currentStage, setCurrentStage,
-  clickedStair,
 }: {
   worldKey: string;
   groundY?: number;
-  stairClimbMode?: React.RefObject<boolean>;
-  currentStage?: number;
-  setCurrentStage?: (currentStage: number) => void;
-  clickedStair?: number | null;
 }) {
   const playerGrounded = useRef(false);
   const inJumpAction = useRef(false);
   const body = useRef<any>(null);
-  const isAutomated = stairClimbMode?.current || false;
+  const [activeAction, setActiveAction] = useState('idle');
 
   const pressedKeys = useKeyboardControls();
   const gamepad = useGamepadControls();
@@ -60,20 +51,49 @@ export default function Player({
 
     const deadzone = 0.5;
     const speed = 1;
+    let nextAction = 'idle';
 
     // Input
     let horizontal = 0;
     let vertical = 0;
-    if (pressedKeys.current.has("KeyD")) horizontal += speed;
-    if (pressedKeys.current.has("KeyA")) horizontal -= speed;
-    if (pressedKeys.current.has("KeyS")) vertical += speed;
-    if (pressedKeys.current.has("KeyW")) vertical -= speed;
+    if (pressedKeys.current.has("KeyD")) {
+      horizontal += speed;
+      nextAction = 'animation_0'
+    }
+    if (pressedKeys.current.has("KeyA")) {
+      horizontal -= speed;
+      nextAction = 'animation_0'
+    }
+    if (pressedKeys.current.has("KeyS")) {
+      vertical += speed;
+      nextAction = 'animation_0'
+    }
+    if (pressedKeys.current.has("KeyW")) {
+      vertical -= speed;
+      nextAction = 'animation_0'
+    }
 
     if (gamepad) {
-      if (gamepad.current.axes[0] > deadzone) horizontal += speed;
-      if (gamepad.current.axes[0] < -deadzone) horizontal -= speed;
-      if (gamepad.current.axes[1] > deadzone) vertical += speed;
-      if (gamepad.current.axes[1] < -deadzone) vertical -= speed;
+      if (gamepad.current.axes[0] > deadzone) {
+        horizontal += speed;
+        nextAction = 'animation_0'
+      }
+      if (gamepad.current.axes[0] < -deadzone) {
+        horizontal -= speed;
+        nextAction = 'animation_0'
+      }
+      if (gamepad.current.axes[1] > deadzone) {
+        vertical += speed;
+        nextAction = 'animation_0'
+      }
+      if (gamepad.current.axes[1] < -deadzone) {
+        vertical -= speed;
+        nextAction = 'animation_0'
+      }
+    }
+
+    if (activeAction !== nextAction) {
+      setActiveAction(nextAction);
     }
 
     const horizontalInput = new Vector3(horizontal, 0, vertical);
@@ -104,9 +124,7 @@ export default function Player({
 
     const newPos = {
       x: t.x + move.x * delta * 40,
-      y: isAutomated
-        ? t.y + move.y * delta * 40 // let stair animation control Y
-        : Math.max(groundY, t.y + move.y * delta * 40),
+      y: Math.max(groundY, t.y + move.y * delta * 40),
       z: t.z + move.z * delta * 40,
     };
 
@@ -116,14 +134,8 @@ export default function Player({
       playerGrounded.current = true;
       inJumpAction.current = false;
     }
-
-    let nextPos = newPos;
     
-    if (!isAutomated) {
-      if (worldKey === "sacrifice") {
-        nextPos = clampToBoundary(newPos, rectArea);
-      }
-    }
+    const nextPos = clampToBoundary(newPos, rectArea);
 
     if (!checkCollision(nextPos, worldKey)) {
       body.current.setNextKinematicTranslation(nextPos);
@@ -143,37 +155,7 @@ export default function Player({
       body.current.setNextKinematicRotation(slerped);
     }
   });
-
-  const [stairData, setStairData] = useState<{
-    start: [number, number, number];
-    end: [number, number, number];
-    nextStage: number;
-  } | null>(null);
-
-  useEffect(() => {
-    if (stairClimbMode && currentStage != null && clickedStair != null && setCurrentStage) {
-      let startPos: [number, number, number];
-      let endPos: [number, number, number];
-      let nextStage: number;
-  
-      if (currentStage === clickedStair) {
-        startPos = coinStairs[clickedStair].bottom;
-        endPos = coinStairs[clickedStair].top;
-        nextStage = currentStage + 1;
-      } else if (currentStage > clickedStair) {
-        startPos = coinStairs[clickedStair].top;
-        endPos = coinStairs[clickedStair].bottom;
-        nextStage = currentStage - 1;
-      } else {
-        startPos = [0, 0, 0];
-        endPos = [0, 0, 0];
-        nextStage = 0;
-      }
-      setStairData({ start: startPos, end: endPos, nextStage });
-      console.log(stairData?.start, stairData?.end, stairData?.nextStage, groundY)
-    }
-  }, [stairClimbMode, currentStage, clickedStair]);
-
+  console.log(activeAction)
   return (
     <>
       <RigidBody
@@ -185,7 +167,7 @@ export default function Player({
         <mesh visible={false} castShadow receiveShadow>
           <CuboidCollider args={[0.5, 1, 0.5]} /> 
         </mesh>
-        <Avatar />
+        <Avatar actionKey={activeAction} />
       </RigidBody>
       {/* <DebugBoundaries boundaries={rectArea} /> */}
     </>

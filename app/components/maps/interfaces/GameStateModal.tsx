@@ -59,9 +59,11 @@ export function GameStateModal({
       <div className="absolute bottom-8 h-12 w-[calc(100%-20rem)]">
         <div className="absolute w-full border border-white rounded-full h-10 z-0 opacity-30"></div>
         <div className="absolute w-full border-2 border-white rounded-full h-10 z-0 blur-xs opacity-70"></div>
-        <div className={`mt-2 ml-2 ${width} bg-white rounded-full h-6 opacity-70`}></div>
+        <div className="absolute w-full p-2">
+          <div className={`${width} bg-white rounded-full h-6 opacity-70`}></div>
+        </div>
 
-        <div className="absolute bottom-14 w-full h-30 flex items-center justify-center">
+        <div className="absolute bottom-10 w-full h-30 flex items-center justify-center">
           {gameIconUrls.map((icon, index) => (
             <div
               key={index}
@@ -90,7 +92,7 @@ export function GameStateModal({
                   </div>
                 )
               ): (
-                <div>???</div>
+                <div className="animate-pulse text-6xl font-serif text-shadow-2xl text-white">?</div>
               )}
             </div>
           ))}

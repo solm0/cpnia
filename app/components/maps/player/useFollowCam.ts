@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { useThree } from "@react-three/fiber";
+import { useThree, useFrame } from "@react-three/fiber";
 import { useMemo, useRef, useEffect } from "react";
-import { Object3D, Vector3 } from "three";
-import { useFrame } from "@react-three/fiber";
+import { Object3D, Vector3, Euler } from "three";
 
 export function useFollowCam(
   ref: React.RefObject<any>,
@@ -14,16 +12,22 @@ export function useFollowCam(
     buttons: Record<string, boolean>;
   }
 ) {
-  const { scene, camera } = useThree();
+  const { camera } = useThree();
 
-  const pivot = useMemo(() => new Object3D(), []);
-  const alt = useMemo(() => new Object3D(), []);
+  // Camera rotation pivots
   const yaw = useMemo(() => new Object3D(), []);
   const pitch = useMemo(() => new Object3D(), []);
-  const worldPosition = useMemo(() => new Vector3(), []);
+
+  // State references
+  const worldPos = useRef(new Vector3());
+  const smoothTarget = useRef(new Vector3());
+  const currentZoom = useRef(new Vector3(0, 0, offset[2]));
   const zoomDistance = useRef(offset[2]);
 
-  function updateCameraFromKeys() {
+  // ──────────────────────────────
+  // Input handling (mouse, keys, gamepad)
+  // ──────────────────────────────
+  function updateCameraRotation() {
     const rotateSpeed = 0.02;
     const deadzone = 0.5;
 
@@ -41,39 +45,44 @@ export function useFollowCam(
     }
   }
 
-  function onDocumentMouseWheel(e: WheelEvent) {
+  function onWheel(e: WheelEvent) {
     e.preventDefault();
     zoomDistance.current += e.deltaY * 0.01;
     zoomDistance.current = Math.min(Math.max(zoomDistance.current, 10), 300);
   }
 
   useEffect(() => {
-    scene.add(pivot);
-    pivot.add(alt);
-    alt.position.y = offset[1];
-    alt.add(yaw);
-    yaw.add(pitch);
-    pitch.add(camera);
+    window.addEventListener("wheel", onWheel, { passive: false });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, []);
 
-    pitch.rotation.x = -Math.PI / 12;
-    camera.position.set(0, 0, zoomDistance.current);
-
-    window.addEventListener("wheel", onDocumentMouseWheel, { passive: false });
-    return () => window.removeEventListener("wheel", onDocumentMouseWheel);
-  }, [camera]);
-
-  const currentZoom = new Vector3();
+  // ──────────────────────────────
+  // Main camera follow loop
+  // ──────────────────────────────
   useFrame((_, delta) => {
     if (!ref.current) return;
+
+    // Get world position of player (Rapier body translation)
     const pos = ref.current.translation();
-    worldPosition.set(pos.x, pos.y, pos.z);
+    worldPos.current.set(pos.x, pos.y + offset[1], pos.z);
 
-    pivot.position.lerp(worldPosition, delta * 5);
+    // Smooth target to reduce jitter
+    smoothTarget.current.lerp(worldPos.current, delta * 5);
 
-    currentZoom.lerp(new Vector3(0, 0, zoomDistance.current), delta * 5);
-    camera.position.copy(currentZoom);
+    // Smooth zoom distance changes
+    currentZoom.current.lerp(new Vector3(0, 0, zoomDistance.current), delta * 5);
 
-    updateCameraFromKeys();
+    // Compute desired camera position relative to target
+    const desiredPos = currentZoom.current
+      .clone()
+      .applyEuler(new Euler(pitch.rotation.x, yaw.rotation.y, 0))
+      .add(smoothTarget.current);
+
+    // Smoothly move camera toward desired position
+    camera.position.lerp(desiredPos, delta * 10);
+    camera.lookAt(smoothTarget.current);
+
+    updateCameraRotation();
   });
 
   return { yaw };

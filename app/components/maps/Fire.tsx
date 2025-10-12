@@ -1,19 +1,34 @@
 import { useFrame, useLoader } from "@react-three/fiber"
 import { useEffect, useRef } from "react";
-import { AnimationMixer } from "three";
+import { AnimationAction, AnimationMixer, LoopRepeat } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 import { degToRad } from "three/src/math/MathUtils.js";
 
 export default function Fire(){
   const gltf = useLoader(GLTFLoader, "/models/fire/scene.gltf");
-  const mixer = useRef<AnimationMixer>(null);
+  const mixer = useRef<AnimationMixer | null>(null);
+  const actionsRef = useRef<AnimationAction[]>([]);
 
   useEffect(() => {
-    if (gltf.animations.length > 0) {
-      mixer.current = new AnimationMixer(gltf.scene);
-      gltf.animations.forEach((clip) => {
-        mixer.current!.clipAction(clip).play()
-      });
+    if (!gltf || !gltf.animations.length) return;
+
+    mixer.current = new AnimationMixer(gltf.scene);
+    actionsRef.current = gltf.animations.map(clip => {
+      const action = mixer.current!.clipAction(clip);
+
+      // configure action defaults
+      action.setLoop(LoopRepeat, Infinity);
+      action.play();
+      return action;
+    })
+
+    return () => {
+      // stop and uncache to free memory
+      actionsRef.current.forEach(a => a.stop());
+      mixer.current?.stopAllAction();
+      mixer.current?.uncacheRoot(gltf.scene);
+      mixer.current = null;
+      actionsRef.current = [];
     }
   }, [gltf]);
 
