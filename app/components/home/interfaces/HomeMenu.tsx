@@ -23,10 +23,10 @@ export default function HomeMenu() {
   return (
     <>
       {/* 버튼들 */}
-      <div className="relative top-3/5 flex flex-col items-center gap-8 h-auto w-auto pointer-events-auto">
-        <h1 className="text-center text-black text-5xl w-[20em] break-keep select-none font-bold">Cpnia</h1>
+      <div className="relative top-3/5 flex flex-col items-center gap-8 h-auto w-auto">
+        <h1 className="text-center text-white text-5xl w-[20em] break-keep select-none font-bold">Cpnia</h1>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 pointer-events-auto">
           <Button
             onClick={() => setIsPurseOpen(true)}
             label="지갑"

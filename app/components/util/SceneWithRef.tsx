@@ -40,8 +40,8 @@ const SceneWithRef = forwardRef(({
 
       // Animate camera position
       gsap.to(camera.position, {
-        x: newPos.x,
-        y: newPos.y,
+        x: newPos.x + 6,
+        y: newPos.y - 2,
         z: newPos.z,
         duration: 1.2,
         ease: "power2.inOut",
@@ -49,8 +49,8 @@ const SceneWithRef = forwardRef(({
       });
 
       gsap.to(controlsRef.current.target, {
-        x: target[0] + 5,
-        y: target[1],
+        x: target[0] + 6,
+        y: target[1] - 2,
         z: target[2],
         duration: 1.2,
         ease: "power2.inOut",
@@ -64,8 +64,8 @@ const SceneWithRef = forwardRef(({
       {children}
       <OrbitControls
         ref={controlsRef}
-        minDistance={!isFocused ? 30 : 0 }
-        maxDistance={100} />
+        minDistance={!isFocused ? 45 : 0 }
+        maxDistance={50} />
     </Suspense>
   );
 });

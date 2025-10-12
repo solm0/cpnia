@@ -13,6 +13,10 @@ import { useState } from "react";
 import Button from "./components/util/Button";
 import { useRouter } from "next/navigation";
 import { HomeEffects } from "./components/maps/Effects";
+import Model from "./components/util/Model";
+import { degToRad } from "three/src/math/MathUtils.js";
+import { HomeLights } from "./components/maps/Lights";
+import Scene from "./components/util/Scene";
 
 export default function Home() {
   const router = useRouter();
@@ -54,6 +58,9 @@ export default function Home() {
     <main className="relative w-full h-full">
       <div className="w-full h-full relative z-0">
       <Canvas shadows camera={{ position: [0, 0, 5], fov: 50 }} frameloop="always">
+        
+        <HomeLights/>
+
         <SceneWithRef
           ref={sceneRef}
           isFocused={isFocused}
@@ -62,10 +69,12 @@ export default function Home() {
           {worldPortals.map(world => 
             <WorldPortal
               key={world.worldKey}
+              src={world.src}
               label={world.worldName}
               worldKey={world.worldKey}
               position={world.position}
               rotation={world.rotation}
+              scale={world.scale}
               onFocus={focusPortal}
               setFocusedWorld={setFocusedWorld}
             />
@@ -75,11 +84,23 @@ export default function Home() {
           <HomeEffects />
         </SceneWithRef>
       </Canvas>
+
+      <div className="fixed pointer-events-none w-screen h-screen top-0 left-0">
+        <Scene pointer={false}>
+          <Model
+            src="/models/ship.glb"
+            scale={30}
+            position={[5,-42,0]}
+            rotation={[0,degToRad(180),0]}
+          />
+        </Scene>
+      </div>
+      
       </div>
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         {!isFocused && <HomeMenu />}
         {isFocused &&
-          <div className="absolute left-3/5 w-96 break-keep text-gray-700 text-center h-full flex flex-col justify-center gap-12 items-center pointer-events-auto">
+          <div className="absolute left-3/5 w-96 break-keep text-white text-center h-full flex flex-col justify-center gap-12 items-center pointer-events-auto">
             <p className="font-bold">{worldData?.label}</p>
             <p className="font-bold">{worldData?.description}</p>
             <div className="flex">

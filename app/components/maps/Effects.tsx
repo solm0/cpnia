@@ -5,14 +5,15 @@ import { BlendFunction } from 'postprocessing'
 export function HomeEffects() {
   return (
     <>
-      <Environment files={'/hdri/sky.hdr'} background={true} backgroundIntensity={1} backgroundRotation={[0,-1,0]} />
+      <Environment files={'/hdri/space-1.hdr'} background={true} backgroundIntensity={1}  />
       <EffectComposer>
-        <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} blendFunction={BlendFunction.COLOR_DODGE} />
+        <DepthOfField focusDistance={0} focalLength={0.2} bokehScale={4} height={480} />
+        <Bloom luminanceThreshold={0} luminanceSmoothing={2} height={300} blendFunction={BlendFunction.COLOR_DODGE} />
         <ChromaticAberration
           blendFunction={BlendFunction.NORMAL} // blend mode
           offset={[0.001, 0.001]} // color offset
         />
-        <BrightnessContrast opacity={1} blendFunction={BlendFunction.OVERLAY} />
+        <BrightnessContrast opacity={0.4} blendFunction={BlendFunction.LINEAR_DODGE} />
       </EffectComposer>
     </>
   )
