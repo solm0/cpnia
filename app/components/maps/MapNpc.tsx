@@ -1,8 +1,9 @@
-import { useLoader } from "@react-three/fiber";
-import { useMemo } from "react";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { useEffect, useMemo, useRef } from "react";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
-import { Mesh, MeshStandardMaterial } from "three";
+import { AnimationMixer, Mesh, MeshStandardMaterial } from "three";
+import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
+import { useGLTF } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
 
 export default function MapNpc({
   name,
@@ -19,9 +20,12 @@ export default function MapNpc({
   model?: string;
   closeIsChatOpen: (isChatOpen: boolean) => void;
 }) {
-  const modelSrc = model ? model : '/models/avatar.glb';
-  const gltf = useLoader(GLTFLoader, modelSrc);
-  const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
+  const mixer = useRef<AnimationMixer | null>(null);
+  const charSrc = model ? model : '/models/avatars/map-npc.glb';
+
+  const charGltf = useGLTF(charSrc);
+  const animGltf = useAnimGltf()[0];
+  const clonedScene = useMemo(() => clone(charGltf.scene), [charGltf.scene]);
   
   // inject shader only once
   useMemo(() => {
@@ -68,6 +72,19 @@ export default function MapNpc({
       }
     });
   }, [clonedScene, hoveredNpc, name]);
+
+  useEffect(() => {
+    if (clonedScene) {
+      mixer.current = new AnimationMixer(clonedScene);
+      
+      const action = mixer.current!.clipAction(animGltf.animations[0]);
+      action.play();
+    }
+  }, [clonedScene, animGltf]);
+
+  useFrame((_, delta) => {
+    mixer.current?.update(delta);
+  });
   
   return (
     <group

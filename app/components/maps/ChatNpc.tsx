@@ -90,7 +90,6 @@ export function ChatNpcAvatar({
     if (!mixer.current || !animGltf[0].animations.length || !animGltf[1].animations.length) return;
 
     const clip = animGltf[actionKey].animations[0];
-    console.log('anim', actionKey)
 
     // fade out old action
     if (actionsRef.current) {
