@@ -12,7 +12,7 @@ export function Avatar({
   const actionsRef = useRef<AnimationAction | null>(null);
   const mixer = useRef<AnimationMixer | null>(null);
 
-  const charGltf = useGLTF("/models/avatars/default.glb");
+  const charGltf = useGLTF("/models/avatars/player.glb");
   const animGltf = useAnimGltf();
   const anim = animGltf[animIndex ?? 0];
 

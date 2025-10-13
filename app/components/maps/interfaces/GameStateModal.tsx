@@ -69,9 +69,9 @@ export function GameStateModal({
               key={index}
               className={clsx(
                 'absolute',
-                index === 0 && 'left-1/3',
-                index === 1 && 'left-2/3',
-                index === 2 && 'right-0'
+                index === 0 && 'left-[31%]',
+                index === 1 && 'left-[61%]',
+                index === 2 && 'left-[95%]'
               )}
             >
               {stage >= index+1 ? (
@@ -116,59 +116,4 @@ export function GameStateModal({
       </div>
     </div>
   )
-
-  switch (worldKey) {
-    case 'time':
-      return (
-        <div className="w-auto h-auto flex flex-col items-start gap-2 backdrop-blur-sm border-3 border-[#ffffff70] p-4">
-          <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#00000090] border-3 border-[#ffffff] blur-sm" />
-          <h3>퀘스트 진행도</h3>
-          {gamePortals[worldKey].map((game, index) => (
-            <QuestList key={index} index={index} gameKey={game.gameKey} worldKey={worldKey} />
-          ))}
-          {isThereSomethingToDelete &&
-            <Button
-              worldKey={worldKey}
-              onClick={() => reset()}
-              label="진행 상황 지우기"
-            />
-          }
-        </div>
-      )
-    case 'sacrifice':
-      return (
-        <div className="w-auto h-auto flex flex-col items-start gap-2 rounded-4xl backdrop-blur-sm font-bold z-0 p-4">
-          <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#ae4bff95] blur-sm rounded-4xl mix-blend-darken" />
-
-          <h3>퀘스트 진행도</h3>
-          {gamePortals[worldKey].map((game, index) => (
-            <QuestList key={index} index={index+1} gameKey={game.gameKey} worldKey={worldKey} />
-          ))}
-          {isThereSomethingToDelete &&
-            <Button
-              worldKey={worldKey}
-              onClick={() => reset()}
-              label="진행 상황 지우기"
-            />
-          }
-        </div>
-      )
-    case 'entropy':
-      return (
-        <div className="w-auto h-auto flex flex-col items-start gap-2 backdrop-blur-sm border-3 border-[#ffffff70] p-4">
-          <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#00000090] border-3 border-[#ffffff] blur-sm" />
-          <h3>퀘스트 진행도</h3>
-          {gamePortals[worldKey].map((game, index) => (
-            <QuestList key={index} index={index} gameKey={game.gameKey} worldKey={worldKey} />
-          ))}
-          {isThereSomethingToDelete &&
-            <Button
-              worldKey={worldKey}
-              onClick={() => reset()}
-              label="진행 상황 지우기"
-            />
-          }
-        </div>
-      )
-  }
 }

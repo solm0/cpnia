@@ -143,6 +143,7 @@ export default function ChatNpc({
   const body = useRef<any>(null);
   const isMoving = usePlayerStore((s) => s.isMoving);
   const currentPos = useRef({ x: 0, y: 0, z: 0 });
+  const speed = 1;
 
   const prevPos = useRef({ x: 0, y: 0, z: 0 });
   const [chatNpcIsMoving, setChatNpcIsMoving] = useState(false);
@@ -175,7 +176,7 @@ export default function ChatNpc({
     const target = { x: playerPos.x + 8, y: playerPos.y, z: playerPos.z -5 };
 
     // lerp smoothly
-    const lerpFactor = 5 * delta;
+    const lerpFactor = speed * delta;
     currentPos.current.x += (target.x - currentPos.current.x) * lerpFactor;
     currentPos.current.y += (target.y - currentPos.current.y) * lerpFactor;
     currentPos.current.z += (target.z - currentPos.current.z) * lerpFactor;
@@ -207,7 +208,7 @@ export default function ChatNpc({
     const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
     // Consider small threshold to avoid floating jitter
-    const isMovingNow = distance > 0.1;
+    const isMovingNow = distance > 0.07;
     if (isMovingNow !== chatNpcIsMoving) {
       setChatNpcIsMoving(isMovingNow);
     }

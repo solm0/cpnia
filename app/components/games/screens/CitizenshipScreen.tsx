@@ -11,7 +11,7 @@ export default function CitizenshipScreen({
 }) {
   const router = useRouter();
   return (
-    <main className="w-full h-full">
+    <main className="w-full h-full bg-sky-900">
       <Scene>
         <PlaceHolder
           scale={1}
@@ -23,8 +23,8 @@ export default function CitizenshipScreen({
       </Scene>
       <div className="absolute top-2/3 w-screen h-auto flex justify-center">
         <Button
-          onClick={() => router.push(`/${worldKey}`)}
-          label="월드로 돌아가기"
+          onClick={() => router.push(`/`)}
+          label="홈으로"
         />
       </div>
     </main>
