@@ -6,11 +6,37 @@ import { GameStateModal } from "./GameStateModal";
 import SmallScene from "../../util/SmallScene";
 import Model from "../../util/Model";
 import { OrbitControls } from "@react-three/drei";
+import { useState, useEffect } from "react";
+import FullScreenModal from "../../util/FullScreenModal";
+import Button from "../../util/Button";
+import { useRouter } from "next/navigation";
+import { useGameStore } from "@/app/lib/state/gameState";
+import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
+import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 
 export default function GlobalMenu({worldKey}: {worldKey: string}) {
   const npcConfig = useNpcConfigStore(state => state.npcConfig)
   const worldPortal = worldPortals.find(portal => portal.worldKey === worldKey);
-  if (!worldPortal) return;
+
+  const worldName = worldPortals.find(world => world.worldKey === worldKey)?.worldName
+  const [isPaused, setIsPaused] = useState(false);
+  const router = useRouter();
+  const reset = useGameStore(state => state.reset);
+
+  const pressedKeys = useKeyboardControls();
+  const gamepad = useGamepadControls();
+
+  // 일시정지
+  useEffect(() => {
+    function checkPause() {
+      if (pressedKeys.current.has("KeyQ") || (gamepad?.current?.buttons[9])) {
+        setIsPaused(true);
+      }
+    }
+  
+    const interval = setInterval(checkPause, 50); // check every 50ms
+    return () => clearInterval(interval);
+  }, [pressedKeys, gamepad]);
 
   function calculateWidth(param: string, value: string) {
     let width;
@@ -68,6 +94,8 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
     case 'entropy': glow = 'bg-violet-700/20'; break;
     default: glow = 'bg-violet-700/20'
   }
+
+  if (!worldPortal) return;
 
   return (
     <div className="pointer-events-none absolute w-screen h-screen top-0 left-0">
@@ -133,6 +161,29 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
 
       {/* 아래쪽 */}
       <GameStateModal worldKey={worldKey} />
+
+      {/* 일시정지 */}
+      {isPaused &&
+        <FullScreenModal>
+          <div className="relative w-auto h-full flex flex-col items-center justify-center gap-2">
+            <Button
+              label={`${worldName} 나가기`}
+              onClick={() => router.push('/')}
+              worldKey={worldKey}
+            />
+            <Button
+              label={`${worldName} 진행도 리셋하기`}
+              onClick={reset}
+              worldKey={worldKey}
+            />
+            <Button
+              label='계속하기'
+              onClick={() => setIsPaused(false)}
+              worldKey={worldKey}
+            />
+          </div>
+        </FullScreenModal>
+      }
     </div>
   )
 }

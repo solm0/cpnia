@@ -48,6 +48,7 @@ export default function TimeScreen() {
           {/* npc들 */}
           <Npcs
             worldKey={worldKey}
+            activeNpc={activeNpc}
             setActiveNpc={setActiveNpc}
             setIsChatOpen={setIsChatOpen}
             chatNpc={chatNpc}

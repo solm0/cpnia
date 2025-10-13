@@ -35,7 +35,7 @@ export default function Home() {
     }
   }, []);
 
-  const sceneRef = useRef<any>(null);
+  const sceneRef = useRef<{ focusOn: (target: [number, number, number], rotation: [number, number, number], zoomIn?: number) => void }>(null);
   const focusPortal = (
     position?: [number, number, number],
     rotation?: [number, number, number],

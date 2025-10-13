@@ -7,13 +7,14 @@ import { Mesh, MeshStandardMaterial } from "three";
 export default function MapNpc({
   name,
   hoveredNpc, setHoveredNpc,
-  setActiveNpc,
+  activeNpc, setActiveNpc,
   model,
   closeIsChatOpen,
 }: {
   name: string;
   hoveredNpc: string | null;
   setHoveredNpc: (name: string | null) => void;
+  activeNpc: string | null;
   setActiveNpc: (name: string) => void;
   model?: string;
   closeIsChatOpen: (isChatOpen: boolean) => void;
@@ -62,7 +63,7 @@ export default function MapNpc({
       if ((child as Mesh).isMesh) {
         const shader = child.userData.shader;
         if (shader?.uniforms?.uHighlight) {
-          shader.uniforms.uHighlight.value = hoveredNpc === name ? 1 : 0;
+          shader.uniforms.uHighlight.value = hoveredNpc === name ? 1 : activeNpc === name ? 1 : 0;
         }
       }
     });

@@ -7,9 +7,10 @@ import { chatNpcProp } from "@/app/lib/data/positions/chatNpcs";
 import { Billboard, Image } from "@react-three/drei";
 
 export default function Npcs({
-  worldKey, setActiveNpc, setIsChatOpen, chatNpc
+  worldKey, activeNpc, setActiveNpc, setIsChatOpen, chatNpc
 }: {
   worldKey: string;
+  activeNpc: string | null;
   setActiveNpc: (activeNpc: string | null) => void;
   setIsChatOpen: (isChatOpen: boolean) => void;
   chatNpc: chatNpcProp;
@@ -53,6 +54,7 @@ export default function Npcs({
               name={npc.name}
               hoveredNpc={hoveredNpc}
               setHoveredNpc={setHoveredNpc}
+              activeNpc={activeNpc}
               setActiveNpc={setActiveNpc}
               model={npc.model}
               closeIsChatOpen={setIsChatOpen}

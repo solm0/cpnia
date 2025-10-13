@@ -12,7 +12,7 @@ export default function Button({
         <button
           type="button"
           onClick={() => onClick?.()}
-          className="h-full px-4 flex items-center border-1 border-[#ffffff70] pointer-events-auto hover:opacity-50 transition-opacity cursor-pointer"
+          className={`px-4 ${small ? 'h-full' : 'py-1'} flex items-center border-1 border-[#ffffff70] pointer-events-auto hover:opacity-50 transition-opacity cursor-pointer`}
         >
           {label}
         </button>

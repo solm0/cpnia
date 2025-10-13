@@ -65,6 +65,7 @@ export default function SacrificeScreen() {
           {/* npc들 */}
           <Npcs
             worldKey={worldKey}
+            activeNpc={activeNpc}
             setActiveNpc={setActiveNpc}
             setIsChatOpen={setIsChatOpen}
             chatNpc={chatNpc}

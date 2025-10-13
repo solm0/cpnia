@@ -57,6 +57,7 @@ export default function ChatNpcScreen({
               onClick={() => setIsChatOpen(false)}
               label="닫기"
               worldKey="time"
+              small={true}
             />
           </div>
     
