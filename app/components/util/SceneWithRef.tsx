@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useThree } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useRef, useImperativeHandle, forwardRef } from "react";
 import { OrbitControls } from "@react-three/drei";
 import Loader from "./Loader";
@@ -17,7 +17,7 @@ const SceneWithRef = forwardRef(({
   const controlsRef = useRef<any>(null);
   const { camera } = useThree();
 
-  // Expose a method to focus on a position
+  // --- Focus animation logic ---
   useImperativeHandle(ref, () => ({
     focusOn: (
       target: [number, number, number],
@@ -65,7 +65,8 @@ const SceneWithRef = forwardRef(({
       <OrbitControls
         ref={controlsRef}
         minDistance={!isFocused ? 45 : 0 }
-        maxDistance={100} />
+        maxDistance={100}
+      />
     </Suspense>
   );
 });

@@ -75,6 +75,8 @@ export default function Home() {
               position={world.position}
               rotation={world.rotation}
               scale={world.scale}
+              rotationAxis={world.rotationAxis}
+              rotationSpeed={world.rotationSpeed}
               onFocus={focusPortal}
               setFocusedWorld={setFocusedWorld}
             />

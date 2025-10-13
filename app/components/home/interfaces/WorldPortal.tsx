@@ -3,9 +3,12 @@
 import { Billboard, Text } from "@react-three/drei";
 import Model from "../../util/Model";
 import { useGameStore } from "@/app/lib/state/gameState";
+import { Group, Vector3 } from "three";
+import { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
 
 export default function WorldPortal({
-  src, label, worldKey, position, rotation, scale, onFocus, setFocusedWorld,
+  src, label, worldKey, position, rotation, scale, rotationAxis, rotationSpeed, onFocus, setFocusedWorld,
 }: {
   src: string;
   label: string;
@@ -13,14 +16,26 @@ export default function WorldPortal({
   position: [number, number, number];
   rotation: [number, number, number];
   scale: number;
+  rotationAxis: [number, number, number];
+  rotationSpeed: number;
   onFocus: (position?: [number, number, number], rotation?:[number, number, number], worldKey?: string) => void;
   setFocusedWorld: (focusedWorld: string) => void;
 }) {
   const completed = useGameStore((state) => state.isWorldCompleted(worldKey));
+  const ref = useRef<Group | null>(null);
+
+  useFrame((_, delta) => {
+    if (!ref.current) return;
+    ref.current.rotateOnAxis(
+      new Vector3(...rotationAxis),
+      rotationSpeed * delta
+    );
+  });
 
   return (
     <group
       scale={1}
+      ref={ref}
       position={position}
       rotation={rotation}
       onClick={() => {
