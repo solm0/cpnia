@@ -2,21 +2,19 @@ import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { AnimationAction, AnimationMixer, LoopRepeat, Mesh } from "three";
 import { useGLTF } from "@react-three/drei";
+import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
 
 export function Avatar({
-  charGltfSrc = '/models/avatar-jump.glb',
-  animGltfSrc = '/models/avatar-walk.glb',
-  actionKey = 'idle',
+  animIndex,
 }: {
-  charGltfSrc?: string;
-  animGltfSrc?: string;
-  actionKey?: string;
+  animIndex?: number;
 }) {
   const actionsRef = useRef<AnimationAction | null>(null);
   const mixer = useRef<AnimationMixer | null>(null);
 
-  const charGltf = useGLTF(charGltfSrc);
-  const animGltf = useGLTF(animGltfSrc);
+  const charGltf = useGLTF("/models/avatars/default.glb");
+  const animGltf = useAnimGltf();
+  const anim = animGltf[animIndex ?? 0];
 
   // set up mixer once
   useEffect(() => {
@@ -38,18 +36,11 @@ export function Avatar({
 
   // switch animation when actionKey changes
   useEffect(() => {
-    if (!mixer.current || !animGltf.animations.length) return;
+    if (!mixer.current || !anim.animations.length) return;
 
-    // const clip = animGltf.animations.find((a) => a.name === actionKey);
-    const clip = animGltf.animations[0];
+    const clip = anim.animations[0];
     console.log('anim', clip.name)
 
-    // if (!clip) {
-    //   console.warn(`No animation found for key "${actionKey}"`);
-    //   return;
-    // }
-
-    // fade out old action
     if (actionsRef.current) {
       actionsRef.current.fadeOut(0.2);
     }
@@ -57,7 +48,7 @@ export function Avatar({
     const action = mixer.current.clipAction(clip);
     action.reset().fadeIn(0.2).setLoop(LoopRepeat, Infinity).play();
     actionsRef.current = action;
-  }, [actionKey, animGltf]); // 👈 KEY: depend on actionKey!
+  }, [animIndex]);
 
   useFrame((_, delta) => {
     mixer.current?.update(delta);

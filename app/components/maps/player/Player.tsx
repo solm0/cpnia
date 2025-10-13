@@ -27,7 +27,7 @@ export default function Player({
   const playerGrounded = useRef(false);
   const inJumpAction = useRef(false);
   const body = useRef<any>(null);
-  const [activeAction, setActiveAction] = useState('idle');
+  const [activeAction, setActiveAction] = useState(0);
 
   const pressedKeys = useKeyboardControls();
   const gamepad = useGamepadControls();
@@ -57,60 +57,56 @@ export default function Player({
 
     const deadzone = 0.5;
     const speed = 1;
-    let nextAction = 'idle';
+    let nextAction = 0; // idle
 
     // Input
     let horizontal = 0;
     let vertical = 0;
     if (pressedKeys.current.has("KeyD")) {
       horizontal += speed;
-      nextAction = 'animation_0'
+      nextAction = 1
     }
     if (pressedKeys.current.has("KeyA")) {
       horizontal -= speed;
-      nextAction = 'animation_0'
+      nextAction = 1
     }
     if (pressedKeys.current.has("KeyS")) {
       vertical += speed;
-      nextAction = 'animation_0'
+      nextAction = 1
     }
     if (pressedKeys.current.has("KeyW")) {
       vertical -= speed;
-      nextAction = 'animation_0'
+      nextAction = 1
     }
 
     if (gamepad) {
       if (gamepad.current.axes[0] > deadzone) {
         horizontal += speed;
-        nextAction = 'animation_0'
+        nextAction = 1
       }
       if (gamepad.current.axes[0] < -deadzone) {
         horizontal -= speed;
-        nextAction = 'animation_0'
+        nextAction = 1
       }
       if (gamepad.current.axes[1] > deadzone) {
         vertical += speed;
-        nextAction = 'animation_0'
+        nextAction = 1
       }
       if (gamepad.current.axes[1] < -deadzone) {
         vertical -= speed;
-        nextAction = 'animation_0'
+        nextAction = 1
       }
     }
-
-    if (activeAction !== nextAction) {
-      setActiveAction(nextAction);
-    }
-
+    
     const horizontalInput = new Vector3(horizontal, 0, vertical);
-
+    
     // Rotate by yaw
     if (horizontalInput.lengthSq() > 0) {
       horizontalInput.normalize();
       const yawQuat = new Quaternion().setFromEuler(new Euler(0, yaw.rotation.y, 0));
       horizontalInput.applyQuaternion(yawQuat);
     }
-
+    
     // Jump & gravity
     if (playerGrounded.current) {
       if ((pressedKeys.current.has("Space") || gamepad?.current.buttons[0]) && !inJumpAction.current) {
@@ -121,38 +117,51 @@ export default function Player({
     } else {
       inputVelocity.y -= 3 * delta;
     }
+
+    if (inJumpAction.current) {
+      nextAction = 2;
+    } else if (horizontalInput.lengthSq() > 0) {
+      nextAction = 1;
+    } else {
+      nextAction = 0;
+    }
     
     const t = body.current.translation();
-
+    
     // --- chatnpc를 위한 player position 저장
     const isInputting = horizontal !== 0 || vertical !== 0;
-
+    
     if (isInputting && !wasMoving.current) {
       setIsMoving(true);
       wasMoving.current = true;
     } else if (!isInputting && wasMoving.current) {
       setIsMoving(false);
       wasMoving.current = false;
-
+      
       // player가 멈추면 final position 저장
       setPosition({ x: t.x, y: t.y, z: t.z });
     }
-
+    
     // Move rigidbody
     const move = horizontalInput.clone();
     move.y = inputVelocity.y;
-
+    
     const newPos = {
-      x: t.x + move.x * delta * 40,
-      y: Math.max(groundY, t.y + move.y * delta * 40),
-      z: t.z + move.z * delta * 40,
+      x: t.x + move.x * delta * 13,
+      y: Math.max(groundY, t.y + move.y * delta * 13),
+      z: t.z + move.z * delta * 13,
     };
-
+    
     // Reset jump state on ground
     if (newPos.y <= groundY + 0.01) {
       inputVelocity.y = 0;
       playerGrounded.current = true;
       inJumpAction.current = false;
+    }
+    
+    if (activeAction !== nextAction) {
+      console.log(nextAction)
+      setActiveAction(nextAction);
     }
     
     const nextPos = clampToBoundary(newPos, rectArea);
@@ -189,7 +198,7 @@ export default function Player({
         <mesh visible={false} castShadow receiveShadow>
           <CuboidCollider args={[0.5, 1, 0.5]} /> 
         </mesh>
-        <Avatar actionKey={activeAction} />
+        <Avatar animIndex={activeAction} />
       </RigidBody>
       {/* <DebugBoundaries boundaries={rectArea} /> */}
     </>

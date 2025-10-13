@@ -146,7 +146,7 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
           <div className="w-50 h-44">
             <SmallScene>
               <Model
-                src="/models/avatar-default.glb"
+                src="/models/avatars/default.glb"
                 scale={2.5}
                 position={[0,-0.8,0]}
               />

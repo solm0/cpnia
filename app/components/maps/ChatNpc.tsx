@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useFrame, useLoader } from "@react-three/fiber";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
+import { useFrame, } from "@react-three/fiber";
+import { useEffect, useRef, useState } from "react";
 import { Mesh, MeshStandardMaterial, AnimationAction, AnimationMixer, LoopRepeat } from "three";
 import { usePlayerStore } from "@/app/lib/state/playerStore";
-import { Billboard, Image, Text, useGLTF } from "@react-three/drei";
+import { Billboard, Text, useGLTF } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
 import { Euler, Quaternion } from "three";
+import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
 
 export function ChatNpcAvatar({
   name,
@@ -27,11 +26,8 @@ export function ChatNpcAvatar({
   const actionsRef = useRef<AnimationAction | null>(null);
   const mixer = useRef<AnimationMixer | null>(null);
 
-  const charGltf = useGLTF('/models/chat-npc.glb');
-  const animGltf = [
-    useGLTF('/models/avatar-idle.glb'),
-    useGLTF('/models/avatar-walk.glb')
-  ]
+  const charGltf = useGLTF('/models/avatars/chat-npc.glb');
+  const animGltf = useAnimGltf();
 
   useEffect(() => {
     if (charGltf) {
@@ -127,7 +123,6 @@ export function ChatNpcAvatar({
         closeActiveNpc(null);
       }}
     >
-
       <primitive object={charGltf.scene} />
     </group>
   )
