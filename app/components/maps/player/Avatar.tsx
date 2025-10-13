@@ -40,11 +40,14 @@ export function Avatar({
   useEffect(() => {
     if (!mixer.current || !animGltf.animations.length) return;
 
-    const clip = animGltf.animations.find((a) => a.name === actionKey);
-    if (!clip) {
-      console.warn(`No animation found for key "${actionKey}"`);
-      return;
-    }
+    // const clip = animGltf.animations.find((a) => a.name === actionKey);
+    const clip = animGltf.animations[0];
+    console.log('anim', clip.name)
+
+    // if (!clip) {
+    //   console.warn(`No animation found for key "${actionKey}"`);
+    //   return;
+    // }
 
     // fade out old action
     if (actionsRef.current) {
