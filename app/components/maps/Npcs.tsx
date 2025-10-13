@@ -62,29 +62,13 @@ export default function Npcs({
       )}
 
       {/* 챗 npc */}
-      <group>
-        <Billboard position={[chatNpc.position[0],chatNpc.position[1]+7,chatNpc.position[2]]}>
-          <Image
-            url="/images/exclaim.png"
-            scale={[2,2]}
-            transparent
-          />
-        </Billboard>
-        <RigidBody
-          position={chatNpc.position}
-          rotation={chatNpc.rotation}
-          colliders={'cuboid'}
-          type="fixed"
-        >
-          <ChatNpc
-            name={chatNpc.name}
-            hoveredNpc={hoveredNpc}
-            setHoveredNpc={setHoveredNpc}
-            setIsChatOpen={setIsChatOpen}
-            closeActiveNpc={setActiveNpc}
-          />
-        </RigidBody>
-      </group>
+      <ChatNpc
+        name={chatNpc.name}
+        hoveredNpc={hoveredNpc}
+        setHoveredNpc={setHoveredNpc}
+        setIsChatOpen={setIsChatOpen}
+        closeActiveNpc={setActiveNpc}
+      />
     </>
   )
 }

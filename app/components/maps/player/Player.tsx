@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Euler, Quaternion, Vector3 } from "three";
-import { act, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
@@ -11,6 +11,7 @@ import { checkCollision } from "./checkCollision";
 import { Avatar } from "./Avatar";
 import { useFollowCam } from "./useFollowCam";
 import { CuboidCollider } from "@react-three/rapier";
+import { usePlayerStore } from "@/app/lib/state/playerStore";
 
 const rectArea: Boundary[] = [
   { type: "rect", center: [90, -10], size: [365, 130] }
@@ -36,6 +37,11 @@ export default function Player({
     pressedKeys.current,
     gamepad.current
   );
+
+  // chatnpc를 위한 player position 저장
+  const setIsMoving = usePlayerStore((state) => state.setIsMoving);
+  const setPosition = usePlayerStore((state) => state.setPosition);
+  const wasMoving = useRef(false);
 
   const inputVelocity = useMemo(() => new Vector3(), []);
 
@@ -118,6 +124,20 @@ export default function Player({
     
     const t = body.current.translation();
 
+    // --- chatnpc를 위한 player position 저장
+    const isInputting = horizontal !== 0 || vertical !== 0;
+
+    if (isInputting && !wasMoving.current) {
+      setIsMoving(true);
+      wasMoving.current = true;
+    } else if (!isInputting && wasMoving.current) {
+      setIsMoving(false);
+      wasMoving.current = false;
+
+      // player가 멈추면 final position 저장
+      setPosition({ x: t.x, y: t.y, z: t.z });
+    }
+
     // Move rigidbody
     const move = horizontalInput.clone();
     move.y = inputVelocity.y;
@@ -155,7 +175,9 @@ export default function Player({
       body.current.setNextKinematicRotation(slerped);
     }
   });
+
   console.log(activeAction)
+
   return (
     <>
       <RigidBody

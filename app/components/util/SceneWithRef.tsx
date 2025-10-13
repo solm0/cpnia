@@ -65,7 +65,7 @@ const SceneWithRef = forwardRef(({
       <OrbitControls
         ref={controlsRef}
         minDistance={!isFocused ? 45 : 0 }
-        maxDistance={50} />
+        maxDistance={100} />
     </Suspense>
   );
 });
