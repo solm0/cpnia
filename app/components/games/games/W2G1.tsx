@@ -2,7 +2,7 @@ import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
 import { lineProp } from "@/app/lib/data/lines/mapNpcLines";
 import { Suspense, useState } from "react";
-import BattleField from "./BattleField";
+import BattleField from "./W2G1/BattleField";
 
 export default function W2G1({
   worldKey, gameKey, npcData, onGameEnd
@@ -27,7 +27,7 @@ export default function W2G1({
         </Suspense>
       </Scene>
 
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center h-auto w-auto">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center h-auto w-auto pointer-events-none">
         <div className="absolute w-80 h-80 border-2 rounded-full">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[2px] h-15 bg-black"></div>
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[2px] h-15 bg-black"></div>
