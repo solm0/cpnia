@@ -12,6 +12,7 @@ import { Avatar } from "./Avatar";
 import { useFollowCam } from "./useFollowCam";
 import { CuboidCollider } from "@react-three/rapier";
 import { usePlayerStore } from "@/app/lib/state/playerStore";
+import { degToRad } from "three/src/math/MathUtils.js";
 
 const rectArea: Boundary[] = [
   { type: "rect", center: [90, -10], size: [365, 130] }
@@ -34,6 +35,7 @@ export default function Player({
   const { yaw } = useFollowCam(
     body,
     [0, 5, 20],
+    [degToRad(-20),0,0],
     pressedKeys.current,
     gamepad.current
   );

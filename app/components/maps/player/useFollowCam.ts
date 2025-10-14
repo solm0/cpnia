@@ -6,6 +6,7 @@ import { Object3D, Vector3, Euler } from "three";
 export function useFollowCam(
   ref: React.RefObject<any>,
   offset: [number, number, number],
+  rotation: [number, number, number],
   pressedKeys: Set<string>,
   gamepad: {
     axes: number[];
@@ -23,6 +24,12 @@ export function useFollowCam(
   const smoothTarget = useRef(new Vector3());
   const currentZoom = useRef(new Vector3(0, 0, offset[2]));
   const zoomDistance = useRef(offset[2]);
+
+  useEffect(() => {
+    yaw.rotation.y = rotation[1];
+    pitch.rotation.x = rotation[0];
+    camera.rotation.z = rotation[2];
+  }, []);
 
   // ──────────────────────────────
   // Input handling (mouse, keys, gamepad)

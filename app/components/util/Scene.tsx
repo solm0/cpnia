@@ -1,26 +1,53 @@
 'use client'
 
-import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
+import { Suspense, useEffect } from "react";
 import Loader from "./Loader";
+
+function CameraSetup({
+  position, rotation
+}: {
+  position?: [number, number, number];
+  rotation?: [number, number, number];
+}) {
+  const { camera } = useThree();
+
+  useEffect(() => {
+    if (position) camera.position.set(...position);
+    if (rotation) camera.rotation.set(...rotation);
+    camera.updateProjectionMatrix();
+  }, [camera, position, rotation]);
+
+  return null;
+}
 
 export default function Scene({
   children,
-  worldKey,
   pointer = true,
+  position = [0, 0, 5],
+  rotation,
+  fov = 50,
+  near, far
 }: {
   children: React.ReactNode;
-  worldKey?: string;
-  pointer?: boolean
+  pointer?: boolean;
+  position?: [number, number, number];
+  rotation?: [number, number, number];
+  fov?: number
+  near?: number;
+  far?: number;
 }) {
   return (
     <Canvas
       style={{ pointerEvents: pointer === false ? "none" : "auto" }}
       shadows
-      camera={worldKey === 'sacrifice' ? { position: [0, 0, 5], fov: 50, near: 0.1, far: 7000} :{ position: [0, 0, 5], fov: 50 }}
+      camera={{
+        fov, near, far,
+      }}
       frameloop="always"
     >
       <Suspense fallback={<Loader />}>
+        <CameraSetup position={position} rotation={rotation} />
         {children}
       </Suspense>
     </Canvas>

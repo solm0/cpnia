@@ -15,6 +15,7 @@ import { coinStairs } from "@/app/lib/data/positions/coinStairs";
 import { CuboidCollider } from "@react-three/rapier";
 // import { DebugBoundaries } from "./debogBoundaries";
 import { stagePositions } from "@/app/lib/data/positions/stagePositions";
+import { degToRad } from "three/src/math/MathUtils.js";
 
 const circleArea: Boundary[] = [
   { type: "circle", center: [stagePositions.card.x+9, stagePositions.card.z+3], radius: 30, y: stagePositions.card.y+45 },
@@ -46,6 +47,7 @@ export default function PlayerWithStair({
   const { yaw } = useFollowCam(
     body,
     [0, 1, 40],
+    [degToRad(-20),0,0],
     pressedKeys.current,
     gamepad.current
   );

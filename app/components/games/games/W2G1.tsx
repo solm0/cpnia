@@ -3,6 +3,7 @@ import GameMenu from "../interfaces/GameMenu";
 import { lineProp } from "@/app/lib/data/lines/mapNpcLines";
 import { Suspense, useState } from "react";
 import BattleField from "./W2G1/BattleField";
+import { degToRad } from "three/src/math/MathUtils.js";
 
 export default function W2G1({
   worldKey, gameKey, npcData, onGameEnd
@@ -17,7 +18,10 @@ export default function W2G1({
   return (
     <main className="w-full h-full">
       {/* 게임 */}
-      <Scene>
+      <Scene
+        position={[0,0,5]}
+        rotation={[0,degToRad(20),degToRad(20)]}
+      >
         <Suspense>
           <BattleField
             score={score}
@@ -28,13 +32,13 @@ export default function W2G1({
       </Scene>
 
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center h-auto w-auto pointer-events-none">
-        <div className="absolute w-80 h-80 border-2 rounded-full">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[2px] h-15 bg-black"></div>
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[2px] h-15 bg-black"></div>
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 w-15 h-[2px] bg-black"></div>
-          <div className="absolute top-1/2 -translate-y-1/2 right-0 w-15 h-[2px] bg-black"></div>
-          <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-50 h-[1px] bg-red-500"></div>
-          <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-[1px] h-50 bg-red-500"></div>
+        <div className="absolute w-96 h-96 border-16 border-black rounded-full inset-shadow-sm inset-shadow-black">
+          <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-60 h-[1px] bg-red-600"></div>
+          <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-[1px] h-60 bg-red-600"></div>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[4px] h-20 bg-black"></div>
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[4px] h-20 bg-black"></div>
+          <div className="absolute top-1/2 -translate-y-1/2 left-0 w-20 h-[4px] bg-black"></div>
+          <div className="absolute top-1/2 -translate-y-1/2 right-0 w-20 h-[4px] bg-black"></div>
         </div>
       </div>
 
