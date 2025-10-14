@@ -1,9 +1,8 @@
-import PlaceHolderGame from "./PlaceHolderGame";
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
 import { lineProp } from "@/app/lib/data/lines/mapNpcLines";
-import { useState } from "react";
-import { OrbitControls } from "@react-three/drei";
+import { Suspense, useState } from "react";
+import BattleField from "./BattleField";
 
 export default function W2G1({
   worldKey, gameKey, npcData, onGameEnd
@@ -13,27 +12,38 @@ export default function W2G1({
   npcData: Record<string, lineProp>;
   onGameEnd: (success: boolean) => void;
 }) {
-  // 게임마다 다른 게임 상태 저장. 점수만 Game으로 올려줌.
-  const [click, setClick] = useState(0);
-  
+  const [score, setScore] = useState(0);
+
   return (
     <main className="w-full h-full">
       {/* 게임 */}
       <Scene>
-        <PlaceHolderGame
-          click={click}
-          setClick={setClick}
-          onGameEnd={onGameEnd}
-        />
-        <OrbitControls minDistance={30} maxDistance={100} />
+        <Suspense>
+          <BattleField
+            score={score}
+            setScore={setScore}
+            onGameEnd={onGameEnd}
+          />
+        </Suspense>
       </Scene>
+
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center h-auto w-auto">
+        <div className="absolute w-80 h-80 border-2 rounded-full">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[2px] h-15 bg-black"></div>
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[2px] h-15 bg-black"></div>
+          <div className="absolute top-1/2 -translate-y-1/2 left-0 w-15 h-[2px] bg-black"></div>
+          <div className="absolute top-1/2 -translate-y-1/2 right-0 w-15 h-[2px] bg-black"></div>
+          <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-50 h-[1px] bg-red-500"></div>
+          <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-[1px] h-50 bg-red-500"></div>
+        </div>
+      </div>
 
       {/* 게임 인터페이스 */}
       <GameMenu
         worldKey={worldKey}
         gameKey={gameKey}
         npcData={npcData}
-        score={click}
+        score={score}
       />
     </main>
   )
