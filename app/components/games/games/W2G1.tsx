@@ -1,9 +1,44 @@
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
 import { lineProp } from "@/app/lib/data/lines/mapNpcLines";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import BattleField from "./W2G1/BattleField";
 import { degToRad } from "three/src/math/MathUtils.js";
+import Loader from "../../util/Loader";
+import { roundConfig } from "./W2G1/roundConfig";
+import { Vector3 } from "three";
+import Timer from "./W2G1/Timer";
+import Button from "../../util/Button";
+
+export interface BodyData {
+  ingr: string;
+  pos: [number, number, number];
+}
+
+// 조리대
+export const sizeX = 60;
+export const sizeY = 20;
+export const center = new Vector3(-1.7,0,-5.5);
+
+// 피자
+export const pizzaRadius = 4.5;
+
+export function isInsidePizza(x: number, z: number): boolean {
+  const dx = x - center.x;
+  const dz = z - center.z;
+  return dx * dx + dz * dz < pizzaRadius * pizzaRadius;
+}
+
+export function randomPosition(): [number, number, number] {
+  let x: number, z: number;
+
+  do {
+    x = center.x + (Math.random() - 0.5) * sizeX;
+    z = center.z + (Math.random() - 0.5) * sizeY;
+  } while (isInsidePizza(x, z));
+
+  return [x, center.y, z];
+}
 
 export default function W2G1({
   worldKey, gameKey, npcData, onGameEnd
@@ -13,7 +48,61 @@ export default function W2G1({
   npcData: Record<string, lineProp>;
   onGameEnd: (success: boolean) => void;
 }) {
+  const [round, setRound] = useState(1);
   const [score, setScore] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const secondsRef = useRef<number>(0);
+
+  // clear previous timer
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+  }, []);
+
+  function gameOver(success: boolean) {
+    if (success) {
+      if (round === 3) {
+        onGameEnd(true);
+      } else {
+        setScore(0)
+        setRound(prev => {
+          const newRound = prev + 1;
+
+          const time = roundConfig[newRound].time;
+          console.log(time)
+          secondsRef.current = time;
+
+          return newRound;
+        });
+      }
+    } else {
+      onGameEnd(false);
+    }
+  }
+
+  function startRound(round: number) {
+    const time = roundConfig[round].time;
+    console.log(round, time)
+    secondsRef.current = time;
+  
+    if (timerRef.current) clearInterval(timerRef.current);
+  
+    timerRef.current = setInterval(() => {
+      if (secondsRef.current <= 1) {
+        clearInterval(timerRef.current!);
+        gameOver(false);
+      } else {
+        secondsRef.current -= 1;
+      }
+    }, 1000);
+  }
+
+  useEffect(() => {
+    if (score === roundConfig[round].abnormCount) {
+      gameOver(true);
+    }
+  }, [score, round])
 
   return (
     <main className="w-full h-full">
@@ -22,11 +111,12 @@ export default function W2G1({
         position={[0,0,5]}
         rotation={[0,degToRad(20),degToRad(20)]}
       >
-        <Suspense>
+        <Suspense fallback={<Loader />}>
           <BattleField
             score={score}
             setScore={setScore}
-            onGameEnd={onGameEnd}
+            round={round}
+            onRoundReady={startRound}
           />
         </Suspense>
       </Scene>
@@ -39,6 +129,17 @@ export default function W2G1({
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[4px] h-20 bg-black"></div>
           <div className="absolute top-1/2 -translate-y-1/2 left-0 w-20 h-[4px] bg-black"></div>
           <div className="absolute top-1/2 -translate-y-1/2 right-0 w-20 h-[4px] bg-black"></div>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <p>Round: {round}</p>
+          <p>Score: {score}/{roundConfig[round].abnormCount}</p>
+          <Timer secondsRef={secondsRef} />
+          <Button
+            worldKey={worldKey}
+            label="클릭"
+            onClick={() => setScore(score+1)}
+          />
         </div>
       </div>
 

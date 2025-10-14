@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import { useEffect, useRef, useState } from "react";
+import { useGLTF } from "@react-three/drei";
 import { AnimationMixer, Object3D, Vector3 } from "three";
 import { useFrame } from "@react-three/fiber";
 import { roundConfig, roundConfigProp } from "./roundConfig";
@@ -8,40 +8,10 @@ import Model from "@/app/components/util/Model";
 import { lerp } from "three/src/math/MathUtils.js";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
 import OnPizza from "./OnPizza";
-import Player from "./CameraController";
 import { Physics } from "@react-three/rapier";
 import CameraController from "./CameraController";
-import { Bloom, EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
-import { BlendFunction } from 'postprocessing'
-
-interface BodyData {
-  ingr: string;
-  pos: [number, number, number];
-}
-// 조리대
-const sizeX = 60;
-const sizeY = 20;
-const center = new Vector3(-1.7,0,-5.5);
-
-// 피자
-const pizzaRadius = 4.5;
-
-function isInsidePizza(x: number, z: number): boolean {
-  const dx = x - center.x;
-  const dz = z - center.z;
-  return dx * dx + dz * dz < pizzaRadius * pizzaRadius;
-}
-
-function randomPosition(): [number, number, number] {
-  let x: number, z: number;
-
-  do {
-    x = center.x + (Math.random() - 0.5) * sizeX;
-    z = center.z + (Math.random() - 0.5) * sizeY;
-  } while (isInsidePizza(x, z));
-
-  return [x, center.y, z];
-}
+import { EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
+import { BodyData, center, isInsidePizza, pizzaRadius, randomPosition, sizeX, sizeY } from "../W2G1";
 
 function randomNearPosition(currentPos: Vector3, range: number = 2): [number, number, number] {
   let newX: number, newZ: number;
@@ -62,13 +32,14 @@ function randomNearPosition(currentPos: Vector3, range: number = 2): [number, nu
   return [newX, currentPos.y, newZ];
 }
 
-function pickRandom(ing: string[], kind: number) {
-  const shuffled = [...ing].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, kind);
-}
 
 function generateBodies(config: roundConfigProp, setPizzaIng: (pizzaIng: string[]) => void) {
   const newBodies: BodyData[] = [];
+
+  function pickRandom(ing: string[], kind: number) {
+    const shuffled = [...ing].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, kind);
+  }
 
   const chosenNormKinds = pickRandom(normIng, config.normKind);
   setPizzaIng(chosenNormKinds);
@@ -88,20 +59,20 @@ function generateBodies(config: roundConfigProp, setPizzaIng: (pizzaIng: string[
   return newBodies;
 }
 
+
 export default function BattleField({
-  score, setScore, onGameEnd
+  score, setScore, round, onRoundReady,
 }: {
   score: number;
   setScore: (score: number) => void;
-  onGameEnd: (success: boolean) => void;
+  round: number;
+  onRoundReady: (round: number) => void;
 }) {
   const [bodiesState, setBodiesState] = useState<BodyData[]>([])
   const bodiesRef = useRef<(Object3D | null)[]>([]);
   const animGltf = useAnimGltf()[1];
 
   const [pizzaIng, setPizzaIng] = useState<string[]>([]);
-
-  const [round, setRound] = useState(1);
 
   const gltfMap: Record<string, Object3D> = {
     lime: useGLTF('/models/avatars/lime.gltf').scene,
@@ -114,6 +85,13 @@ export default function BattleField({
     garlic: useGLTF('/models/avatars/garlic.gltf').scene,
     olive: useGLTF('/models/avatars/olive.gltf').scene,
   };
+
+  useEffect(() => {
+    const config = roundConfig[round];
+    const newBodies = generateBodies(config, setPizzaIng);
+    bodiesRef.current = [];
+    setBodiesState(newBodies);
+  }, [round]);
 
   // move bodies
   useFrame(({ clock }, delta) => {
@@ -162,19 +140,9 @@ export default function BattleField({
   useEffect(() => {
     const allLoaded = Object.values(gltfMap).every(Boolean);
     if (allLoaded) {
-      startRound(1);
+      onRoundReady(round);
     }
   }, [Object.values(gltfMap).length]);
-
-  function startRound(round: number) {
-    // 1. clear old bodies
-    bodiesRef.current = [];
-
-    // 2. generate new config
-    const config = roundConfig[round];
-    const bodies: BodyData[] = generateBodies(config, setPizzaIng);
-    setBodiesState(bodies);
-  }
   
   return (
     <Physics>
@@ -210,6 +178,7 @@ export default function BattleField({
         <meshBasicMaterial color="red" wireframe />
       </mesh> */}
 
+      {/* 지형 */}
       <Model
         src="/models/shop.glb"
         scale={0.5}
@@ -235,8 +204,10 @@ export default function BattleField({
       <directionalLight intensity={2} position={[0,10,0]} color={'orange'} castShadow/>
       <color attach="background" args={["blue"]} />
 
+      {/* 카메라, 컨트롤 */}
       <CameraController />
 
+      {/* 효과 */}
       <EffectComposer>
         <Vignette eskil={false} offset={0.4} darkness={0.7} />
         <Noise opacity={0.1} />

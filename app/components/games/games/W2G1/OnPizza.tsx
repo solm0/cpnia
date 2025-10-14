@@ -1,4 +1,3 @@
-import Model from "@/app/components/util/Model";
 import { Object3D } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 
