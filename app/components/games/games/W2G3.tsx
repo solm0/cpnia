@@ -3,7 +3,7 @@ import GameMenu from "../interfaces/GameMenu";
 import { useState } from "react";
 import CameraController from "./W2G1/CameraController";
 import { FugitiveLineModal } from "../../maps/interfaces/NpcLineModals";
-import ClonedModel from "../../util/ClonedModels";
+import Fugitive from "./W2G3/Fugitive";
 
 export default function W2G3({
   worldKey, gameKey, onGameEnd
@@ -48,10 +48,7 @@ export default function W2G3({
         <group
           onClick={() => setIsOpen(true)}
         >
-          <ClonedModel
-            src="/models/avatars/default.glb"
-            hoverEffect={true}
-          />
+          <Fugitive />
         </group>
 
 

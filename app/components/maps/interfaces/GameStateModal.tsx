@@ -7,23 +7,6 @@ import { degToRad } from "three/src/math/MathUtils.js";
 import PlaceHolder from "../../util/PlaceHolder";
 import clsx from "clsx";
 
-export function QuestList({
-  worldKey, gameKey, index,
-}: {
-  worldKey: string; gameKey: string, index: number
-}) {
-  const completed = useGameStore(state => state.worlds[worldKey].games[gameKey]);
-  const gameName = gamePortals[worldKey].find(game => game.gameKey === gameKey)?.gameName
-
-  return (
-    <div className="flex gap-1">
-      <span>{index}.</span>
-      <span className={`${completed ? 'line-through' : 'decoration-0'}`}>{gameName}</span>
-      {completed && '✅'}
-    </div>
-  )
-}
-
 export function GameStateModal({
   worldKey
 }: {

@@ -24,34 +24,27 @@ export default function GameScreen({
     gameKey: string;
     onGameEnd: (success: boolean) => void
   }>
-  type GameEntry = {
-    game: GameComponent;
-    npcName: string;
-  }
-  const gameMap: Record<string, Record<string, GameEntry>> = {
+  const gameMap: Record<string, Record<string, GameComponent>> = {
     time: {
-      game1: { game: W1G1, npcName: '베라' },
-      game2: { game: W1G2, npcName: '조엘' },
-      game3: { game: W1G3, npcName: '엘라' },
+      game1: W1G1,
+      game2: W1G2,
+      game3: W1G3,
     },
     sacrifice: {
-      game1: { game: W2G1, npcName: '엘리' },
-      game2: { game: W2G2, npcName: '루루' },
-      game3: { game: W2G3, npcName: '세라' },
+      game1: W2G1,
+      game2: W2G2,
+      game3: W2G3,
     },
     entropy: {
-      game1: { game: W3G1, npcName: '카일' },
-      game2: { game: W3G2, npcName: '리나' },
-      game3: { game: W3G3, npcName: '제드' },
+      game1: W3G1,
+      game2: W3G2,
+      game3: W3G3,
     },
   };
 
-  const SelectedGame = gameMap[worldKey]?.[gameKey].game;
+  const SelectedGame = gameMap[worldKey]?.[gameKey];
   if (!SelectedGame) return <div>게임을 찾을 수 없습니다</div>
   
-  const npcName = gameMap[worldKey]?.[gameKey].npcName;
-  const npcLines = mapNpcLines[worldKey]?.['game']?.[npcName];
-  if (!npcName || !npcLines) return <div>npc 데이터를 찾을 수 없습니다</div>
 
   return (
     <>
