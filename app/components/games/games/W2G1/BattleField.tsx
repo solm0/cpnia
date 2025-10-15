@@ -1,37 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { useGLTF } from "@react-three/drei";
-import { AnimationMixer, Object3D, Vector3 } from "three";
-import { useFrame } from "@react-three/fiber";
+import { Object3D, Raycaster, Vector2, Vector3 } from "three";
+import { useFrame, useThree } from "@react-three/fiber";
 import { roundConfig, roundConfigProp } from "./roundConfig";
 import { abnormIng, normIng } from "./ing";
 import Model from "@/app/components/util/Model";
 import { lerp } from "three/src/math/MathUtils.js";
-import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
 import OnPizza from "./OnPizza";
-import { Physics } from "@react-three/rapier";
 import CameraController from "./CameraController";
 import { EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 import { BodyData, center, isInsidePizza, pizzaRadius, randomPosition, sizeX, sizeY } from "../W2G1";
-
-function randomNearPosition(currentPos: Vector3, range: number = 2): [number, number, number] {
-  let newX: number, newZ: number;
-  
-  const minX = center.x - sizeX / 2;
-  const maxX = center.x + sizeX / 2;
-  const minZ = center.z - sizeY / 2;
-  const maxZ = center.z + sizeY / 2;
-
-  do {
-    const offsetX = (Math.random() * 2 - 1) * range;
-    const offsetZ = (Math.random() * 2 - 1) * range;
-
-    newX = Math.max(minX, Math.min(maxX, currentPos.x + offsetX));
-    newZ = Math.max(minZ, Math.min(maxZ, currentPos.z + offsetZ));
-  } while (isInsidePizza(newX, newZ));
-
-  return [newX, currentPos.y, newZ];
-}
-
+import Body from "./Body";
+import { Physics } from "@react-three/rapier";
 
 function generateBodies(config: roundConfigProp, setPizzaIng: (pizzaIng: string[]) => void) {
   const newBodies: BodyData[] = [];
@@ -59,20 +39,39 @@ function generateBodies(config: roundConfigProp, setPizzaIng: (pizzaIng: string[
   return newBodies;
 }
 
+function randomNearPosition(currentPos: Vector3, range: number = 2): [number, number, number] {
+  let newX: number, newZ: number;
+  
+  const minX = center.x - sizeX / 2;
+  const maxX = center.x + sizeX / 2;
+  const minZ = center.z - sizeY / 2;
+  const maxZ = center.z + sizeY / 2;
+
+  do {
+    const offsetX = (Math.random() * 2 - 1) * range;
+    const offsetZ = (Math.random() * 2 - 1) * range;
+
+    newX = Math.max(minX, Math.min(maxX, currentPos.x + offsetX));
+    newZ = Math.max(minZ, Math.min(maxZ, currentPos.z + offsetZ));
+  } while (isInsidePizza(newX, newZ));
+
+  return [newX, currentPos.y, newZ];
+}
 
 export default function BattleField({
-  score, setScore, round, onRoundReady,
+  round, onRoundReady,
 }: {
-  score: number;
-  setScore: (score: number) => void;
   round: number;
   onRoundReady: (round: number) => void;
 }) {
-  const [bodiesState, setBodiesState] = useState<BodyData[]>([])
   const bodiesRef = useRef<(Object3D | null)[]>([]);
-  const animGltf = useAnimGltf()[1];
-
+  const [bodiesState, setBodiesState] = useState<BodyData[]>([])
   const [pizzaIng, setPizzaIng] = useState<string[]>([]);
+
+  const raycasterRef = useRef(new Raycaster());
+  const pointer = new Vector2(0,0);
+  const targetedRef = useRef<Object3D | null>(null);
+  const { camera } = useThree();
 
   const gltfMap: Record<string, Object3D> = {
     lime: useGLTF('/models/avatars/lime.gltf').scene,
@@ -93,8 +92,19 @@ export default function BattleField({
     setBodiesState(newBodies);
   }, [round]);
 
+  // ✅ Start round only when all models exist
+  useEffect(() => {
+    const allLoaded = Object.values(gltfMap).every(Boolean);
+    if (allLoaded) {
+      onRoundReady(round);
+    }
+  }, [Object.values(gltfMap).length]);
+
   // move bodies
   useFrame(({ clock }, delta) => {
+
+    // --- body movement ---
+
     bodiesRef.current.forEach((obj) => {
       if (!obj) return;
 
@@ -134,37 +144,67 @@ export default function BattleField({
         obj.userData.speed = 0.002 + Math.random() * 0.002;
       }
     });
-  });
+     
+    // --- raycaster ---
 
-  // ✅ Start round only when all models exist
-  useEffect(() => {
-    const allLoaded = Object.values(gltfMap).every(Boolean);
-    if (allLoaded) {
-      onRoundReady(round);
+    const raycaster = raycasterRef.current;
+    raycaster.setFromCamera(pointer, camera);
+
+    const validBodies = bodiesRef.current.filter((o): o is Object3D => o !== null);
+    const intersects = raycaster.intersectObjects(validBodies, true);
+
+    function findRootByUUID(hit: Object3D, bodies: (Object3D | null)[]) {
+      for (const body of bodies) {
+        if (!body) continue;
+    
+        if (body.uuid === hit.uuid) return body; // rare, if hit itself is root
+    
+        // recursive search
+        const stack: Object3D[] = [body];
+        while (stack.length > 0) {
+          const obj = stack.pop()!;
+          if (obj.uuid === hit.uuid) return body; // return the top-level body
+          stack.push(...obj.children);
+        }
+      }
+      return null;
     }
-  }, [Object.values(gltfMap).length]);
+
+    let newTarget: Object3D | null = null;
+    
+    if (intersects.length > 0) {
+      let minDist = Infinity;
+      console.log(intersects)
+
+      intersects.forEach(intersect => {
+        const root = findRootByUUID(intersect.object, bodiesRef.current);
+        if (!root) return;
+
+        const dist = root.position.distanceTo(center);
+        if (dist < minDist) {
+          minDist = dist;
+          newTarget = root;
+        }
+      });
+    
+      bodiesRef.current.forEach(obj => {
+        if (!obj) return;
+        obj.userData.isTargeted = obj === newTarget;
+      });
+
+      targetedRef.current = newTarget;
+    }
+  });
   
   return (
     <Physics>
       {bodiesState.map((body, i) => (
-        <primitive
+        <Body
           key={i}
-          object={gltfMap[body.ingr].clone()}
-          position={body.pos}
-          ref={(el: Object3D | null) => {
-            if (!el || !animGltf || !animGltf.animations?.length) return;
-            bodiesRef.current[i] = el;
-
-            if (!el.userData.mixer) {
-              const root = el.children[0] || el; // use first child if exists
-              const mixer = new AnimationMixer(root);
-              el.userData.mixer = mixer;
-
-              const clip = animGltf.animations[0];
-              const action = mixer.clipAction(clip);
-              action.play();
-            }
-          }}
+          body={body}
+          bodiesRef={bodiesRef}
+          gltfMap={gltfMap}
+          i={i}
         />
       ))}
 
