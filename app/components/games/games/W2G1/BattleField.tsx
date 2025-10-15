@@ -59,10 +59,12 @@ function randomNearPosition(currentPos: Vector3, range: number = 2): [number, nu
 }
 
 export default function BattleField({
-  round, onRoundReady,
+  round, onRoundReady, abnormalRef, spaceKeyRef
 }: {
   round: number;
   onRoundReady: (round: number) => void;
+  abnormalRef: React.RefObject<boolean | null>;
+  spaceKeyRef: React.RefObject<boolean>;
 }) {
   const bodiesRef = useRef<(Object3D | null)[]>([]);
   const [bodiesState, setBodiesState] = useState<BodyData[]>([])
@@ -70,8 +72,8 @@ export default function BattleField({
 
   const raycasterRef = useRef(new Raycaster());
   const pointer = new Vector2(0,0);
-  const targetedRef = useRef<Object3D | null>(null);
   const { camera } = useThree();
+
 
   const gltfMap: Record<string, Object3D> = {
     lime: useGLTF('/models/avatars/lime.gltf').scene,
@@ -171,10 +173,9 @@ export default function BattleField({
     }
 
     let newTarget: Object3D | null = null;
-    
+
     if (intersects.length > 0) {
       let minDist = Infinity;
-      console.log(intersects)
 
       intersects.forEach(intersect => {
         const root = findRootByUUID(intersect.object, bodiesRef.current);
@@ -186,14 +187,36 @@ export default function BattleField({
           newTarget = root;
         }
       });
-    
-      bodiesRef.current.forEach(obj => {
-        if (!obj) return;
-        obj.userData.isTargeted = obj === newTarget;
-      });
-
-      targetedRef.current = newTarget;
     }
+
+    bodiesRef.current.forEach(obj => {
+      if (!obj) return;
+      (obj as Object3D).userData.isTargeted = obj === newTarget;
+    });
+    
+    if (newTarget) {
+      const ingr = (newTarget as Object3D).userData?.ingr;
+      abnormalRef.current = abnormIng.includes(ingr);
+    } else {
+      abnormalRef.current = null
+    }
+
+    // --- handle space key ---
+    if (spaceKeyRef.current && abnormalRef.current !== null){
+      console.log('슛!!')
+      
+      // Remove from bodies
+      const index = bodiesRef.current.findIndex(obj => obj === newTarget);
+
+      if(index !== -1){
+        bodiesRef.current.splice(index, 1); // remove for raycasting
+        setBodiesState(prev => prev.filter((_,i)=>i!==index)); // remove for React render
+      }
+
+      // Reset the key so we don't trigger again
+      spaceKeyRef.current = false;
+    }
+    console.log('length', bodiesRef.current.length, bodiesState.length)
   });
   
   return (

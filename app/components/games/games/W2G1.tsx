@@ -40,15 +40,17 @@ export function randomPosition(): [number, number, number] {
 }
 
 export function W2G1Interface({
-  round, gameOver, secondsRef, worldKey, gameKey
+  round, gameOver, secondsRef, worldKey, gameKey, abnormalRef
 }: {
   round: number;
   gameOver:(success: boolean) => void;
   secondsRef: React.RefObject<number>;
   worldKey: string;
   gameKey: string;
+  abnormalRef: React.RefObject<boolean | null>;
 }) {
   const [score, setScore] = useState(0);
+  const [penalty, setPenalty] = useState(0);
 
   useEffect(() => {
     if (score === roundConfig[round].abnormCount) {
@@ -57,7 +59,29 @@ export function W2G1Interface({
     }
   }, [score, round])
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space") {
+        if (abnormalRef.current === true) {
+          setScore(prev => prev + 1);
+        } else if (abnormalRef.current === false) {
+          setPenalty(prev => prev + 1);
+        }
+      }
+    };
   
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [abnormalRef]);
+
+  // 페널티 게임종료
+  useEffect(() => {
+    if (penalty >= 5) {
+      gameOver(false)
+      alert('멀쩡한 주민들을 마구잡이로 죽이다니!');
+    }
+  }, [penalty])
+
   return (
     <>
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center h-auto w-auto pointer-events-none">
@@ -73,6 +97,7 @@ export function W2G1Interface({
         <div className="flex flex-col gap-2">
           <p>라운드: {round}</p>
           <p>남은 스파이 수: {score}/{roundConfig[round].abnormCount}</p>
+          <p>벌점: {penalty}</p>
           <Timer secondsRef={secondsRef} />
           <Button
             worldKey={worldKey}
@@ -103,6 +128,20 @@ export default function W2G1({
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const secondsRef = useRef<number>(0);
+
+  const abnormal = useRef<boolean | null>(false); // 타겟에 뭔가가 있을때
+  const spaceKeyPressed = useRef(false); // spaceKey 눌렸는지
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => { if(e.code==="Space") spaceKeyPressed.current = true };
+    const up = (e: KeyboardEvent) => { if(e.code==="Space") spaceKeyPressed.current = false };
+    window.addEventListener("keydown", down);
+    window.addEventListener("keyup", up);
+    return () => {
+      window.removeEventListener("keydown", down);
+      window.removeEventListener("keyup", up);
+    }
+  }, []);
 
   // clear previous timer
   useEffect(() => {
@@ -148,7 +187,6 @@ export default function W2G1({
     }, 1000);
   }
 
-  
   return (
     <main className="w-full h-full">
       {/* 게임 */}
@@ -160,6 +198,8 @@ export default function W2G1({
           <BattleField
             round={round}
             onRoundReady={startRound}
+            abnormalRef={abnormal}
+            spaceKeyRef={spaceKeyPressed}
           />
         </Suspense>
       </Scene>
@@ -170,6 +210,7 @@ export default function W2G1({
         secondsRef={secondsRef}
         worldKey={worldKey}
         gameKey={gameKey}
+        abnormalRef={abnormal}
       />
     </main>
   )

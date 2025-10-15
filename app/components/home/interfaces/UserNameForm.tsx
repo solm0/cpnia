@@ -19,7 +19,7 @@ export default function UserNameForm() {
   }
 
   return (
-    <div className="flex flex-col gap-2 items-center">
+    <div className="flex flex-col gap-2 items-center pointer-events-auto">
       <label htmlFor="form" className="text-sm text-white">당신의 이름은??</label>
       <form
         id="form"
