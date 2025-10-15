@@ -59,6 +59,7 @@ export default function Player({
 
     const deadzone = 0.5;
     const speed = 1;
+    const moveSpeed = 50;
     let nextAction = 0; // idle
 
     // Input
@@ -149,9 +150,9 @@ export default function Player({
     move.y = inputVelocity.y;
     
     const newPos = {
-      x: t.x + move.x * delta * 13,
-      y: Math.max(groundY, t.y + move.y * delta * 13),
-      z: t.z + move.z * delta * 13,
+      x: t.x + move.x * delta * moveSpeed,
+      y: Math.max(groundY, t.y + move.y * delta * moveSpeed),
+      z: t.z + move.z * delta * moveSpeed,
     };
     
     // Reset jump state on ground

@@ -107,7 +107,6 @@ export default function SacrificeScreen() {
         npcData={chatNpc}
         worldKey={worldKey}
         setIsChatOpen={setIsChatOpen}
-        setActiveNpc={setActiveNpc}
         isChatOpen={isChatOpen}
       />
     </main>

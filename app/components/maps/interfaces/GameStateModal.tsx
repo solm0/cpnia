@@ -1,6 +1,5 @@
 import { gamePortals } from "@/app/lib/data/positions/gamePortals"
 import { useGameStore } from "@/app/lib/state/gameState";
-import Button from "../../util/Button";
 import SmallScene from "../../util/SmallScene";
 import Model from "../../util/Model";
 import { OrbitControls } from "@react-three/drei";
@@ -30,8 +29,8 @@ export function GameStateModal({
 }: {
   worldKey: string;
 }){
-  const reset = useGameStore(state => state.reset);
-  const isThereSomethingToDelete = useGameStore(state => Object.values(state.worlds[worldKey].games).some(Boolean));
+  // const reset = useGameStore(state => state.reset);
+  // const isThereSomethingToDelete = useGameStore(state => Object.values(state.worlds[worldKey].games).some(Boolean));
 
   const gameState = useGameStore(state => state.worlds[worldKey].games);
   const gameIconUrls = gamePortals[worldKey];

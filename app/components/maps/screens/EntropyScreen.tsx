@@ -77,7 +77,6 @@ export default function EntropyScreen() {
         npcData={chatNpc}
         worldKey={worldKey}
         setIsChatOpen={setIsChatOpen}
-        setActiveNpc={setActiveNpc}
         isChatOpen={isChatOpen}
       />
     </main>

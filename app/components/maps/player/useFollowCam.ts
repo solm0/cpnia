@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useThree, useFrame } from "@react-three/fiber";
 import { useMemo, useRef, useEffect } from "react";
-import { Object3D, Vector3, Euler } from "three";
+import { Object3D, Vector3 } from "three";
 
 export function useFollowCam(
   ref: React.RefObject<any>,
@@ -80,13 +80,16 @@ export function useFollowCam(
     currentZoom.current.lerp(new Vector3(0, 0, zoomDistance.current), delta * 5);
 
     // Compute desired camera position relative to target
-    const desiredPos = currentZoom.current
-      .clone()
-      .applyEuler(new Euler(pitch.rotation.x, yaw.rotation.y, 0))
-      .add(smoothTarget.current);
+    const radius = zoomDistance.current;
+    const x = radius * Math.sin(yaw.rotation.y) * Math.cos(pitch.rotation.x);
+    const y = radius * Math.sin(pitch.rotation.x);
+    const z = radius * Math.cos(yaw.rotation.y) * Math.cos(pitch.rotation.x);
 
-    // Smoothly move camera toward desired position
-    camera.position.lerp(desiredPos, delta * 10);
+    camera.position.set(
+      smoothTarget.current.x + x,
+      smoothTarget.current.y + y,
+      smoothTarget.current.z + z
+    );
     camera.lookAt(smoothTarget.current);
 
     updateCameraRotation();

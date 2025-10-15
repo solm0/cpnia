@@ -89,7 +89,6 @@ export default function TimeScreen() {
         npcData={chatNpc}
         worldKey={worldKey}
         setIsChatOpen={setIsChatOpen}
-        setActiveNpc={setActiveNpc}
         isChatOpen={isChatOpen}
       />
     </main>

@@ -1,4 +1,4 @@
-interface gamePortalProp {
+export interface gamePortalProp {
   label: string;
   gameKey: string;
   gameName: string;
@@ -6,6 +6,8 @@ interface gamePortalProp {
   position?: [number, number, number];
   rotation?:  [number, number, number];
   size?: [number, number, number];
+  model?: string;
+  scale?: number;
 }
 export const gamePortals: Record<string, gamePortalProp[]> = {
   time: [
@@ -46,8 +48,10 @@ export const gamePortals: Record<string, gamePortalProp[]> = {
       label: 'game 3',
       gameKey: 'game3',
       gameName: '도망자 데려오기',
-      position: [10, 3, 0],
-      rotation: [0, 0, 0]
+      position: [241, -8.5,-78.8], // 104, -71, -254.3
+      rotation: [0, 0, 0],
+      scale: 0.35,
+      model: '/models/door.glb'
     },
   ],
   entropy: [

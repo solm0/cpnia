@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useFrame, useThree } from "@react-three/fiber";
+import { useThree } from "@react-three/fiber";
 import { Suspense, useRef, useImperativeHandle, forwardRef } from "react";
 import { OrbitControls } from "@react-three/drei";
 import Loader from "./Loader";

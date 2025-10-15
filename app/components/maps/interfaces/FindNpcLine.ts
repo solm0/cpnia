@@ -2,7 +2,7 @@ import { mapNpcLines } from "@/app/lib/data/lines/mapNpcLines";
 import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
 import { pizzaCutterLines } from "@/app/lib/data/lines/pizzaCutterLine";
 
-export function FindNpcLine(name: string, worldKey: string, stage?: string){
+export function FindNpcLine(name: string, worldKey: string ){
   const npcConfig = useNpcConfigStore(state => state.npcConfig);
 
   const {formality, verbosity, warmth } = npcConfig;

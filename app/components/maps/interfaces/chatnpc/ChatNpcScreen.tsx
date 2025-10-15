@@ -9,13 +9,12 @@ import { TimePlayerChatBlock, SacrificePlayerChatBlock, EntropyPlayerChatBlock }
 import { TimeNpcLoadingBlock, SacrificeNpcLoadingBlock, EntropyNpcLoadingBlock } from "./NpcLoadingBlocks";
 
 export default function ChatNpcScreen({
-  npcData, worldKey, setIsChatOpen, isChatOpen, setActiveNpc
+  npcData, worldKey, setIsChatOpen, isChatOpen
 }: {
   npcData: chatNpcProp;
   worldKey: string;
   setIsChatOpen: (open: boolean) => void;
   isChatOpen: boolean;
-  setActiveNpc: (name: string | null) => void;
 }) {
   const npcName = npcData.name;
   const npcBrain = chatNpcBrains[worldKey];
