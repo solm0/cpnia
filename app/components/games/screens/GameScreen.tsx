@@ -10,7 +10,7 @@ import W2G3 from "../games/W2G3";
 import W3G1 from "../games/W3G1";
 import W3G2 from "../games/W3G2";
 import W3G3 from "../games/W3G3";
-import { lineProp } from "@/app/lib/data/lines/mapNpcLines";
+import PausedScreen from "../../util/PausedScreen";
 
 export default function GameScreen({
   worldKey, gameKey, handleGameEnd
@@ -22,7 +22,6 @@ export default function GameScreen({
   type GameComponent = React.FC<{
     worldKey: string;
     gameKey: string;
-    npcData: Record<string, lineProp>;
     onGameEnd: (success: boolean) => void
   }>
   type GameEntry = {
@@ -53,14 +52,18 @@ export default function GameScreen({
   const npcName = gameMap[worldKey]?.[gameKey].npcName;
   const npcLines = mapNpcLines[worldKey]?.['game']?.[npcName];
   if (!npcName || !npcLines) return <div>npc 데이터를 찾을 수 없습니다</div>
-  const npcData = { [npcName]: npcLines }
 
   return (
-    <SelectedGame
-      worldKey={worldKey}
-      gameKey={gameKey}
-      npcData={npcData}
-      onGameEnd={handleGameEnd}
-    />
+    <>
+      <SelectedGame
+        worldKey={worldKey}
+        gameKey={gameKey}
+        onGameEnd={handleGameEnd}
+      />
+      <PausedScreen
+        worldKey={worldKey}
+        isInMap={false}
+      />
+    </>
   )
 }

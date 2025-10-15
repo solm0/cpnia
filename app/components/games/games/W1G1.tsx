@@ -1,16 +1,14 @@
 import PlaceHolderGame from "./PlaceHolderGame";
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
-import { lineProp } from "@/app/lib/data/lines/mapNpcLines";
 import { useState } from "react";
 import { OrbitControls } from "@react-three/drei";
 
 export default function W1G1({
-  worldKey, gameKey, npcData, onGameEnd
+  worldKey, gameKey, onGameEnd
 }: {
   worldKey: string;
   gameKey: string;
-  npcData: Record<string, lineProp>;
   onGameEnd: (success: boolean) => void;
 }) {
   // 게임마다 다른 게임 상태 저장. 점수만 Game으로 올려줌.
@@ -32,7 +30,6 @@ export default function W1G1({
       <GameMenu
         worldKey={worldKey}
         gameKey={gameKey}
-        npcData={npcData}
         score={click}
       />
     </main>

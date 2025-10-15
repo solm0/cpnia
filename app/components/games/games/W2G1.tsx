@@ -1,6 +1,5 @@
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
-import { lineProp } from "@/app/lib/data/lines/mapNpcLines";
 import { Suspense, useEffect, useRef, useState } from "react";
 import BattleField from "./W2G1/BattleField";
 import { degToRad } from "three/src/math/MathUtils.js";
@@ -41,11 +40,10 @@ export function randomPosition(): [number, number, number] {
 }
 
 export default function W2G1({
-  worldKey, gameKey, npcData, onGameEnd
+  worldKey, gameKey, onGameEnd
 }: {
   worldKey: string;
   gameKey: string;
-  npcData: Record<string, lineProp>;
   onGameEnd: (success: boolean) => void;
 }) {
   const [round, setRound] = useState(1);
@@ -147,7 +145,6 @@ export default function W2G1({
       <GameMenu
         worldKey={worldKey}
         gameKey={gameKey}
-        npcData={npcData}
         score={score}
       />
     </main>

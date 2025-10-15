@@ -9,7 +9,7 @@ export function FindNpcLine(name: string, worldKey: string ){
   const {formality, verbosity, warmth } = npcConfig;
   if (!formality || !verbosity || !warmth) return ['npc 데이터를 찾을 수 없습니다'];
 
-  const npcLines = mapNpcLines[worldKey]?.['map']?.[name];
+  const npcLines = mapNpcLines[worldKey]?.[name];
   if (!npcLines) return ['npc 데이터를 찾을 수 없습니다'];
 
   return npcLines?.[formality]?.[verbosity]?.[warmth]

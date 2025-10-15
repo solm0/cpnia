@@ -1,20 +1,15 @@
-import PlaceHolderGame from "./PlaceHolderGame";
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
-import { lineProp } from "@/app/lib/data/lines/mapNpcLines";
 import { useState } from "react";
-import { OrbitControls } from "@react-three/drei";
 import CameraController from "./W2G1/CameraController";
 import { FugitiveLineModal } from "../../maps/interfaces/NpcLineModals";
-import Model from "../../util/Model";
 import ClonedModel from "../../util/ClonedModels";
 
 export default function W2G3({
-  worldKey, gameKey, npcData, onGameEnd
+  worldKey, gameKey, onGameEnd
 }: {
   worldKey: string;
   gameKey: string;
-  npcData: Record<string, lineProp>;
   onGameEnd: (success: boolean) => void;
 }) {
   // 게임마다 다른 게임 상태 저장. 점수만 Game으로 올려줌.
@@ -84,7 +79,6 @@ export default function W2G3({
       <GameMenu
         worldKey={worldKey}
         gameKey={gameKey}
-        npcData={npcData}
         score={score}
       />
     </main>
