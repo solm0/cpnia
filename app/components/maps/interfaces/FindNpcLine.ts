@@ -1,6 +1,7 @@
 import { mapNpcLines } from "@/app/lib/data/lines/mapNpcLines";
 import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
 import { pizzaCutterLines } from "@/app/lib/data/lines/pizzaCutterLine";
+import { fugitiveLines } from "@/app/lib/data/lines/fugitiveLine";
 
 export function FindNpcLine(name: string, worldKey: string ){
   const npcConfig = useNpcConfigStore(state => state.npcConfig);
@@ -23,6 +24,28 @@ export function FindPizzaCutterLine(stage: string) {
 
   const npcLines = pizzaCutterLines[stage];
   if (!npcLines) return [{ line: 'npc 데이터를 찾을 수 없습니다' }]
+
+  // TODO
+  return npcLines?.['해체']?.['평범']?.['친근한']
+    ?? [{ line: 'npc 대사를 찾을 수 없습니다' }]
+}
+
+export function FindFugitiveLine(round: number) {
+  const npcConfig = useNpcConfigStore(state => state.npcConfig);
+
+  const {formality, verbosity, warmth } = npcConfig;
+  if (!formality || !verbosity || !warmth) return { line: 'npc 데이터를 찾을 수 없습니다', options: [
+    { answer: '좋은답변', score: 3 },
+    { answer: '보통답변', score: 2 },
+    { answer: '나쁜답변', score: 1 }
+  ] }
+
+  const npcLines = fugitiveLines[round];
+  if (!npcLines) return { line: 'npc 데이터를 찾을 수 없습니다', options: [
+    { answer: '좋은답변', score: 3 },
+    { answer: '보통답변', score: 2 },
+    { answer: '나쁜답변', score: 1 }
+  ] }
 
   // TODO
   return npcLines?.['해체']?.['평범']?.['친근한']

@@ -50,8 +50,13 @@ export function Avatar({
     actionsRef.current = action;
   }, [animIndex]);
 
+  let motionSpeed = 1;
+  if (animIndex === 1) {
+    motionSpeed = 1.5
+  }
+
   useFrame((_, delta) => {
-    mixer.current?.update(delta);
+    mixer.current?.update(delta * motionSpeed);
   });
 
   return (

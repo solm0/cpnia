@@ -35,7 +35,7 @@ export default function Player({
   const { yaw } = useFollowCam(
     body,
     [0, 5, 20],
-    [degToRad(-20),0,0],
+    [degToRad(20),0,0],
     pressedKeys.current,
     gamepad.current
   );
@@ -59,7 +59,7 @@ export default function Player({
 
     const deadzone = 0.5;
     const speed = 1;
-    const moveSpeed = 50;
+    const moveSpeed = 40;
     let nextAction = 0; // idle
 
     // Input

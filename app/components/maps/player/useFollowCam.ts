@@ -48,7 +48,7 @@ export function useFollowCam(
       pitch.rotation.x = Math.max(-1, pitch.rotation.x - rotateSpeed);
     }
     if (pressedKeys.has("KeyK") || (gamepad && gamepad.axes[3] > deadzone)) {
-      pitch.rotation.x = Math.min(0.1, pitch.rotation.x + rotateSpeed);
+      pitch.rotation.x = Math.min(1, pitch.rotation.x + rotateSpeed);
     }
   }
 

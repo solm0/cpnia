@@ -1,5 +1,5 @@
 import Button from "../../util/Button";
-import { FindNpcLine, FindPizzaCutterLine } from "./FindNpcLine";
+import { FindFugitiveLine, FindNpcLine, FindPizzaCutterLine } from "./FindNpcLine";
 import { TypingText } from "./TypingText";
 import { TimeOptionButton, SacrificeOptionButton, EntropyOptionButton } from "./OptionButtons";
 import { useState } from "react";
@@ -131,6 +131,59 @@ export function PizzaCutterLineModal({
             <p className="absolute text-yellow-300 translate-y-5 opacity-50">&#9660;</p>
           </div>
         )}
+      </div>
+    </div>
+  )
+}
+
+export function FugitiveLineModal({
+  name, round, handleAnswerClick, setIsOpen
+}: {
+  name: string;
+  round: number;
+  handleAnswerClick: (point: number, round: number) => void;
+  setIsOpen: (isOpen: boolean) => void;
+}) {
+  const line = FindFugitiveLine(round);
+  const options = line.options;
+
+  return (
+    <div className="-translate-y-8 ml-8 rounded-4xl mb-8 w-[60rem] h-[18rem] backdrop-blur-sm font-bold text-white flex flex-col items-start p-4">
+      <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#ae4bff95] blur-sm rounded-4xl mix-blend-darken" />
+      
+      {/* 윗부분 */}
+      <div className="flex h-14 w-full shrink-0 gap-4 items-center px-5 rounded-t-4xl">
+        <div className="w-5 h-5 flex items-center justify-center">
+          <div className="absolute w-3 h-3 bg-yellow-300 rotate-45"/>
+          <div className="w-5 h-5 bg-yellow-300 opacity-50 rotate-45"/>
+        </div>
+        {name}
+        <div className="absolute right-6 h-auto w-auto">
+          <Button
+            worldKey="sacrifice"
+            label="닫기"
+            onClick={() => setIsOpen(false)}
+          />
+        </div>
+      </div>
+
+      <div className="border-b-5 border-yellow-300 w-full border-double" ></div>
+
+      {/* 본문 */}
+      <div className="w-full h-full py-4 px-5 rounded-b-4xl">
+        <p className="max-w-[45rem] break-keep leading-7 overflow-y-scroll">
+          <TypingText text={line.line ?? 'npc line이 없음'} />
+        </p>
+
+        <div className="fixed right-8 bottom-8 h-auto w-72 flex flex-col gap-2">
+          {options.map((option, idx) => 
+            <SacrificeOptionButton
+              key={idx}
+              onClick={() => handleAnswerClick(option.score, round)}
+              label={option.answer}
+            />
+          )}
+        </div>
       </div>
     </div>
   )

@@ -4,6 +4,10 @@ import GameMenu from "../interfaces/GameMenu";
 import { lineProp } from "@/app/lib/data/lines/mapNpcLines";
 import { useState } from "react";
 import { OrbitControls } from "@react-three/drei";
+import CameraController from "./W2G1/CameraController";
+import { FugitiveLineModal } from "../../maps/interfaces/NpcLineModals";
+import Model from "../../util/Model";
+import ClonedModel from "../../util/ClonedModels";
 
 export default function W2G3({
   worldKey, gameKey, npcData, onGameEnd
@@ -14,26 +18,74 @@ export default function W2G3({
   onGameEnd: (success: boolean) => void;
 }) {
   // 게임마다 다른 게임 상태 저장. 점수만 Game으로 올려줌.
-  const [click, setClick] = useState(0);
+  const [score, setScore] = useState(0);
+  const [round, setRound] = useState(1);
+
+  // 마지막 round의 답을 클릭할 때 gameOver하면서 score
+  // 1,2,3 1,2,3 1,2,3 -> 7이상이어야 성공
+  function gameOver(score: number) {
+    if (score >= 7) {
+      onGameEnd(true);
+    } else {
+      onGameEnd(false)
+    }
+  }
+  
+  const [isOpen, setIsOpen] = useState(false);
+
+  // 라운드마다 다른 대사와 답변을 렌더, 콜백으로 setScore
+
+  function handleAnswerClick(point: number, round: number) {
+    const newScore = score + point
+    setScore(newScore);
+    
+    if (round === 3) {
+      gameOver(newScore);
+    } else {
+      setRound(prev => prev+1);
+    }
+  }
   
   return (
     <main className="w-full h-full">
       {/* 게임 */}
       <Scene>
-        <PlaceHolderGame
-          click={click}
-          setClick={setClick}
-          onGameEnd={onGameEnd}
-        />
-        <OrbitControls minDistance={30} maxDistance={100} />
+        <group
+          onClick={() => setIsOpen(true)}
+        >
+          <ClonedModel
+            src="/models/avatars/default.glb"
+            hoverEffect={true}
+          />
+        </group>
+
+
+        {/* 카메라, 컨트롤 */}
+        <CameraController />
+
+        {/* 조명, 색 */}
+        <directionalLight intensity={1} position={[20,10,30]} color={'white'} />
+        <directionalLight intensity={2} position={[0,10,0]} color={'orange'} castShadow/>
+        <color attach="background" args={["gray"]} />
       </Scene>
+
+      {isOpen &&
+        <div className="absolute top-2/3 w-screen h-auto">
+          <FugitiveLineModal
+            name="도망자"
+            round={round}
+            handleAnswerClick={handleAnswerClick}
+            setIsOpen={setIsOpen}
+          />
+        </div>
+      }
 
       {/* 게임 인터페이스 */}
       <GameMenu
         worldKey={worldKey}
         gameKey={gameKey}
         npcData={npcData}
-        score={click}
+        score={score}
       />
     </main>
   )
