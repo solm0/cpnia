@@ -64,7 +64,6 @@ export default function W2G2({
           {/* 구경꾼 */}
           <Crowd gltfMap={gltfMap} />
         </Suspense>
-        <OrbitControls minDistance={30} maxDistance={100} />
       </Scene>
 
       {/* 게임 인터페이스 */}

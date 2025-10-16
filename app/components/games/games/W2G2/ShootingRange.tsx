@@ -1,43 +1,15 @@
 import { Object3D, Object3DEventMap, Vector3 } from "three";
 import { SurfaceHelper } from "./SurfaceHelper";
 import { PizzaModel } from "./PizzaModel";
-import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useRef } from "react";
 import Model from "@/app/components/util/Model";
-import { PosHelper } from "./AnchorHelper";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { SlingshotString } from "./SlingshotString";
-
-// 이제 어케해야할지???? 좀 알려달라 쉽게 영어로
-
-// 사용자가 space키를 클릭하면 wasReleased state가 true되고(state가 낫나?)
-// 그게 true되면 희생양이 3d공간 안을 날아서(이부분 어케 구현할지 겁나 이해안감 좀 쉽게 설명해바...
-// 날아가는 path를 미리 계산해서 그거대로 이동시키는 거야, 아니면 시시각각 다음 프레임의 위치가 정해지는 거야?
-// pizzaSurface랑 닿으면 stop onRoundEnd(true)해야 하고, 안 닿으면 onRoundEnd(false)해야돼.
-// 닿는 경우는 아래처럼 하는건가?
-// 안 닿는 경우는 또 어떻게 체크하는 거지? 피자 주변에 또다른 면을 만들어서 그거에 충돌할때 onRoundEnd(false)해야하나?
-// 그리고... 날아가는 희생자의 회전은 하지 않을 생각이야. 하지만 피자에 박혔을 때는
-// 피자에 등이 닿게 해야 하지. 그리고 피자에 박힌 위치와 사이즈를 기억해놨다가, 새로 쏜 희생자가
-// 거기에 많이 겹칠 경우 onRoundEnd(false)해야돼.
-
-  // intersection 검사
-  // function getHitPoint(
-  //   startPos, velocity, gravity,
-  //   center, normal, radius
-  // ) {
-  //   // do something
-  // }
-  
-  // const hitPoint = getHitPoint(
-  //   pullPosition.current,
-  //   velocity,
-  //   gravity,
-  //   targetSurface.center,
-  //   targetSurface.normal,
-  //   targetSurface.radius,
-  // )
-  // => 희생양을 stop + onRoundEnd()
+import { Line, OrbitControls } from "@react-three/drei";
+import { TrajectoryLine } from "./\bTrajectoryLine";
+import { PosHelper } from "./AnchorHelper";
 
 const pizzaSurface = {
   center: new Vector3(0, 10, -10),
@@ -54,6 +26,14 @@ export default function ShootingRange({
   prey: [string, Object3D<Object3DEventMap>];
   pizzaMoveSpeed: number;
 }) {
+  // 카메라
+  const { camera } = useThree();
+
+  useEffect(() => {
+    camera.position.set(0, 30, 70);
+    camera.lookAt(pizzaSurface.center);
+  }, [camera]);
+
   // 피자
   const pizzaModelScale = 1.2;
   const pizzaPos = useRef(pizzaSurface.center.clone());
@@ -65,7 +45,7 @@ export default function ShootingRange({
   const direction = useRef(1);
 
   // 새총
-  const slingshotCenter = [0,0,50];
+  const slingshotCenter = [0,30,90] as [number, number, number];
   const slingshotScale = 0.1;
   const leftAnchor = new Vector3(
     slingshotCenter[0] - 28 * slingshotScale,
@@ -79,14 +59,25 @@ export default function ShootingRange({
   )
   const restPos = new Vector3(
     (leftAnchor.x + rightAnchor.x) / 2,
-    (leftAnchor.y + rightAnchor.y) / 2,
+    (leftAnchor.y + rightAnchor.y) / 2 -1,
     (leftAnchor.z + rightAnchor.z) / 2,
   )
 
-  const pullPos = useRef(restPos);
+  // 조준
+  const pullPos = useRef(restPos.clone());
   const pressedKeys = useKeyboardControls();
   const gamepad = useGamepadControls();
   const preyRef = useRef<Object3D>(null!);
+
+  // 발사
+  const gravity = new Vector3(0, -9.8, 0);
+  const deltaT = 0.05;
+  const maxTime = 5;
+  const speedFactor = 3;
+
+  const isFlying = useRef(false);
+  const flightPath = useRef<Vector3[]>([new Vector3(0, 0, 0), new Vector3(0, 0, 0)]);
+  const flightIndex = useRef(0); 
 
   useFrame((_, delta) => {
     // 피자 왔다갔다
@@ -103,46 +94,106 @@ export default function ShootingRange({
 
     pizzaModelPos.current.copy(pizzaPos.current).add(pizzaOffset.current);
 
-    // pullPos
-    const moveSpeed = 30; // units/sec
-    const deadzone = 0.5;
+    // --- 조준 ---
+    if (!isFlying.current) {
+      // pullPos
+      const moveSpeed = 3; // units/sec
+      const deadzone = 0.5;
+      const input = new Vector3();
 
-    const input = new Vector3();
+      if (pressedKeys.current.has("KeyD") || gamepad.current.axes[0] > deadzone) input.x -= 1;
+      if (pressedKeys.current.has("KeyA") || gamepad.current.axes[0] < -deadzone) input.x += 1;
+      if (pressedKeys.current.has("KeyW") || gamepad.current.axes[1] < -deadzone) input.z -= 1;
+      if (pressedKeys.current.has("KeyS") || gamepad.current.axes[1] > deadzone) input.z += 1;
+      if (pressedKeys.current.has("ArrowUp")) input.y += 1;
+      if (pressedKeys.current.has("ArrowDown")) input.y -= 1;
 
-    // X-axis
-    if (pressedKeys.current.has("KeyD") || gamepad.current.axes[0] > deadzone) input.x += 1;
-    if (pressedKeys.current.has("KeyA") || gamepad.current.axes[0] < -deadzone) input.x -= 1;
+      if (input.length() > 0) {
+        input.normalize().multiplyScalar(moveSpeed * delta);
+        pullPos.current.add(input);
+      }
 
-    // Y-axis
-    if (pressedKeys.current.has("KeyW") || gamepad.current.axes[1] < -deadzone) input.z -= 1;
-    if (pressedKeys.current.has("KeyS") || gamepad.current.axes[1] > deadzone) input.z += 1;
+      const clampMinX = restPos.x - 4;
+      const clampMaxX = restPos.x + 4;
+      const clampMinY = restPos.y - 5;
+      const clampMaxY = restPos.y + 2;
+      const clampMinZ = restPos.z + 0;
+      const clampMaxZ = restPos.z + 10;
+      pullPos.current.x = Math.max(clampMinX, Math.min(clampMaxX, pullPos.current.x));
+      pullPos.current.y = Math.max(clampMinY, Math.min(clampMaxY, pullPos.current.y));
+      pullPos.current.z = Math.max(clampMinZ, Math.min(clampMaxZ, pullPos.current.z));
 
-    // Z-axis (use arrow keys for example)
-    if (pressedKeys.current.has("ArrowUp")) input.y += 1;
-    if (pressedKeys.current.has("ArrowDown")) input.y -= 1;
+      if (preyRef.current) preyRef.current.position.copy(pullPos.current);
 
-    if (input.length() > 0) {
-      input.normalize().multiplyScalar(moveSpeed * delta);
-      pullPos.current.add(input);
+      // precompute
+      const start = pullPos.current.clone();
+      const velocity = restPos.clone().sub(pullPos.current).multiplyScalar(speedFactor);
+      const newPath: Vector3[] = [];
+
+      for (let t = 0; t < maxTime; t += deltaT) {
+        const pos = start.clone()
+          .add(velocity.clone().multiplyScalar(t))
+          .add(gravity.clone().multiplyScalar(0.5 * t * t));
+        newPath.push(pos);
+      }
+      flightPath.current = newPath;
     }
 
-    // Optional: clamp pullPos within some bounds
-    pullPos.current.x = Math.max(-4, Math.min(4, pullPos.current.x));
-    pullPos.current.y = Math.max(5, Math.min(10, pullPos.current.y));
-    pullPos.current.z = Math.max(50, Math.min(60, pullPos.current.z));
+    // --- 발사 ---
+    if (isFlying.current) {
+      if (flightIndex.current < flightPath.current.length) {
+        const pos = flightPath.current[flightIndex.current];
+        if (pos) preyRef.current.position.copy(pos);
 
-    if (preyRef.current) {
-      preyRef.current.position.copy(pullPos.current);
+        // move to next frame position
+        flightIndex.current += 1;
+      } else {
+        isFlying.current = false;
+        onRoundEnd(false);
+        console.log('false')
+      }
+
+      // collision check
+      const toPizza = preyRef.current.position.clone().sub(pizzaSurface.center);
+      if (toPizza.length() <= pizzaSurface.radius) {
+        isFlying.current = false;
+        console.log('true')
+        onRoundEnd(true);
+      }
+    }
+
+    // check space key
+    if (pressedKeys.current.has("Space")) {
+      if (!isFlying.current && flightPath.current.length > 0) {
+        isFlying.current = true;
+        flightIndex.current = 0;
+      }
     }
   });
 
   return (
     <>
-      {/* 임시 바닥 */}
-      <mesh rotation-x={-Math.PI / 2} position={[0,0,0]} receiveShadow>
+      <OrbitControls
+        target={pizzaSurface.center}
+        minDistance={130}
+        maxDistance={140}
+        minPolarAngle={Math.PI / 2.6} // pitch
+        maxPolarAngle={Math.PI / 2.5}
+        minAzimuthAngle={-Math.PI / 8} // yaw
+        maxAzimuthAngle={Math.PI / 8} 
+      />
+
+      {/* 지형 */}
+      {/* <mesh rotation-x={-Math.PI / 2} position={[0,0,0]} receiveShadow>
         <planeGeometry args={[10, 100]} />
         <meshStandardMaterial color="white" />
-      </mesh>
+      </mesh> */}
+      <Model
+        src="/models/shop.glb"
+        scale={1}
+        position={[-60,-30.6,68]}
+        rotation={[0,0,0]}
+      />
 
       {/* 피자 */}
       <PizzaModel
@@ -160,7 +211,7 @@ export default function ShootingRange({
       {/* 새총 */}
       <Model
         src="/models/slingshot.glb"
-        position={[0,0,50]}
+        position={slingshotCenter}
         scale={slingshotScale}
       />
       {/* <AnchorHelper
@@ -168,12 +219,17 @@ export default function ShootingRange({
         rightAnchor={rightAnchor}
         color="red"
         size={0.5}
-      /> */}
+      />
       <PosHelper
         pos={restPos}
         color="lime"
         size={0.3}
       />
+      <PosHelper
+        pos={pullPos.current}
+        color="lime"
+        size={0.3}
+      /> */}
       <SlingshotString
         leftAnchor={leftAnchor}
         rightAnchor={rightAnchor}
@@ -181,13 +237,20 @@ export default function ShootingRange({
       />
 
       {/* 희생양 */}
-      <primitive
-        object={prey[1]}
-        rotation={[0,Math.PI,0]}
-        ref={preyRef}
-        scale={3}
-      />
-
+      <group ref={preyRef} scale={3} rotation={[0, Math.PI, 0]}>
+        <primitive object={prey[1]} />
+      </group>
+      {/* 궤적 라인 */}
+      {!isFlying.current && (
+        <TrajectoryLine
+          pullPos={pullPos}
+          restPos={restPos}
+          gravity={gravity}
+          speedFactor={speedFactor}
+          maxTime={maxTime}
+          deltaT={deltaT}
+        />
+      )}
 
       {/* 빛 */}
       <directionalLight

@@ -55,8 +55,7 @@ export default function Crowd({
 
   return (
     <>
-      {/* Two yellow halves */}
-      <mesh
+      {/* <mesh
         rotation-x={-Math.PI / 2}
         position={[
           field.center[0] - (field.gapX / 2 + sideWidth / 2),
@@ -67,8 +66,8 @@ export default function Crowd({
       >
         <planeGeometry args={[sideWidth, field.sizeY]} />
         <meshStandardMaterial color="white" />
-      </mesh>
-      <mesh
+      </mesh> */}
+      {/* <mesh
         rotation-x={-Math.PI / 2}
         position={[
           field.center[0] + (field.gapX / 2 + sideWidth / 2),
@@ -79,7 +78,7 @@ export default function Crowd({
       >
         <planeGeometry args={[sideWidth, field.sizeY]} />
         <meshStandardMaterial color="white" />
-      </mesh>
+      </mesh> */}
 
       {placed}
     </>

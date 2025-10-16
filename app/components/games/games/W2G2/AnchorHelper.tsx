@@ -8,17 +8,17 @@ export function AnchorHelper({
   color = "red",
   size = 0.5
 }: {
-  leftAnchor: [number, number, number],
-  rightAnchor: [number, number, number],
+  leftAnchor: Vector3,
+  rightAnchor: Vector3,
   color?: string,
   size?: number
 }) {
   // Helper function to create a mesh at a position
-  const createSphere = (pos: [number, number, number]) => {
+  const createSphere = (pos: Vector3) => {
     const geometry = new SphereGeometry(size, 16, 16);
     const material = new MeshStandardMaterial({ color });
     const mesh = new Mesh(geometry, material);
-    mesh.position.set(pos[0], pos[1], pos[2]);
+    mesh.position.set(pos.x, pos.y, pos.z);
     return mesh;
   }
 
