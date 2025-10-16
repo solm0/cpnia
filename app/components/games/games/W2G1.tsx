@@ -4,7 +4,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import BattleField from "./W2G1/BattleField";
 import { degToRad } from "three/src/math/MathUtils.js";
 import Loader from "../../util/Loader";
-import { roundConfig } from "./W2G1/roundConfig";
+import { W2G1roundConfig } from "./roundConfig";
 import { Vector3 } from "three";
 import Timer from "./W2G1/Timer";
 import Button from "../../util/Button";
@@ -53,7 +53,7 @@ export function W2G1Interface({
   const [penalty, setPenalty] = useState(0);
 
   useEffect(() => {
-    if (score === roundConfig[round].abnormCount) {
+    if (score === W2G1roundConfig[round].abnormCount) {
       gameOver(true);
       setScore(0);
     }
@@ -96,7 +96,7 @@ export function W2G1Interface({
 
         <div className="flex flex-col gap-2">
           <p>라운드: {round}</p>
-          <p>남은 스파이 수: {score}/{roundConfig[round].abnormCount}</p>
+          <p>남은 스파이 수: {score}/{W2G1roundConfig[round].abnormCount}</p>
           <p>벌점: {penalty}</p>
           <Timer secondsRef={secondsRef} />
           <Button
@@ -158,7 +158,7 @@ export default function W2G1({
         setRound(prev => {
           const newRound = prev + 1;
 
-          const time = roundConfig[newRound].time;
+          const time = W2G1roundConfig[newRound].time;
           console.log(time)
           secondsRef.current = time;
 
@@ -171,7 +171,7 @@ export default function W2G1({
   }
 
   function startRound(round: number) {
-    const time = roundConfig[round].time;
+    const time = W2G1roundConfig[round].time;
     console.log(round, time)
     secondsRef.current = time;
   

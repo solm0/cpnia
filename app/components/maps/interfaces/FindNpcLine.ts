@@ -35,16 +35,16 @@ export function FindFugitiveLine(round: number) {
 
   const {formality, verbosity, warmth } = npcConfig;
   if (!formality || !verbosity || !warmth) return { line: 'npc 데이터를 찾을 수 없습니다', options: [
-    { answer: '좋은답변', score: 3 },
+    { answer: '좋은답변', score: 5 },
     { answer: '보통답변', score: 2 },
-    { answer: '나쁜답변', score: 1 }
+    { answer: '나쁜답변', score: -2 }
   ] }
 
   const npcLines = fugitiveLines[round];
   if (!npcLines) return { line: 'npc 데이터를 찾을 수 없습니다', options: [
-    { answer: '좋은답변', score: 3 },
+    { answer: '좋은답변', score: 5 },
     { answer: '보통답변', score: 2 },
-    { answer: '나쁜답변', score: 1 }
+    { answer: '나쁜답변', score: -2 }
   ] }
 
   // TODO

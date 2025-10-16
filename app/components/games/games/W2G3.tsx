@@ -17,9 +17,8 @@ export default function W2G3({
   const [round, setRound] = useState(1);
 
   // 마지막 round의 답을 클릭할 때 gameOver하면서 score
-  // 1,2,3 1,2,3 1,2,3 -> 7이상이어야 성공
   function gameOver(score: number) {
-    if (score >= 7) {
+    if (score >= 9) {
       onGameEnd(true);
     } else {
       onGameEnd(false)

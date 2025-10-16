@@ -2,7 +2,7 @@ import Button from "../../util/Button";
 import { FindFugitiveLine, FindNpcLine, FindPizzaCutterLine } from "./FindNpcLine";
 import { TypingText } from "./TypingText";
 import { TimeOptionButton, SacrificeOptionButton, EntropyOptionButton } from "./OptionButtons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export function TimeNpcLineModal({
@@ -147,6 +147,18 @@ export function FugitiveLineModal({
   const line = FindFugitiveLine(round);
   const options = line.options;
 
+  const [isClicked, setIsClicked] = useState<number | null>(null);
+
+  useEffect(() => {
+    // 클릭되고 3초 후 null
+
+    if (isClicked) {
+      setTimeout(() => {
+        setIsClicked(null);
+      }, 3000)
+    }
+  }, [isClicked]);
+
   return (
     <div className="-translate-y-8 ml-8 rounded-4xl mb-8 w-[60rem] h-[18rem] backdrop-blur-sm font-bold text-white flex flex-col items-start p-4">
       <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#ae4bff95] blur-sm rounded-4xl mix-blend-darken" />
@@ -181,6 +193,9 @@ export function FugitiveLineModal({
               key={idx}
               onClick={() => handleAnswerClick(option.score, round)}
               label={option.answer}
+              gainedScore={option.score}
+              isClicked={isClicked}
+              setIsClicked={setIsClicked}
             />
           )}
         </div>

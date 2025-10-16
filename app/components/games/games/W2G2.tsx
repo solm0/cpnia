@@ -1,8 +1,9 @@
-import PlaceHolderGame from "./PlaceHolderGame";
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
-import { useState } from "react";
 import { OrbitControls } from "@react-three/drei";
+import { Suspense, useState } from "react";
+import ShootingRange from "./W2G2/ShootingRange";
+import { W2G2roundConfig } from "./roundConfig";
 
 export default function W2G2({
   worldKey, gameKey, onGameEnd
@@ -11,18 +12,35 @@ export default function W2G2({
   gameKey: string;
   onGameEnd: (success: boolean) => void;
 }) {
-  // 게임마다 다른 게임 상태 저장. 점수만 Game으로 올려줌.
-  const [click, setClick] = useState(0);
+  const [round, setRound] = useState(1);
+
+  function gameOver(success: boolean) {
+    if (success) {
+      if (round === 3) {
+        onGameEnd(true);
+      } else {
+        setRound(prev => prev + 1);
+      }
+    } else {
+      onGameEnd(false);
+    }
+  }
+
+  const config = W2G2roundConfig[round]
   
   return (
     <main className="w-full h-full">
       {/* 게임 */}
-      <Scene>
-        <PlaceHolderGame
-          click={click}
-          setClick={setClick}
-          onGameEnd={onGameEnd}
-        />
+      <Scene
+        position={[0,0,5]} // 카메라도 나중에 새총 y에 대해
+        rotation={[0,0,0]}
+      >
+        <Suspense>
+          <ShootingRange
+            targetRadius={config.targetRadius}
+            gameOver={gameOver}
+          />
+        </Suspense>
         <OrbitControls minDistance={30} maxDistance={100} />
       </Scene>
 
@@ -30,7 +48,6 @@ export default function W2G2({
       <GameMenu
         worldKey={worldKey}
         gameKey={gameKey}
-        score={click}
       />
     </main>
   )

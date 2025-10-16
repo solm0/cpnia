@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useGLTF } from "@react-three/drei";
 import { Object3D, Raycaster, Vector2, Vector3 } from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { roundConfig, roundConfigProp } from "./roundConfig";
+import { W2G1roundConfig, W2G1roundConfigProp } from "../roundConfig";
 import { abnormIng, normIng } from "./ing";
 import Model from "@/app/components/util/Model";
 import { lerp } from "three/src/math/MathUtils.js";
@@ -13,7 +13,7 @@ import { BodyData, center, isInsidePizza, pizzaRadius, randomPosition, sizeX, si
 import Body from "./Body";
 import { Physics } from "@react-three/rapier";
 
-function generateBodies(config: roundConfigProp, setPizzaIng: (pizzaIng: string[]) => void) {
+function generateBodies(config: W2G1roundConfigProp, setPizzaIng: (pizzaIng: string[]) => void) {
   const newBodies: BodyData[] = [];
 
   function pickRandom(ing: string[], kind: number) {
@@ -88,7 +88,7 @@ export default function BattleField({
   };
 
   useEffect(() => {
-    const config = roundConfig[round];
+    const config = W2G1roundConfig[round];
     const newBodies = generateBodies(config, setPizzaIng);
     bodiesRef.current = [];
     setBodiesState(newBodies);
@@ -268,7 +268,7 @@ export default function BattleField({
       <color attach="background" args={["blue"]} />
 
       {/* 카메라, 컨트롤 */}
-      <CameraController />
+      <CameraController position={[-1.5, 5, 5]}/>
 
       {/* 효과 */}
       <EffectComposer>
