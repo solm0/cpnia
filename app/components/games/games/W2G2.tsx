@@ -1,10 +1,10 @@
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
-import { Loader, OrbitControls } from "@react-three/drei";
+import { OrbitControls, useGLTF } from "@react-three/drei";
 import { Suspense, useState } from "react";
 import ShootingRange from "./W2G2/ShootingRange";
-import { W2G2roundConfig } from "./roundConfig";
 import Crowd from "./W2G2/Crowd";
+import { Object3D } from "three";
 
 export default function W2G2({
   worldKey, gameKey, onGameEnd
@@ -15,9 +15,9 @@ export default function W2G2({
 }) {
   const [round, setRound] = useState(1);
 
-  function gameOver(success: boolean) {
+  function onRoundEnd(success: boolean) {
     if (success) {
-      if (round === 3) {
+      if (round === 12) {
         onGameEnd(true);
       } else {
         setRound(prev => prev + 1);
@@ -27,7 +27,25 @@ export default function W2G2({
     }
   }
 
-  const config = W2G2roundConfig[round]
+  const gltfMap: Record<string, Object3D> = {
+    pepperoni: useGLTF("/models/avatars/pepperoni.gltf").scene,
+    mushroom: useGLTF("/models/avatars/mushroom.gltf").scene,
+    cheese: useGLTF("/models/avatars/cheese.gltf").scene,
+    garlic: useGLTF("/models/avatars/garlic.gltf").scene,
+    redpap: useGLTF("/models/avatars/redpap.gltf").scene,
+    yellowpap: useGLTF("/models/avatars/yellowpap.gltf").scene,
+    olive: useGLTF("/models/avatars/olive.gltf").scene,
+  };
+
+  let obj = Object.entries(gltfMap)[0];
+  let pizzaMoveSpeed = 1;
+
+  for (let i = 1; i < 12; i++) {
+    if (i === round) {
+      obj = Object.entries(gltfMap)[i % 4];
+      pizzaMoveSpeed = 1 + Math.ceil(i/3);
+    }
+  }
   
   return (
     <main className="w-full h-full">
@@ -38,12 +56,13 @@ export default function W2G2({
       >
         <Suspense>
           <ShootingRange
-            targetRadius={config.targetRadius}
-            gameOver={gameOver}
+            onRoundEnd={onRoundEnd}
+            prey={obj}
+            pizzaMoveSpeed={pizzaMoveSpeed}
           />
 
           {/* 구경꾼 */}
-          <Crowd />
+          <Crowd gltfMap={gltfMap} />
         </Suspense>
         <OrbitControls minDistance={30} maxDistance={100} />
       </Scene>
@@ -52,6 +71,7 @@ export default function W2G2({
       <GameMenu
         worldKey={worldKey}
         gameKey={gameKey}
+        score={round}
       />
     </main>
   )

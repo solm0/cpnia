@@ -79,6 +79,7 @@ export default function BattleField({
     lime: useGLTF('/models/avatars/lime.gltf').scene,
     cherry: useGLTF('/models/avatars/cherry.gltf').scene,
     dango: useGLTF('/models/avatars/dango.gltf').scene,
+    pepperoni: useGLTF("/models/avatars/pepperoni.gltf").scene,
     mushroom: useGLTF('/models/avatars/mushroom.gltf').scene,
     cheese: useGLTF('/models/avatars/cheese.gltf').scene,
     redpap: useGLTF('/models/avatars/redpap.gltf').scene,

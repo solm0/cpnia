@@ -1,6 +1,7 @@
 import { useGLTF } from "@react-three/drei";
-import { useMemo } from "react";
-import { Mesh, Quaternion, Vector3 } from "three";
+import { useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import { Mesh, Object3D, Quaternion, Vector3 } from "three";
 
 export function PizzaModel({
   center, normal, scale = 1,
@@ -19,6 +20,12 @@ export function PizzaModel({
       ),
     [normal]
   );
+
+  const ref = useRef<Object3D>(scene);
+
+  useFrame(() => {
+    ref.current.position.copy(center); // <- update position every frame
+  });
 
   scene.traverse((child) => {
     if ((child as Mesh).isMesh) {

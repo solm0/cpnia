@@ -1,9 +1,12 @@
-import { useGLTF } from "@react-three/drei";
 import { Object3D } from "three";
 import { useMemo } from "react";
 import CrowdChar from "./CrowdChar";
 
-export default function Crowd() {
+export default function Crowd({
+  gltfMap
+}: {
+  gltfMap: Record<string, Object3D>;
+}) {
   const field = {
     center: [0, 0, 0] as [number, number, number],
     sizeX: 40,
@@ -12,15 +15,6 @@ export default function Crowd() {
   };
 
   const sideWidth = (field.sizeX - field.gapX) / 2;
-
-  const gltfMap: Record<string, Object3D> = {
-    mushroom: useGLTF("/models/avatars/mushroom.gltf").scene,
-    cheese: useGLTF("/models/avatars/cheese.gltf").scene,
-    redpap: useGLTF("/models/avatars/redpap.gltf").scene,
-    yellowpap: useGLTF("/models/avatars/yellowpap.gltf").scene,
-    garlic: useGLTF("/models/avatars/garlic.gltf").scene,
-    olive: useGLTF("/models/avatars/olive.gltf").scene,
-  };
 
   const placed = useMemo(() => {
     const usedX: number[] = [];

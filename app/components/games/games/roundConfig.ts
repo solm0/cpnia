@@ -29,13 +29,3 @@ export const W2G1roundConfig: Record<number, W2G1roundConfigProp> = {
     time: 40,
   }
 }
-
-export interface W2G2roundConfigProp {
-  targetRadius: number;
-}
-
-export const W2G2roundConfig: Record<number, W2G2roundConfigProp> = {
-  1: { targetRadius: 10 },
-  2: { targetRadius: 8 },
-  3: { targetRadius: 5 },
-}

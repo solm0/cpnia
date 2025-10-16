@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { CircleGeometry, DoubleSide, Mesh, MeshBasicMaterial, Quaternion, Vector3 } from "three";
+import { useFrame } from "@react-three/fiber";
 
 export function SurfaceHelper({
   center, normal, radius, color = 'orange',
@@ -9,6 +10,9 @@ export function SurfaceHelper({
   radius: number;
   color?: string;
 }) {
+  const ref = useRef<Mesh>(null!);
+
+  // create mesh once
   const mesh = useMemo(() => {
     const geometry = new CircleGeometry(radius, 64);
     const material = new MeshBasicMaterial({
@@ -23,10 +27,16 @@ export function SurfaceHelper({
     );
 
     const m = new Mesh(geometry, material);
-    m.position.copy(center);
     m.quaternion.copy(quaternion);
     return m;
-  }, [center, normal, radius, color]);
+  }, [normal, radius, color]);
 
-  return <primitive object={mesh} />
+  // update position each frame
+  useFrame(() => {
+    if (ref.current) {
+      ref.current.position.copy(center);
+    }
+  });
+
+  return <primitive ref={ref} object={mesh} />;
 }

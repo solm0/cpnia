@@ -42,7 +42,7 @@ export const gamePortals: Record<string, gamePortalProp[]> = {
     {
       label: 'game 2',
       gameKey: 'game2',
-      rule: '알아서 잘 해보세요',
+      rule: '페퍼로니 피자를 만들어요! wasd로 조작하고 space로 클릭해 피자안에 넣으세요, 이미 던진 곳에 또 던지면 안돼요!',
     },
     {
       label: 'game 3',
