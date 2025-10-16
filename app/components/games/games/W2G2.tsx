@@ -1,9 +1,10 @@
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
-import { OrbitControls } from "@react-three/drei";
+import { Loader, OrbitControls } from "@react-three/drei";
 import { Suspense, useState } from "react";
 import ShootingRange from "./W2G2/ShootingRange";
 import { W2G2roundConfig } from "./roundConfig";
+import Crowd from "./W2G2/Crowd";
 
 export default function W2G2({
   worldKey, gameKey, onGameEnd
@@ -40,6 +41,9 @@ export default function W2G2({
             targetRadius={config.targetRadius}
             gameOver={gameOver}
           />
+
+          {/* 구경꾼 */}
+          <Crowd />
         </Suspense>
         <OrbitControls minDistance={30} maxDistance={100} />
       </Scene>

@@ -35,7 +35,7 @@ export interface W2G2roundConfigProp {
 }
 
 export const W2G2roundConfig: Record<number, W2G2roundConfigProp> = {
-  1: { targetRadius: 30 },
-  2: { targetRadius: 20 },
-  3: { targetRadius: 10 },
+  1: { targetRadius: 10 },
+  2: { targetRadius: 8 },
+  3: { targetRadius: 5 },
 }

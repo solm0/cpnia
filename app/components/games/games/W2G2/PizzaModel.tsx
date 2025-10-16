@@ -1,6 +1,6 @@
 import { useGLTF } from "@react-three/drei";
 import { useMemo } from "react";
-import { Quaternion, Vector3 } from "three";
+import { Mesh, Quaternion, Vector3 } from "three";
 
 export function PizzaModel({
   center, normal, scale = 1,
@@ -19,6 +19,13 @@ export function PizzaModel({
       ),
     [normal]
   );
+
+  scene.traverse((child) => {
+    if ((child as Mesh).isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  })
 
   return (
     <primitive

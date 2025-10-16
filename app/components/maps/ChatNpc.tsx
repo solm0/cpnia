@@ -91,7 +91,6 @@ export function ChatNpcAvatar({
 
     const clip = animGltf[actionKey].animations[0];
 
-    // fade out old action
     if (actionsRef.current) {
       actionsRef.current.fadeOut(0.2);
     }
