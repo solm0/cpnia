@@ -188,7 +188,7 @@ export default function ShootingRange({
         <meshStandardMaterial color="white" />
       </mesh> */}
       <Model
-        src="/models/shop.glb"
+        src="/models/shop-kitchen.gltf"
         scale={1}
         position={[-60,-30.6,68]}
         rotation={[0,0,0]}

@@ -46,7 +46,17 @@ export default function SacrificeScreen() {
 
           {/* 지형 */}
           <Model
-            src="/models/shop.glb"
+            src="/models/shop-kitchen.gltf"
+            scale={4.5}
+            position={[
+              stagePositions.shop.x,
+              stagePositions.shop.y,
+              stagePositions.shop.z
+            ]}
+            rotation={[0,0,0]}
+          />
+          <Model
+            src="/models/shop.gltf"
             scale={4.5}
             position={[
               stagePositions.shop.x,

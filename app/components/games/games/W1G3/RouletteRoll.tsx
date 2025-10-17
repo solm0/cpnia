@@ -9,12 +9,14 @@ import Button from "@/app/components/util/Button";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 
 export function Ui({
-  success, onRoundEnd, onGameEnd, moneyRef
+  success, setSuccess, onRoundEnd, onGameEnd, moneyRef, setUiState
 }: {
   success: boolean;
+  setSuccess: (success: boolean | null) => void;
   onRoundEnd: (success: boolean) => void;
   onGameEnd: (success: boolean) => void;
   moneyRef: RefObject<number>;
+  setUiState: (uiState: "idle" | "rolling" | "dropping" | "done") => void;
 }) {
   if (success) {
     moneyRef.current += 1000;
@@ -38,7 +40,11 @@ export function Ui({
         <Button
           worldKey="sacrifice"
           label="예"
-          onClick={() => onRoundEnd(false)}
+          onClick={() => {
+            onRoundEnd(false);
+            setSuccess(null);
+            setUiState("idle");
+          }}
         />
         <Button
           worldKey="sacrifice"
@@ -64,9 +70,8 @@ export default function RouletteRoll({
   const [uiState, setUiState] = useState<"idle" | "rolling" | "dropping" | "done">("idle");
   const [success, setSuccess] = useState<boolean | null>(null);
   const [winningNum, setWinningNum] = useState<number | null>(null);
-
-  const spaceKeyPressed = useRef(false);
   const pressedKeys = useKeyboardControls();
+  const outwardProgress = useRef<number | null>(null);
 
   // 룰렛 설정
   const roulettePos = [0, 0, 0] as [number, number, number]
@@ -89,7 +94,6 @@ export default function RouletteRoll({
     rouletteSurface.center.z,
   )
   const spinAngle = useRef(0);
-  const spinSpeed = useRef(0);
 
   // 각도 설정
   const numWithAngle = useMemo(() => {
@@ -104,54 +108,84 @@ export default function RouletteRoll({
     }));
   }, [n]);
 
+  const unitAngle = 360 / n;
+  const winningIndex = numWithAngle.findIndex(n => n.num === winningNum);
+  const winningAngle = winningIndex * unitAngle;
+
+  const rotationProgress = useRef(0);
+  const startAngle = useRef(0);
+  const totalRotation = useRef(0);
+
   const startRoll = () => {
     const win = Math.floor(Math.random() * n) + 1;
     setWinningNum(win);
     setSuccess(win === betNum);
-    spinAngle.current = 0;
-    spinSpeed.current = 20;
+    console.log('win', win, 'bet', betNum) // do not remove
+  
+    const winAngle = numWithAngle.find(n => n.num === win)?.angle ?? 0;
+  
+    startAngle.current = spinAngle.current; // current position
+    totalRotation.current = startAngle.current + 3 * 360 + winAngle;
+  
+    rotationProgress.current = 0;
     setIsRolling(true);
     setUiState("rolling");
+    outwardProgress.current = 0;
   }
+
+  // add a ref to store start radius
+  const startOutwardRadius = useRef<number>(0);
+
+  const stopAngle = useRef<number | null>(null);
 
   useFrame((_, delta) => {
     if (isRolling && ballRef.current) {
-      spinAngle.current += spinSpeed.current * delta;
-      spinSpeed.current *= 0.985; // friction
-
-      // keep rotating the ball
+      rotationProgress.current = Math.min(rotationProgress.current + delta * 1, 1);
+      const eased = 1 - Math.pow(1 - rotationProgress.current, 3);
+    
+      spinAngle.current = startAngle.current + (totalRotation.current - startAngle.current) * eased;
+    
       const rad = (spinAngle.current * Math.PI) / 180;
-      const x = rouletteSurface.center.x + Math.cos(rad) * (rouletteSurface.radius - 5);
-      const y = rouletteSurface.center.y + Math.sin(rad) * (rouletteSurface.radius - 5);
-      ballRef.current.position.set(x, y, rouletteSurface.center.z + 2);
-
-      // 🧮 if speed is slow enough, snap to winning angle and drop
-      if (spinSpeed.current < 0.3 && winningNum !== null) {
-        const winAngle = numWithAngle.find((n) => n.num === winningNum)?.angle ?? 0;
-        spinAngle.current = winAngle;
+      const rimRadius = rouletteSurface.radius - 20;
+    
+      ballRef.current.position.set(
+        rouletteSurface.center.x + Math.cos(rad) * rimRadius,
+        rouletteSurface.center.y,
+        rouletteSurface.center.z + Math.sin(rad) * rimRadius
+      );
+    
+      if (rotationProgress.current >= 1) {
+        startOutwardRadius.current = rimRadius;
+        stopAngle.current = spinAngle.current;
         setIsRolling(false);
         setIsDropping(true);
-        setUiState("dropping");
       }
     }
-
-    if (isDropping && ballRef.current) {
-      const pos = ballRef.current.position;
-
-      // 떨어지는게 아니고, 일정한 정도만큼 angle의 방향으로 간 다음 done하면 됨.
-      pos.z -= delta;
-      if (pos.z < rouletteSurface.center.z - 1) {
+    
+    if (isDropping && ballRef.current && stopAngle.current !== null) {
+      outwardProgress.current = Math.min((outwardProgress.current ?? 0) + delta * 0.5, 1);
+      const eased = 1 - Math.pow(1 - outwardProgress.current, 3);
+      const targetRadius = startOutwardRadius.current + 3;
+    
+      const newRadius = startOutwardRadius.current + (targetRadius - startOutwardRadius.current) * eased;
+      const rad = (stopAngle.current * Math.PI) / 180;
+    
+      ballRef.current.position.set(
+        rouletteSurface.center.x + Math.cos(rad) * newRadius,
+        rouletteSurface.center.y,
+        rouletteSurface.center.z + Math.sin(rad) * newRadius
+      );
+    
+      if (outwardProgress.current >= 1) {
         setIsDropping(false);
         setUiState("done");
       }
     }
 
-    if (pressedKeys.current.has("Space")) {
-      if (uiState === 'idle') {
-        startRoll();
-      }
-    }
-  });
+  if (pressedKeys.current.has("Space") && uiState === 'idle') {
+    startRoll();
+  }
+});
 
   return (
     <>
@@ -180,12 +214,14 @@ export default function RouletteRoll({
       </mesh>
 
       {/* ui */}
-      {uiState !== "done" && success &&
+      {uiState === "done" && success !== null &&
         <Ui
           success={success}
+          setSuccess={setSuccess}
           onGameEnd={onGameEnd}
           onRoundEnd={onRoundEnd}
           moneyRef={moneyRef}
+          setUiState={setUiState}
         />
       }
 

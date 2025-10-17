@@ -12,7 +12,7 @@ export default function W1G3({
   gameKey: string;
   onGameEnd: (success: boolean) => void;
 }) {
-  const trial = useRef(1);
+  const [trial, setTrial] = useState(1)
   const leftMoney = useRef(100);
   const [betNum, setBetNum] = useState<number | null>(null);
 
@@ -24,7 +24,7 @@ export default function W1G3({
       onGameEnd(true);
     } else {
       // 안나옴 => 다음라운드
-      trial.current += 1;
+      setTrial(prev => prev + 1)
       leftMoney.current -= 10;
     }
   }
