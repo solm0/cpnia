@@ -3,7 +3,6 @@ import GameMenu from "../interfaces/GameMenu";
 import { useEffect, useRef, useState } from "react";
 import { OrbitControls } from "@react-three/drei";
 import RouletteRoll from "./W1G3/RouletteRoll";
-import PlaceHolder from "../../util/PlaceHolder";
 import RouletteTable from "./W1G3/RouletteTable";
 
 export default function W1G3({
@@ -50,7 +49,10 @@ export default function W1G3({
         ): (
           // 룰렛
           <>
-            <RouletteRoll />
+            <RouletteRoll
+              n={rouletteMaxNum}
+              betNum={betNum}
+            />
             <OrbitControls minDistance={90} maxDistance={100} />
           </>
         )}
