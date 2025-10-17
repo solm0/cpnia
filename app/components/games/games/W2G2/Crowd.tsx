@@ -3,9 +3,11 @@ import { useMemo } from "react";
 import CrowdChar from "./CrowdChar";
 
 export default function Crowd({
-  gltfMap
+  gltfMap,
+  scale,
 }: {
   gltfMap: Record<string, Object3D>;
+  scale?: number;
 }) {
   const field = {
     center: [0, 0, 0] as [number, number, number],
@@ -48,6 +50,7 @@ export default function Crowd({
           model={model}
           animTerm={(index + 1) * 1000}
           position={[randomX, field.center[1], randomZ]}
+          scale={scale}
         />
       );
     });

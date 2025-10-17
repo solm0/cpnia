@@ -84,7 +84,7 @@ export default function BattleField({
     cheese: useGLTF('/models/avatars/cheese.gltf').scene,
     redpap: useGLTF('/models/avatars/redpap.gltf').scene,
     yellowpap: useGLTF('/models/avatars/yellowpap.gltf').scene,
-    garlic: useGLTF('/models/avatars/garlic.gltf').scene,
+    onion: useGLTF('/models/avatars/onion.gltf').scene,
     olive: useGLTF('/models/avatars/olive.gltf').scene,
   };
 

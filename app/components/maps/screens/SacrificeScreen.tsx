@@ -15,13 +15,26 @@ import GlobalMenu from "../interfaces/GlobalMenu";
 import Fire from "../Fire";
 import { stagePositions } from "@/app/lib/data/positions/stagePositions";
 import ClonedModel from "../../util/ClonedModels";
+import Crowd from "../../games/games/W2G2/Crowd";
+import { useGLTF } from "@react-three/drei";
+import { Object3D } from "three";
 
 export default function SacrificeScreen() {
   const worldKey = 'sacrifice';
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
 
   const chatNpc = chatNpcs[worldKey];
-  const [isChatOpen, setIsChatOpen] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const gltfMap: Record<string, Object3D> = {
+    pepperoni: useGLTF("/models/avatars/pepperoni.gltf").scene,
+    mushroom: useGLTF("/models/avatars/mushroom.gltf").scene,
+    cheese: useGLTF("/models/avatars/cheese.gltf").scene,
+    onion: useGLTF("/models/avatars/onion.gltf").scene,
+    redpap: useGLTF("/models/avatars/redpap.gltf").scene,
+    yellowpap: useGLTF("/models/avatars/yellowpap.gltf").scene,
+    olive: useGLTF("/models/avatars/olive.gltf").scene,
+  };
 
   return (
     <main className="w-full h-full">
@@ -59,8 +72,7 @@ export default function SacrificeScreen() {
 
           {/* 기타 모델들 */}
           <Fire />
-
-          {/* 소품 */}
+          <Crowd gltfMap={gltfMap} scale={8} />
 
           {/* npc들 */}
           <Npcs

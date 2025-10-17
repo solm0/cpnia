@@ -1,6 +1,6 @@
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import { Suspense, useState } from "react";
 import ShootingRange from "./W2G2/ShootingRange";
 import Crowd from "./W2G2/Crowd";
@@ -31,7 +31,7 @@ export default function W2G2({
     pepperoni: useGLTF("/models/avatars/pepperoni.gltf").scene,
     mushroom: useGLTF("/models/avatars/mushroom.gltf").scene,
     cheese: useGLTF("/models/avatars/cheese.gltf").scene,
-    garlic: useGLTF("/models/avatars/garlic.gltf").scene,
+    onion: useGLTF("/models/avatars/onion.gltf").scene,
     redpap: useGLTF("/models/avatars/redpap.gltf").scene,
     yellowpap: useGLTF("/models/avatars/yellowpap.gltf").scene,
     olive: useGLTF("/models/avatars/olive.gltf").scene,

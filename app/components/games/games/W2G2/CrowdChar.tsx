@@ -7,10 +7,12 @@ export default function CrowdChar({
   model,
   position,
   animTerm,
+  scale = 3,
 }: {
   model: Object3D;
   position: [number, number, number];
   animTerm: number;
+  scale?: number;
 }) {
   const char = useMemo(() => model.clone(), [model]);
   const mixer = useRef<AnimationMixer | null>(null);
@@ -68,6 +70,6 @@ export default function CrowdChar({
   });
 
   return (
-    <primitive object={char} position={position} scale={3} />
+    <primitive object={char} position={position} scale={scale} />
   );
 }
