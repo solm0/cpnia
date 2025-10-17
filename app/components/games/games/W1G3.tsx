@@ -52,6 +52,9 @@ export default function W1G3({
             <RouletteRoll
               n={rouletteMaxNum}
               betNum={betNum}
+              onRoundEnd={onRoundEnd}
+              onGameEnd={onGameEnd}
+              moneyRef={leftMoney}
             />
             <OrbitControls minDistance={90} maxDistance={100} />
           </>
