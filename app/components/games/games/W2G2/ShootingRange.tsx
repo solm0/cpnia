@@ -7,9 +7,8 @@ import Model from "@/app/components/util/Model";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { SlingshotString } from "./SlingshotString";
-import { Line, OrbitControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import { TrajectoryLine } from "./\bTrajectoryLine";
-import { PosHelper } from "./AnchorHelper";
 
 const pizzaSurface = {
   center: new Vector3(0, 10, -10),

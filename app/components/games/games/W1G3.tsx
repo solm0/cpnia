@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { OrbitControls } from "@react-three/drei";
 import RouletteRoll from "./W1G3/RouletteRoll";
 import PlaceHolder from "../../util/PlaceHolder";
+import RouletteTable from "./W1G3/RouletteTable";
 
 export default function W1G3({
   worldKey, gameKey, onGameEnd
@@ -15,6 +16,8 @@ export default function W1G3({
   const trial = useRef(1);
   const leftMoney = useRef(100);
   const [betNum, setBetNum] = useState<number | null>(null);
+
+  const rouletteMaxNum = 20;
 
   function onRoundEnd(success: boolean) {
     // 맞는점수나옴 => 게임종료(성공)
@@ -40,10 +43,10 @@ export default function W1G3({
       <Scene>
         {!betNum ? (
           // 베팅 테이블
-          <PlaceHolder />
-          // ref로 이동. 키보드 사용 앞뒤좌우.
-          // 클릭하면 베팅하시겠습가? ok하면
-          // setBetNum()
+          <RouletteTable
+            n={rouletteMaxNum}
+            setBetNum={setBetNum}
+          />
         ): (
           // 룰렛
           <>
