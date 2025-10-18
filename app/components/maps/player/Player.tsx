@@ -167,11 +167,15 @@ export default function Player({
       setActiveAction(nextAction);
     }
     
+    /* --- clamp 끄는법: 이걸 주석처리하고 --- */
     const nextPos = clampToBoundary(newPos, rectArea);
 
     if (!checkCollision(nextPos, worldKey)) {
       body.current.setNextKinematicTranslation(nextPos);
     }
+
+    /* --- 이걸 주석 해제한다 --- */
+    // body.current.setNextKinematicTranslation(newPos);
 
     // Rotate avatar to face movement
     if (horizontalInput.lengthSq() > 0) {

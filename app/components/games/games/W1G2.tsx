@@ -1,8 +1,6 @@
-import PlaceHolderGame from "./PlaceHolderGame";
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
-import { useState } from "react";
-import { OrbitControls } from "@react-three/drei";
+import { useEffect, useState } from "react";
 import SlotGame from "./W1G2/SlotGame";
 
 export default function W1G2({
@@ -12,21 +10,44 @@ export default function W1G2({
   gameKey: string;
   onGameEnd: (success: boolean) => void;
 }) {
-  // 게임마다 다른 게임 상태 저장. 점수만 Game으로 올려줌.
-  const [score, setScore] = useState(0);
+  const [trial, setTrial] = useState(0);
+  const [successCount, setSuccessCount] = useState(0);
+
+  function onRoundEnd(success: boolean) {
+    // 3개의 각도 조합이 맞음 => 성공횟수 + 1
+    if (success) {
+      setSuccessCount(prev => prev + 1);
+    }
+
+    // 마지막이면 성공횟수 검사 후 게임종료, 아니면 다음단계
+    if (trial === 3) {
+      if (successCount > 0) {
+        onGameEnd(true);
+      } else {
+        onGameEnd(false);
+      }
+    } else {
+      setTrial(prev => prev + 1);
+    }
+  }
   
   return (
     <main className="w-full h-full">
       {/* 게임 */}
       <Scene>
-        <SlotGame />
+        <SlotGame
+          onRoundEnd={onRoundEnd}
+        />
+        
+        {/* 빛 */}
+        <directionalLight intensity={3} position={[0,30,40]} />
       </Scene>
 
       {/* 게임 인터페이스 */}
       <GameMenu
         worldKey={worldKey}
         gameKey={gameKey}
-        score={score}
+        score={successCount * 10}
       />
     </main>
   )
