@@ -7,6 +7,10 @@ import SmallScene from "../../util/SmallScene";
 import Model from "../../util/Model";
 import { OrbitControls } from "@react-three/drei";
 import PausedScreen from "../../util/PausedScreen";
+import AudioPlayer from "../../util/AudioPlayer";
+import FullScreenModal from "../../util/FullScreenModal";
+import Button from "../../util/Button";
+import { useRef } from "react";
 
 export default function GlobalMenu({worldKey}: {worldKey: string}) {
   const npcConfig = useNpcConfigStore(state => state.npcConfig)
@@ -69,6 +73,8 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
     default: glow = 'bg-violet-700/20'
   }
 
+  const audioRef = useRef<HTMLAudioElement>(null);
+
   if (!worldPortal) return;
 
   return (
@@ -92,6 +98,7 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
           </SmallScene>
         </div>
       </div>
+
 
         <div className="relative w-auto h-auto z-0 backdrop-blur-sm flex flex-col">
           <div className="absolute w-full h-full -z-10 opacity-10 rounded-lg p-4 border border-white"></div>
@@ -140,6 +147,13 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
       <PausedScreen
         worldKey={worldKey}
         isInMap={true}
+      />
+
+      {/* 시작 */}
+      <AudioPlayer
+        title={`${worldKey}_bg.mp3`}
+        worldKey={worldKey}
+        audioRef={audioRef}
       />
     </div>
   )

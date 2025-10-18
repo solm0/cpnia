@@ -1,46 +1,53 @@
 'use client'
 
-import { useState, useRef, useEffect } from "react";
-import { Volume2, VolumeX } from "lucide-react";
+import { RefObject, useState } from "react";
+import Button from "./Button";
+import FullScreenModal from "./FullScreenModal";
 
-export default function AudioPlayer({title}: {title: string}) {
-  const ref = useRef<HTMLAudioElement>(null);
-  const [paused, setPaused] = useState(false);
+export default function AudioPlayer({
+  title,
+  worldKey,
+  audioRef
+}: {
+  title: string;
+  worldKey: string;
+  audioRef: RefObject<HTMLAudioElement | null>;
+}) {
+  const [started, setStarted] = useState(false);
 
-  useEffect(() => {
-    if (paused === false) {
-      const audio = ref.current;
-      if (!audio) return;
-      audio.muted = false;
-      audio.play();
-      setPaused(false);
-    }
-  }, [])
-
-  const togglePlay = async() => {
-    const audio = ref.current;
+  const handleStart = () => {
+    const audio = audioRef.current;
     if (!audio) return;
 
-    if (audio.paused) {
-      try {
-        audio.muted = false;
-        await audio.play();
-        setPaused(false);
-      } catch(err) {
-        alert(`음악틀기문제발생😭: ${err}`);
-      }
-    } else {
-      audio.pause();
-      setPaused(true);
-    }
+    audio.play().then(() => {
+      setStarted(true);
+    }).catch(err => {
+      console.error("Audio play failed:", err);
+    });
   };
 
   return (
     <>
-      <audio src={`/audio/${title}`} ref={ref} preload="auto" autoPlay loop />
-      <button onClick={togglePlay} className="w-8 h-8 flex items-center justify-center hover:opacity-50 transition-opacity">
-        {paused ? <VolumeX className="w-6 h-6 text-white"/> : <Volume2 className="w-6 h-6 text-white"/>}
-      </button>
+      {!started && (
+        <FullScreenModal>
+          <div className="relative w-auto h-full flex flex-col items-center justify-center gap-2 text-white">
+            <div>조작법, 캐릭터 성격설명</div>
+            <Button
+              label="시작하기"
+              onClick={handleStart}
+              worldKey={worldKey}
+              autoFocus={true}
+            />
+          </div>
+        </FullScreenModal>
+      )}
+
+      <audio
+        src={`/audio/${title}`}
+        ref={audioRef}
+        preload="auto"
+        loop
+      />
     </>
-  )
+  );
 }
