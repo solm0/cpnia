@@ -49,22 +49,12 @@ export default function W1G1({
     }
   ]);
   const turn = useRef(0);
-  const lastBetChipNum = useRef(1);
-  const currentNum = useRef(lastBetChipNum.current); // 매 턴마다 초기화해야됨
+  const minNum = useRef<number>(0);
+  const currentNum = useRef<number | null>(null);
+  const prevNum = useRef<number | null>(null);
 
   // 씬 전환 Pick -> Table
   const [hasPicked, setHasPicked] = useState(false);
-
-  // 씬 설정
-  // const { camera } = useThree();
-  // useEffect(() => {
-  //   camera.position.set(0,5,10);
-  //   camera.rotation.set(0,0,0);
-  //   camera.lookAt(0, 5, 0);
-  // }, [camera]);
-
-  const center = [-5,0,0] // ui를 위해 -x로 좀더 감
-
 
   function pickCard() {
     const keys = Object.keys(cards).map(Number);
@@ -73,6 +63,29 @@ export default function W1G1({
     gameRef.current[1].card = b;
     setHasPicked(true);
   }
+
+  // W1G1에서 npc의 생각 끝에, Ui에서 플레이어의 확인버튼 클릭 시 호출
+  function bet(num: number, turn: number) {
+    if (num != 0 && minNum.current < num) {
+      minNum.current = num;
+    }
+    if (turn === 0) {
+      gameRef.current[0].betChips += num;
+      gameRef.current[0].leftChips -= num;
+      gameRef.current[1].betChips += num;
+      gameRef.current[1].leftChips -= num;
+    } else if (turn % 2 === 0) {
+      gameRef.current[0].betChips += num;
+      gameRef.current[0].leftChips -= num;
+    } else {
+      gameRef.current[1].betChips += num;
+      gameRef.current[1].leftChips -= num;
+    }
+
+    currentNum.current = num;
+  }
+
+  const motionPhase = useRef<'idle' | 'bet' | 'npcFail' | 'npcWin'>('idle');
 
   return (
     <main className="w-full h-full">
@@ -87,14 +100,19 @@ export default function W1G1({
       </Scene>
 
       {/* 게임 인터페이스 */}
-      <Ui
-        hasPicked={hasPicked}
-        pickCard={pickCard}
-        gameRef={gameRef}
-        turn={turn}
-        lastBetChipNum={lastBetChipNum}
-        currentNum={currentNum}
-      />
+      <div className="flex flex-col items-center justify-center gap-2 h-screen bg-[#00000007] pointer-events-none absolute right-0 top-0 w-1/2">
+        <Ui
+          hasPicked={hasPicked}
+          pickCard={pickCard}
+          gameRef={gameRef}
+          turn={turn}
+          minNum={minNum}
+          currentNum={currentNum}
+          onGameEnd={onGameEnd}
+          motionPhase={motionPhase}
+          bet={bet}
+        />
+      </div>
       <GameMenu
         worldKey={worldKey}
         gameKey={gameKey}
