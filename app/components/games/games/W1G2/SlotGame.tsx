@@ -5,13 +5,19 @@ import { Object3D, Vector3 } from "three"
 import { degToRad, MathUtils } from "three/src/math/MathUtils.js";
 
 export default function SlotGame({
-  motionPhase, successRef, cylinderRotProg, groupRotProg, handleRotProg
+  motionPhase, successRef, cylinderRotProg, groupRotProg, handleRotProg,
+  groupRef, handleRef, cylinderRefs,
+  finalRotRef,
 }: {
   motionPhase: RefObject<'idle' | 'toSide' | 'handle' | 'toFront' | 'cylinder' | 'done'>;
   successRef: RefObject<boolean | null>;
   cylinderRotProg: RefObject<number>;
   groupRotProg: RefObject<number>;
   handleRotProg: RefObject<number>;
+  groupRef: RefObject<Object3D | null>;
+  handleRef: RefObject<Object3D | null>;
+  cylinderRefs: RefObject<Object3D[]>
+  finalRotRef: RefObject<number[]>;
 }) {
   const main = useGLTF('/models/pachinko/main.glb').scene;
   const cylinders: Object3D[] = [
@@ -29,7 +35,6 @@ export default function SlotGame({
   }, [camera]);
 
   const groupRotation = useRef<[number, number, number]>([0, Math.PI, 0]);
-  const groupRef = useRef<Object3D>(null);
 
   const mainCenter = new Vector3(0,0,0);
 
@@ -38,7 +43,6 @@ export default function SlotGame({
     mainCenter.y + 4,
     mainCenter.z + 1
   );
-  const handleRef = useRef<Object3D>(null);
 
   const cylinderCenter = new Vector3(
     mainCenter.x - 0.1,
@@ -48,45 +52,9 @@ export default function SlotGame({
   const cylinderGap = 0.56;
   const correction = 40;
   const cylinderInitRotationX = useRef(degToRad(-correction));
-  const cylinderRefs = useRef<Object3D[]>([]);
-
-  // 랜덤 3개의 각도 뽑기
-  const angleObjMap: {angle:number, obj:string}[][] = [
-    [
-      { angle: 0, obj: 'text' },
-      { angle: 50, obj: 'cherry' },
-      { angle: 108, obj: 'bell' },
-      { angle: 174, obj: 'seven' },
-      { angle: 260, obj: 'text' },
-    ],
-    [
-      { angle: 0, obj: 'seven' },
-      { angle: 50, obj: 'bell' },
-      { angle: 108, obj: 'text' },
-      { angle: 184, obj: 'cherry' },
-      { angle: 260, obj: 'seven' },
-    ],
-    [
-      { angle: 0, obj: 'cherry' },
-      { angle: 57, obj: 'text' },
-      { angle: 124, obj: 'seven' },
-      { angle: 190, obj: 'bell' },
-      { angle: 271, obj: 'cherry' },
-    ],
-  ]
-  
-  const randomAngles = angleObjMap.map(
-    reel => reel[Math.floor(Math.random() * reel.length)]
-  );
-
-  const spins = 5;
-  const finalRot = randomAngles.map(item => item.angle + 360 * spins);
-  const success = randomAngles.every(a => a.obj === randomAngles[0].obj);
-
-  
 
   useFrame((_, delta) => {
-    console.log(motionPhase.current)
+    // console.log(motionPhase.current)
     if (!groupRef.current) return;
 
     if (motionPhase.current === 'toSide') {
@@ -158,13 +126,12 @@ export default function SlotGame({
 
       cylinderRefs.current.forEach((c, i) => {
         const startRot = degToRad(-correction);
-        const endRot = degToRad(finalRot[i]-correction);
-        console.log(randomAngles[0].obj, randomAngles[1].obj, randomAngles[2].obj)
+        const endRot = degToRad(finalRotRef.current[i]-correction);
         c.rotation.x = MathUtils.lerp(startRot, endRot, cylinderRotProg.current);
       });
 
       if (cylinderRotProg.current >= 1) {
-        successRef.current = success;
+        successRef.current = successRef.current;
         motionPhase.current = 'done';
       }
     }

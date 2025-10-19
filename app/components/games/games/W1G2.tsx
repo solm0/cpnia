@@ -3,9 +3,13 @@ import GameMenu from "../interfaces/GameMenu";
 import { RefObject, useEffect, useRef, useState } from "react";
 import SlotGame from "./W1G2/SlotGame";
 import Button from "../../util/Button";
+import { Object3D } from "three";
+import { degToRad } from "three/src/math/MathUtils.js";
 
 function Ui({
-  successRef, motionPhase, onGameEnd, worldKey, gameKey, cylinderRotProg, groupRotProg, handleRotProg
+  successRef, motionPhase, onGameEnd, worldKey, gameKey,
+  cylinderRotProg, groupRotProg, handleRotProg,
+  resetRound
 }: {
   successRef: RefObject<boolean | null>;
   motionPhase: RefObject<'idle' | 'toSide' | 'handle' | 'toFront' | 'cylinder' | 'done'>;
@@ -15,9 +19,8 @@ function Ui({
   cylinderRotProg: RefObject<number>;
   groupRotProg: RefObject<number>;
   handleRotProg: RefObject<number>;
+  resetRound: () => void;
 }) {
-  
-
   const [, setVersion] = useState(0); // local state to trigger rerender
 
   useEffect(() => {
@@ -29,7 +32,7 @@ function Ui({
     return () => clearInterval(interval);
   }, []);
 
-  const [trial, setTrial] = useState(0);
+  const [trial, setTrial] = useState(1);
   const [successCount, setSuccessCount] = useState(0);
 
   function onRoundEnd(success: boolean) {
@@ -47,6 +50,7 @@ function Ui({
       }
     } else {
       setTrial(prev => prev + 1);
+      console.log(trial)
     }
   }
 
@@ -66,12 +70,7 @@ function Ui({
               autoFocus={true}
               onClick={() => {
                 motionPhase.current = 'toSide'
-
-                groupRotProg.current = 0;
-                handleRotProg.current = 0;
-                cylinderRotProg.current = 0;
-
-                successRef.current = null;
+                resetRound();
               }}
             />
           )
@@ -126,6 +125,59 @@ export default function W1G2({
   const groupRotProg = useRef(0);
   const handleRotProg = useRef(0);
 
+  const groupRef = useRef<Object3D>(null);
+  const handleRef = useRef<Object3D>(null);
+  const cylinderRefs = useRef<Object3D[]>([]);
+
+  const randomAnglesRef = useRef<{angle:number,obj:string}[]>([]);
+  const spins = 5;
+  const finalRotRef = useRef<number[]>([]);
+  const correction = 40;
+
+  function resetRound() {
+    const angleObjMap: {angle:number, obj:string}[][] = [
+      [
+        { angle: 0, obj: 'text' },
+        { angle: 50, obj: 'cherry' },
+        { angle: 108, obj: 'bell' },
+        { angle: 174, obj: 'seven' },
+        { angle: 260, obj: 'text' },
+      ],
+      [
+        { angle: 0, obj: 'seven' },
+        { angle: 50, obj: 'bell' },
+        { angle: 108, obj: 'text' },
+        { angle: 184, obj: 'cherry' },
+        { angle: 260, obj: 'seven' },
+      ],
+      [
+        { angle: 0, obj: 'cherry' },
+        { angle: 57, obj: 'text' },
+        { angle: 124, obj: 'seven' },
+        { angle: 190, obj: 'bell' },
+        { angle: 271, obj: 'cherry' },
+      ],
+    ]
+
+    randomAnglesRef.current = angleObjMap.map(
+      reel => reel[Math.floor(Math.random() * reel.length)]
+    );
+
+    finalRotRef.current = randomAnglesRef.current.map(item => item.angle + 360 * spins);
+  
+    successRef.current = randomAnglesRef.current.every(a => a.obj === randomAnglesRef.current[0].obj);
+
+    // reset progress
+    cylinderRotProg.current = 0;
+    groupRotProg.current = 0;
+    handleRotProg.current = 0;
+
+    // reset rotations visually
+    if (groupRef.current) groupRef.current.rotation.y = Math.PI;
+    if (handleRef.current) handleRef.current.rotation.x = degToRad(5);
+    cylinderRefs.current.forEach(c => c.rotation.x = degToRad(-correction));
+  }
+
   return (
     <main className="w-full h-full">
       
@@ -139,6 +191,7 @@ export default function W1G2({
         groupRotProg={groupRotProg}
         cylinderRotProg={cylinderRotProg}
         handleRotProg={handleRotProg}
+        resetRound={resetRound}
       />
 
       {/* 게임 */}
@@ -149,6 +202,10 @@ export default function W1G2({
           groupRotProg={groupRotProg}
           cylinderRotProg={cylinderRotProg}
           handleRotProg={handleRotProg}
+          groupRef={groupRef}
+          handleRef={handleRef}
+          cylinderRefs={cylinderRefs}
+          finalRotRef={finalRotRef}
         />
         
         {/* 빛 */}
