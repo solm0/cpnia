@@ -7,7 +7,8 @@ export default function Ui({
   hasPicked, pickCard, gameRef, turn, minNum,
   currentNum,
   onGameEnd,
-  motionPhase, bet
+  motionPhase, bet,
+  npcWaitSec,
 }: {
   hasPicked: boolean;
   pickCard: () => void;
@@ -18,6 +19,7 @@ export default function Ui({
   onGameEnd: (success: boolean) => void;
   motionPhase: RefObject<'idle' | 'bet' | 'npcFail' | 'npcWin'>;
   bet: (num: number, turn: number) => void;
+  npcWaitSec: number;
 }) {
   const worldKey = 'time';
   const router = useRouter();
@@ -40,6 +42,37 @@ export default function Ui({
     }, 16);
     return () => clearInterval(interval);
   }, []);
+
+  // npc의 베팅
+  function decideNpcBet() {
+    const playerCard = gameRef.current[0].card;
+    const npcCard = gameRef.current[1].card;
+    if (!playerCard || !npcCard) return 0;
+
+    let raise = 0;
+    if (playerCard === 10) return 0; // 폴드
+    else if (playerCard >= 7) raise = 3 + Math.floor(Math.random() * 2);
+    else if (playerCard >= 4) raise = 5 + Math.floor(Math.random() * 3);
+    else raise = 8 + Math.floor(Math.random() * 3);
+
+    if (minNum.current >= raise) return minNum.current;
+    return raise + minNum.current;
+  }
+
+  useEffect(() => {
+    if (turn.current % 2 === 1 && !hasBet) {
+      const timeout = setTimeout(() => {
+        const npcNum = decideNpcBet();
+        console.log('NPC decided to bet', npcNum);
+  
+        bet(npcNum, turn.current);
+        setHasBet(true);
+        motionPhase.current = 'bet';
+      }, npcWaitSec);
+  
+      return () => clearTimeout(timeout);
+    }
+  }, [turn.current, hasBet]);
 
   if (!hasPicked) {
     // --- 게임 시작 ---
@@ -72,7 +105,7 @@ export default function Ui({
             <Button
               worldKey={worldKey}
               onClick={() => {
-                bet(10, turn.current);
+                bet(1, turn.current);
                 setHasBet(true);
                 motionPhase.current = 'bet';
               }}
@@ -84,7 +117,7 @@ export default function Ui({
       } else {
         // 내차례
         if (turn.current % 2 === 0) {
-          
+          currentNum.current = null;
           return (
             <>
               <span>남은 칩: {gameRef.current[turn.current % 2].leftChips}개</span>
@@ -93,7 +126,7 @@ export default function Ui({
               {turn.current % 2 === 0 && (
                 // 인풋
                 <div>
-                  <div>내가 베팅할 칩 갯수: {currentNum.current}</div>
+                  <div>내가 베팅할 칩 갯수: {num}</div>
                   <div>+</div>
                   <div>-</div>
                   <Button
@@ -111,28 +144,12 @@ export default function Ui({
           )
           // 상대 차례
         } else {
-          // 상대 베팅 전
-          if (currentNum.current === null) {
-            return <div>상대가 베팅 중입니다</div>
-            // 상대 베팅 결과 보기
-          } else if (currentNum.current > 0) {
-            return (
-              <div>
-                <p>상대가 칩 {currentNum.current}개를 베팅했습니다.</p>
-                <Button
-                  label="확인"
-                  onClick={() => turn.current += 1}
-                  worldKey={worldKey}
-                  autoFocus={true}
-                />
-              </div>
-            )
-          }
+          return <div>상대가 베팅 중입니다...</div>
         }
       }
       // --- 턴 2/2: 베팅 후 ---
     } else {
-      if (!currentNum.current) return;
+      if (currentNum.current === null || currentNum.current === undefined) return <p>베팅된 칩 몇갠지 찾을수없음</p>
 
       // 최초
       if (turn.current === 0) {
@@ -143,8 +160,8 @@ export default function Ui({
               label="다음"
               onClick={() => {
                 turn.current += 1;
-                currentNum.current = null;
                 setHasBet(false);
+                currentNum.current = null;
               }}
               worldKey={worldKey}
               autoFocus={true}
@@ -186,7 +203,7 @@ export default function Ui({
             )
           }
           // 2. 콜
-        } else if (currentNum.current === minNum.current) {
+        } else if (currentNum.current != null && currentNum.current === minNum.current) {
           if (gameRef.current[0].card && gameRef.current[1].card) {
             const success = gameRef.current[1].card < gameRef.current[0].card;
             return (
@@ -194,6 +211,8 @@ export default function Ui({
                 <p>{success ? '니가 이겼다' : '너 졌다'}</p>
 
                 {/* 카드 오픈 */}
+                <p>내 카드: {gameRef.current[0].card}</p>
+                <p>상대 카드: {gameRef.current[1].card}</p>
                 {/* <SmallScene>
                   <Card
                   <Card
@@ -221,17 +240,48 @@ export default function Ui({
           )
           // 3. 레이즈
         } else if (currentNum.current > minNum.current) {
-          return (
-            <div>
-              <p>상대가 {currentNum.current}를 베팅했습니다.</p>
-              <Button
-                autoFocus={true}
-                worldKey={worldKey}
-                label="확인"
-                onClick={() => turn.current += 1}
-              />
-            </div>
-          )
+          // 나
+          if (turn.current % 2 === 0) {
+            return (
+              <div>
+                <p>당신은 {currentNum.current}를 베팅했습니다.</p>
+                <Button
+                  autoFocus={true}
+                  worldKey={worldKey}
+                  label="확인"
+                  onClick={() => {
+                    turn.current += 1;
+                    if (currentNum.current !== null && currentNum.current > minNum.current) {
+                      minNum.current = currentNum.current;
+                    }
+                    setHasBet(false);
+                  }}
+                />
+              </div>
+            )
+            // 상대
+          } else {
+            return (
+              <div>
+                <p>상대가 {currentNum.current}를 베팅했습니다.</p>
+                <Button
+                  autoFocus={true}
+                  worldKey={worldKey}
+                  label="확인"
+                  onClick={() => {
+                    turn.current += 1;
+                    if (currentNum.current !== null && currentNum.current > minNum.current) {
+                      minNum.current = currentNum.current;
+                    }
+                    setHasBet(false);
+                  }}
+                />
+              </div>
+            )
+          }
+        } else {
+          console.log('currentNum', currentNum.current, 'minNum', minNum)
+          return <p>currentNum이 minNum보다 작다는, 일어나면 안 되는 일이 일어났다</p>
         }
       }
     }

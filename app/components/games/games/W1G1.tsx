@@ -1,6 +1,6 @@
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGLTF } from "@react-three/drei";
 import { Object3D } from "three";
 import Table from "./W1G1/Table";
@@ -63,16 +63,18 @@ export default function W1G1({
     setHasPicked(true);
   }
 
+  // npc의 베팅
+  const npcWaitSec = 3000;
+
+
   // W1G1에서 npc의 생각 끝에, Ui에서 플레이어의 확인버튼 클릭 시 호출
   function bet(num: number, turn: number) {
-    if (num != 0 && minNum.current < num) {
-      minNum.current = num;
-    }
     if (turn === 0) {
       gameRef.current[0].betChips += num;
       gameRef.current[0].leftChips -= num;
       gameRef.current[1].betChips += num;
       gameRef.current[1].leftChips -= num;
+      minNum.current = num;
     } else if (turn % 2 === 0) {
       gameRef.current[0].betChips += num;
       gameRef.current[0].leftChips -= num;
@@ -110,6 +112,7 @@ export default function W1G1({
           onGameEnd={onGameEnd}
           motionPhase={motionPhase}
           bet={bet}
+          npcWaitSec={npcWaitSec}
         />
       </div>
       <GameMenu
