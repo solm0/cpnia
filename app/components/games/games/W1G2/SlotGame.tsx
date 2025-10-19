@@ -1,16 +1,17 @@
-import Button from "@/app/components/util/Button";
-import { Html, useGLTF } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { RefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import { Object3D, Vector3 } from "three"
 import { degToRad, MathUtils } from "three/src/math/MathUtils.js";
 
 export default function SlotGame({
-  onRoundEnd, motionPhase, setSuccess,
+  motionPhase, successRef, cylinderRotProg, groupRotProg, handleRotProg
 }: {
-  onRoundEnd: (success: boolean) => void;
   motionPhase: RefObject<'idle' | 'toSide' | 'handle' | 'toFront' | 'cylinder' | 'done'>;
-  setSuccess: (success: boolean) => void;
+  successRef: RefObject<boolean | null>;
+  cylinderRotProg: RefObject<number>;
+  groupRotProg: RefObject<number>;
+  handleRotProg: RefObject<number>;
 }) {
   const main = useGLTF('/models/pachinko/main.glb').scene;
   const cylinders: Object3D[] = [
@@ -28,13 +29,17 @@ export default function SlotGame({
   }, [camera]);
 
   const groupRotation = useRef<[number, number, number]>([0, Math.PI, 0]);
+  const groupRef = useRef<Object3D>(null);
 
   const mainCenter = new Vector3(0,0,0);
+
   const handleCenter = new Vector3(
     mainCenter.x - 1.7,
     mainCenter.y + 4,
     mainCenter.z + 1
   );
+  const handleRef = useRef<Object3D>(null);
+
   const cylinderCenter = new Vector3(
     mainCenter.x - 0.1,
     mainCenter.y + 4.47,
@@ -69,6 +74,7 @@ export default function SlotGame({
       { angle: 271, obj: 'cherry' },
     ],
   ]
+  
   const randomAngles = angleObjMap.map(
     reel => reel[Math.floor(Math.random() * reel.length)]
   );
@@ -77,98 +83,141 @@ export default function SlotGame({
   const finalRot = randomAngles.map(item => item.angle + 360 * spins);
   const success = randomAngles.every(a => a.obj === randomAngles[0].obj);
 
-  const rotationProgress = useRef(0);
+  
 
   useFrame((_, delta) => {
+    console.log(motionPhase.current)
+    if (!groupRef.current) return;
+
     if (motionPhase.current === 'toSide') {
-      // groupRotation.y값이 Math.PI에서 Math.PI/1.5
-      groupRotation.current[1] = Math.max(groupRotation.current[1] - delta, Math.PI / 1.5);
-      if (groupRotation.current[1] <= Math.PI / 1.5) {
+      if (groupRotProg.current > 1) {
+        groupRotProg.current = 0;
+      }
+
+      const startRot = Math.PI;
+      const endRot = Math.PI / 1.5;
+    
+      // increment progress (0 → 1)
+      groupRotProg.current = Math.min(groupRotProg.current + 0.02, 1);
+    
+      // interpolate rotation
+      groupRef.current.rotation.y = MathUtils.lerp(startRot, endRot, groupRotProg.current);
+    
+      // when done, switch phase
+      if (groupRotProg.current >= 1) {
         motionPhase.current = 'handle';
+        groupRotation.current[1] = endRot; // update stored rotation
       }
     }
+
     if (motionPhase.current === 'handle') {
       // handleRotation.x 값이 degToRad(5)에서 degToRad(-85)로 갔다가 돌아옴.
-      motionPhase.current = 'toFront';
+      if (!handleRef.current) return;
+
+      const startRot = degToRad(5);
+      const endRot = degToRad(-85)
+
+      if (handleRotProg.current < 1) {
+        handleRotProg.current = Math.min(handleRotProg.current + 0.02, 1);
+        handleRef.current.rotation.x = MathUtils.lerp(startRot, endRot, handleRotProg.current);
+      } else {
+        handleRotProg.current = Math.min(handleRotProg.current + 0.02, 2);
+        handleRef.current.rotation.x = MathUtils.lerp(handleRef.current.rotation.x, startRot, handleRotProg.current-1);
+      }
+
+      if (handleRotProg.current >= 2) {
+        motionPhase.current = 'toFront';
+      }
     }
+
     if (motionPhase.current === 'toFront') {
       // groupRotation.y값이 Math.PI/1.5에서 // groupRotation.y값이 Math.PI에서 Math.PI
-      groupRotation.current[1] = Math.max(groupRotation.current[1] + delta, Math.PI);
-      if (groupRotation.current[1] >= Math.PI) {
+      if (groupRotProg.current === 1) {
+        groupRotProg.current = 0;
+      }
+      console.log(groupRotProg)
+      const startRot = Math.PI/1.5;
+      const endRot = Math.PI;
+    
+      // increment progress (0 → 1)
+      groupRotProg.current = Math.min(groupRotProg.current + 0.02, 1);
+    
+      // interpolate rotation
+      groupRef.current.rotation.y = MathUtils.lerp(startRot, endRot, groupRotProg.current);
+    
+      // when done, switch phase
+      if (groupRotProg.current >= 1) {
         motionPhase.current = 'cylinder';
+        groupRotation.current[1] = endRot;
       }
     }
+
     if (motionPhase.current === 'cylinder') {
-      if (motionPhase.current === 'cylinder' && rotationProgress.current === 0) {
-        cylinderRefs.current.forEach(c => {
-          c.rotation.x = degToRad(-correction);
-        });
-      }
-
-      console.log('cylinder 0 initial rot.x', cylinderRefs.current[0]?.rotation.x);
-
       // 각 cylinder들이 저마다의 finalRot[cylinder index]만큼 돌아가고 멈춘다.
-      rotationProgress.current = Math.min(rotationProgress.current + delta * 1, 1);
+      cylinderRotProg.current = Math.min(cylinderRotProg.current + delta * 1, 1);
 
       cylinderRefs.current.forEach((c, i) => {
         const startRot = degToRad(-correction);
         const endRot = degToRad(finalRot[i]-correction);
         console.log(randomAngles[0].obj, randomAngles[1].obj, randomAngles[2].obj)
-        c.rotation.x = MathUtils.lerp(startRot, endRot, rotationProgress.current);
+        c.rotation.x = MathUtils.lerp(startRot, endRot, cylinderRotProg.current);
       });
 
-      if (rotationProgress.current >= 1) {
+      if (cylinderRotProg.current >= 1) {
+        successRef.current = success;
         motionPhase.current = 'done';
       }
     }
   })
 
   return (
-    <>
-      <group rotation={groupRotation.current}>
-        {/* 본체 */}
-        <primitive
-          object={main}
-          position={mainCenter}
-        />
-        
-        {/* 원통 1,2,3 */}
-        {cylinders.map((c, index) => {
-          const moveX = index === 0
-            ? -cylinderGap
-            : index === 1 
-              ? 0
-              : index === 2
-                ? cylinderGap
-                : 0
-          return (
-            <primitive
-              key={index}
-              ref={(el: Object3D) => {
-                if (el) cylinderRefs.current[2-index] = el;
-              }}
-              object={c}
-              rotation={[cylinderInitRotationX.current, 0, 0]}
-              position={[
-                cylinderCenter.x + moveX,
-                cylinderCenter.y,
-                cylinderCenter.z
-              ]}
-            />
-          )
-        })}
+    <group
+      ref={groupRef}
+      rotation={groupRotation.current}
+    >
+      {/* 본체 */}
+      <primitive
+        object={main}
+        position={mainCenter}
+      />
+      
+      {/* 원통 1,2,3 */}
+      {cylinders.map((c, index) => {
+        const moveX = index === 0
+          ? -cylinderGap
+          : index === 1 
+            ? 0
+            : index === 2
+              ? cylinderGap
+              : 0
+        return (
+          <primitive
+            key={index}
+            ref={(el: Object3D) => {
+              if (el) cylinderRefs.current[2-index] = el;
+            }}
+            object={c}
+            rotation={[cylinderInitRotationX.current, 0, 0]}
+            position={[
+              cylinderCenter.x + moveX,
+              cylinderCenter.y,
+              cylinderCenter.z
+            ]}
+          />
+        )
+      })}
 
-        {/* 손잡이 */}
-        <primitive
-          object={handle}
-          rotation={[degToRad(5), 0, 0]}
-          position={[
-            handleCenter.x,
-            handleCenter.y,
-            handleCenter.z
-          ]}
-        />
-      </group>
-    </>
+      {/* 손잡이 */}
+      <primitive
+        object={handle}
+        rotation={[degToRad(5), 0, 0]}
+        ref={handleRef}
+        position={[
+          handleCenter.x,
+          handleCenter.y,
+          handleCenter.z
+        ]}
+      />
+    </group>
   )
 }
