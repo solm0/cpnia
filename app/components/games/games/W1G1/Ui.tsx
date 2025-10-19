@@ -2,7 +2,6 @@ import { RefObject, useEffect, useState } from "react";
 import { gameRefProp } from "../W1G1";
 import Button from "@/app/components/util/Button";
 import { useRouter } from "next/navigation";
-import SmallScene from "@/app/components/util/SmallScene";
 
 export default function Ui({
   hasPicked, pickCard, gameRef, turn, minNum,
@@ -30,13 +29,15 @@ export default function Ui({
   const [num, setNum] = useState(minNum.current);
 
   useEffect(() => {
+    currentNum.current = null;
+    setHasBet(false);
+    console.log('currentNum', currentNum.current, 'minNum', minNum.current, 'hasBet', hasBet)
+
     const interval = setInterval(() => {
       if (turn.current !== null) {
-        currentNum.current = null;
-
         setVersion(v => v + 1);
       }
-    }, 16); // 60fps
+    }, 16);
     return () => clearInterval(interval);
   }, []);
 
@@ -63,6 +64,7 @@ export default function Ui({
   } else {
     // --- 턴 1/2: 베팅 전 ---
     if (!hasBet) {
+      // 최초
       if (turn.current === 0) {
         return (
           <div>
@@ -71,7 +73,8 @@ export default function Ui({
               worldKey={worldKey}
               onClick={() => {
                 bet(10, turn.current);
-                turn.current += 1;
+                setHasBet(true);
+                motionPhase.current = 'bet';
               }}
               label="확인"
               autoFocus={true}
@@ -82,7 +85,6 @@ export default function Ui({
         // 내차례
         if (turn.current % 2 === 0) {
           
-
           return (
             <>
               <span>남은 칩: {gameRef.current[turn.current % 2].leftChips}개</span>
@@ -132,83 +134,105 @@ export default function Ui({
     } else {
       if (!currentNum.current) return;
 
-      // 폴드
-      if (currentNum.current === 0) {
-        // 그게 나일경우
-        if (turn.current % 2 === 0) {
-          return (
-            <div className="flex flex-col">
-              <div>게임을 포기하셨습니다. 베팅한 돈을 전부 잃었습니다.</div>
+      // 최초
+      if (turn.current === 0) {
+        return (
+          <div>
+            <p>잘했어요</p>
+            <Button
+              label="다음"
+              onClick={() => {
+                turn.current += 1;
+                currentNum.current = null;
+                setHasBet(false);
+              }}
+              worldKey={worldKey}
+              autoFocus={true}
+            />
+          </div>
+        )
+      } else {
+        // 1. 폴드
+        if (currentNum.current === 0) {
+          // 그게 나일경우
+          if (turn.current % 2 === 0) {
+            return (
+              <div className="flex flex-col">
+                <div>게임을 포기하셨습니다. 베팅한 돈을 전부 잃었습니다.</div>
+                <Button
+                  label="확인"
+                  worldKey={worldKey}
+                  onClick={() => {
+                    onGameEnd(false);
+                    motionPhase.current = 'npcWin'
+                  }}
+                />
+              </div>
+            )
+            // 그게 상대일경우
+          } else {
+            return (
+              <div className="flex flex-col">
+                <div>상대가 게임을 포기했습니다. 테이블의 칩은 당신의 것</div>
+                <Button
+                  label="확인"
+                  worldKey={worldKey}
+                  onClick={() => {
+                    onGameEnd(true);
+                    motionPhase.current = 'npcFail'
+                  }}
+                />
+              </div>
+            )
+          }
+          // 2. 콜
+        } else if (currentNum.current === minNum.current) {
+          if (gameRef.current[0].card && gameRef.current[1].card) {
+            const success = gameRef.current[1].card < gameRef.current[0].card;
+            return (
+              <div>
+                <p>{success ? '니가 이겼다' : '너 졌다'}</p>
+
+                {/* 카드 오픈 */}
+                {/* <SmallScene>
+                  <Card
+                  <Card
+                </SmallScene> */}
+
+                <Button
+                  label="확인"
+                  onClick={() => onGameEnd(success)}
+                  worldKey={worldKey}
+                  autoFocus={true}
+                />
+              </div>
+            )
+          } else return (
+            <div>
+              <p>엥.. npc랑 플레이어 중 한명의 카드가 없어졌다.</p>
+              <p>아마 당신이 버그를 발견한듯. 어케한거..? 일단 축하함..</p>
               <Button
-                label="확인"
+                label="월드로 돌아가기"
+                onClick={() => router.push(`/${worldKey}`)}
+                autoFocus={true}
                 worldKey={worldKey}
-                onClick={() => {
-                  onGameEnd(false);
-                  motionPhase.current = 'npcWin'
-                }}
               />
             </div>
           )
-          // 그게 상대일경우
-        } else {
+          // 3. 레이즈
+        } else if (currentNum.current > minNum.current) {
           return (
-            <div className="flex flex-col">
-              <div>상대가 게임을 포기했습니다. 테이블의 칩은 당신의 것</div>
+            <div>
+              <p>상대가 {currentNum.current}를 베팅했습니다.</p>
               <Button
-                label="확인"
+                autoFocus={true}
                 worldKey={worldKey}
-                onClick={() => {
-                  onGameEnd(true);
-                  motionPhase.current = 'npcFail'
-                }}
+                label="확인"
+                onClick={() => turn.current += 1}
               />
             </div>
           )
         }
-        // 콜
-      } else if (currentNum.current === minNum.current) {
-        if (gameRef.current[0].card && gameRef.current[1].card) {
-          const success = gameRef.current[1].card < gameRef.current[0].card;
-          return (
-            <div>
-              <p>{success ? '니가 이겼다' : '너 졌다'}</p>
-
-              {/* <SmallScene>
-                <Model
-              </SmallScene> */}
-
-              <Button
-                label="확인"
-                onClick={() => onGameEnd(success)}
-                worldKey={worldKey}
-                autoFocus={true}
-              />
-            </div>
-          )
-        } else return (
-          <div>
-            <p>엥.. npc랑 플레이어 중 한명의 카드가 없어졌다.</p>
-            <p>아마 당신이 버그를 발견한듯. 어케한거..? 일단 축하함..</p>
-            <Button
-              label="월드로 돌아가기"
-              onClick={() => router.push(`/${worldKey}`)}
-              autoFocus={true}
-              worldKey={worldKey}
-            />
-          </div>
-        )
-        // 레이즈
-      } else if (currentNum.current > minNum.current) {
-        // 아니 근데 npc가 베팅 끝낸건 어케알아?
-        <div>
-          <p>상대가 {currentNum.current}를 베팅했습니다.</p>
-          <Button
-            autoFocus={true}
-            worldKey={worldKey}
-            label="확인"
-            onClick={() => turn.current += 1}
-          />
-        </div>
       }
     }
   }

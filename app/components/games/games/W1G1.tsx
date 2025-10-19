@@ -51,7 +51,6 @@ export default function W1G1({
   const turn = useRef(0);
   const minNum = useRef<number>(0);
   const currentNum = useRef<number | null>(null);
-  const prevNum = useRef<number | null>(null);
 
   // 씬 전환 Pick -> Table
   const [hasPicked, setHasPicked] = useState(false);
