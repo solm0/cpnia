@@ -62,7 +62,7 @@ export default function InterviewScene() {
         rotation={[0, MathUtils.degToRad(30), 0]}
       />
       <Model
-        src="/models/avatar.glb"
+        src="/models/avatars/default.glb"
         scale={3}
         position={[-2.5, -1, -1.5]}
         rotation={[0, MathUtils.degToRad(30), 0]}
@@ -73,7 +73,7 @@ export default function InterviewScene() {
         position={[-1.5,-1,0]}
         rotation={[0, MathUtils.degToRad(210), 0]}
       />
-      <OrbitControls enableZoom={false} />
+      <OrbitControls  />
     </Scene>
   )
 }

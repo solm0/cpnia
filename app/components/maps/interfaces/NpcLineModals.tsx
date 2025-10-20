@@ -4,6 +4,7 @@ import { TypingText } from "./TypingText";
 import { TimeOptionButton, SacrificeOptionButton, EntropyOptionButton } from "./OptionButtons";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { nanumGothicCodingBold } from "@/app/lib/fonts";
 
 export function TimeNpcLineModal({
   worldKey, name, setActiveNpc, options,
@@ -17,7 +18,10 @@ export function TimeNpcLineModal({
   const [lineIndex, setLineIndex] = useState(0);
 
   return (
-    <div className="-translate-y-8 ml-8 mb-8 w-[60rem] h-[18rem] backdrop-blur-sm text-white flex flex-col items-start border-3 border-[#ffffff70]">
+    <div className={`
+      -translate-y-8 ml-8 mb-8 w-[60rem] h-[18rem] backdrop-blur-sm text-white flex flex-col items-start border-3 border-[#ffffff70]
+      ${nanumGothicCodingBold.className}
+    `}>
       <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#00000090] border-3 border-[#ffffff] blur-sm" />
       
       {/* 윗부분 */}
@@ -84,7 +88,10 @@ export function PizzaCutterLineModal({
   }
 
   return (
-    <div className="-translate-y-8 ml-8 rounded-4xl mb-8 w-[60rem] h-[18rem] backdrop-blur-sm font-bold text-white flex flex-col items-start p-4">
+    <div className={`
+      -translate-y-8 ml-8 rounded-4xl mb-8 w-[60rem] h-[18rem] backdrop-blur-sm font-bold text-white flex flex-col items-start p-4
+      ${nanumGothicCodingBold.className}
+    `}>
       <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#ae4bff95] blur-sm rounded-4xl mix-blend-darken" />
       
       {/* 윗부분 */}
@@ -160,7 +167,10 @@ export function FugitiveLineModal({
   }, [isClicked]);
 
   return (
-    <div className="-translate-y-8 ml-8 rounded-4xl mb-8 w-[60rem] h-[18rem] backdrop-blur-sm font-bold text-white flex flex-col items-start p-4">
+    <div className={`
+      -translate-y-8 ml-8 rounded-4xl mb-8 w-[60rem] h-[18rem] backdrop-blur-sm font-bold text-white flex flex-col items-start p-4
+      ${nanumGothicCodingBold.className}
+    `}>
       <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#ae4bff95] blur-sm rounded-4xl mix-blend-darken" />
       
       {/* 윗부분 */}
@@ -217,7 +227,10 @@ export function SacrificeNpcLineModal({
   const [lineIndex, setLineIndex] = useState(0);
 
   return (
-    <div className="-translate-y-8 ml-8 rounded-4xl mb-8 w-[60rem] h-[18rem] backdrop-blur-sm font-bold text-white flex flex-col items-start p-4">
+    <div className={`
+      -translate-y-8 ml-8 rounded-4xl mb-8 w-[60rem] h-[18rem] backdrop-blur-sm font-bold text-white flex flex-col items-start p-4
+      ${nanumGothicCodingBold.className}
+    `}>
       <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#ae4bff95] blur-sm rounded-4xl mix-blend-darken" />
       
       {/* 윗부분 */}
@@ -277,7 +290,10 @@ export function EntropyNpcLineModal({
   const line = FindNpcLine(name, worldKey);
 
   return (
-    <div className="flex flex-col gap-2 w-full items-start">
+    <div className={`
+      flex flex-col gap-2 w-full items-start
+      ${nanumGothicCodingBold.className}
+    `}>
       <p>{name} says:</p>
       <TypingText text={line[0] ?? 'npc line이 없음'} />
       <Button

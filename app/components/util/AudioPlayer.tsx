@@ -5,11 +5,11 @@ import Button from "./Button";
 import FullScreenModal from "./FullScreenModal";
 
 export default function AudioPlayer({
-  title,
+  src,
   worldKey,
   audioRef
 }: {
-  title: string;
+  src: string;
   worldKey: string;
   audioRef: RefObject<HTMLAudioElement | null>;
 }) {
@@ -43,7 +43,7 @@ export default function AudioPlayer({
       )}
 
       <audio
-        src={`/audio/${title}`}
+        src={src}
         ref={audioRef}
         preload="auto"
         loop

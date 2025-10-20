@@ -1,16 +1,6 @@
 import type { Metadata } from "next";
-import { Nanum_Gothic_Coding } from "next/font/google";
 import "./globals.css";
-
-const nanumGothicCodingBold = Nanum_Gothic_Coding({
-  weight: "700",
-  subsets: ['latin']
-});
-
-const nanumGothicCoding = Nanum_Gothic_Coding({
-  weight: "400",
-  subsets: ['latin']
-});
+import { nanumGothicCoding, nanumGothicCodingBold } from "./lib/fonts";
 
 export const metadata: Metadata = {
   title: "Create Next App",

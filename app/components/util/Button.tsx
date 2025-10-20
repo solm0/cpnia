@@ -1,3 +1,4 @@
+import { jersey15 } from "@/app/lib/fonts";
 import { useEffect, useRef } from "react";
 
 export default function Button({
@@ -74,17 +75,24 @@ export default function Button({
           onClick={() => onClick?.()}
           className={`
             h-10
-            ${small ? 'w-10' : 'w-auto min-w-40'}
+            ${small ? 'w-20' : 'w-auto min-w-40'}
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'}
-            relative flex flex-col items-center justify-center pointer-events-auto
+            ${jersey15.className}
+            relative flex gap-4 items-center justify-center pointer-events-auto
+            group focus:outline-none
           `}
           tabIndex={autoFocus ? -1 : 0}
           disabled={disabled ? true : false}
         >
-          {!small && <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80" />}
-          <p className="text-white text-sm h-10 flex items-center">{label}</p>
-          {!small && <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-white to-transparent opacity-90" />}
-          <div className="absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-30 active:opacity-30 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+          <div className={`
+            hidden bg-white h-3 w-3 rotate-45
+            ${small ? '' : 'group-focus:block'}
+          `}/>
+          <p className="text-white text-2xl h-10 flex items-center">{label}</p>
+          <div className={`
+            absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-50 active:opacity-40 transition-opacity duration-300 bg-gradient-to-r from-white to-transparent
+            ${small ? 'group-focus:opacity-50' : ''}
+          `} />
         </button>
       )
   }

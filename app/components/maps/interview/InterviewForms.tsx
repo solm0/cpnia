@@ -6,6 +6,7 @@ import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserNameStore } from "@/app/lib/state/userNameStore";
 import { worldPortals } from "@/app/lib/data/positions/worldPortals";
+import { nanumGothicCoding } from "@/app/lib/fonts";
 
 interface npcConfig {
   formality: string,
@@ -84,22 +85,26 @@ export default function InterviewForms() {
   }
 
   return (
-    <div className="flex flex-col gap-8 items-center break-keep text-gray-700 text-sm pointer-events-auto">
+    <div className={`
+      flex flex-col gap-8 items-center break-keep text-gray-700 pointer-events-auto
+      ${nanumGothicCoding.className}
+    `}>
       {phase <= 2 ? (
         <>
+          <p>{phase}</p>
           <label htmlFor="form" className="font-bold">
             {phase === 1 ? questions[0] : questions[1]}
           </label>
           <form
             id='form'
             onSubmit={(e) => e.preventDefault()}
-            className="flex flex-col gap-2 items-center"
+            className="flex flex-col gap-12 items-center"
           >
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="w-96 h-10 text-center bg-gradient-to-r from-transparent to-transparent via-[#00000099] backdrop-blur-sm text-white p-4 truncate"
+              className="w-96 h-10 text-center focus-within:outline-none border-b-1 border-white focus-within:border-b-4 text-gray-700 text-lg font-bold p-4 truncate"
               disabled={loading}
               placeholder="답변을 적어주세요"
             />

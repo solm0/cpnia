@@ -1,19 +1,21 @@
 import { Environment } from "@react-three/drei";
 import { EffectComposer, DepthOfField, Bloom, Noise, Pixelation, Vignette, ChromaticAberration, BrightnessContrast} from "@react-three/postprocessing";
 import { BlendFunction } from 'postprocessing'
+import { radToDeg } from "three/src/math/MathUtils.js";
 
 export function HomeEffects() {
   return (
     <>
-      <Environment files={'/hdri/space-1.hdr'} background={true} backgroundIntensity={1}  />
+      <Environment files={'/hdri/sky.hdr'} background={true} backgroundIntensity={0.5} backgroundRotation={[0,radToDeg(90),0]}  />
       <EffectComposer>
-        <DepthOfField focusDistance={0} focalLength={0.2} bokehScale={4} height={480} />
-        <Bloom luminanceThreshold={0} luminanceSmoothing={2} height={300} blendFunction={BlendFunction.COLOR_DODGE} />
+        <Bloom luminanceThreshold={0.8} luminanceSmoothing={1} height={300} blendFunction={BlendFunction.ADD} />
+        <DepthOfField focusDistance={0} focalLength={0.2} bokehScale={2} height={480} />
         <ChromaticAberration
           blendFunction={BlendFunction.NORMAL} // blend mode
           offset={[0.001, 0.001]} // color offset
         />
         <BrightnessContrast opacity={0.4} blendFunction={BlendFunction.LINEAR_DODGE} />
+
       </EffectComposer>
     </>
   )

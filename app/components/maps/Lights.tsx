@@ -4,8 +4,9 @@ export function HomeLights() {
   return (
     <>
       <ambientLight intensity={0.2} />
-      <directionalLight color={'lightblue'} intensity={10}/>
-      <directionalLight color={'orange'} intensity={1} position={[10,0,-100]}/>
+      <directionalLight color={'white'} intensity={1} position={[-20,0,50]}/>
+      <directionalLight color={'white'} intensity={1} position={[20,0,50]}/>
+      <directionalLight color={'orange'} intensity={1} position={[10,0,-80]}/>
     </>
   )
 }

@@ -7,6 +7,7 @@ import Button from "../../../util/Button";
 import { TimeNpcChatBlock, SacrificeNpcChatBlock, EntropyNpcChatBlock } from "./NpcChatBlocks";
 import { TimePlayerChatBlock, SacrificePlayerChatBlock, EntropyPlayerChatBlock } from "./PlayerChatBlocks";
 import { TimeNpcLoadingBlock, SacrificeNpcLoadingBlock, EntropyNpcLoadingBlock } from "./NpcLoadingBlocks";
+import { nanumGothicCodingBold } from "@/app/lib/fonts";
 
 export default function ChatNpcScreen({
   npcData, worldKey, setIsChatOpen, isChatOpen
@@ -44,7 +45,10 @@ export default function ChatNpcScreen({
     case 'time':
       content = (
         <div
-          className='text-white break-keep absolute top-8 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-[#ffffff70] w-[30rem] h-2/3 overflow-visible'
+          className={`
+            text-white break-keep absolute top-8 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-[#ffffff70] w-[30rem] h-2/3 overflow-visible
+            ${nanumGothicCodingBold.className}
+          `}
           onWheel={(e) => { e.stopPropagation() }}
         >
           <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#00000090] border-3 border-[#ffffff] blur-sm" />
@@ -89,7 +93,10 @@ export default function ChatNpcScreen({
     case 'sacrifice':
       content = (
         <div
-          className="text-white font-bold break-keep absolute top-8 right-8 transition-[width,height] p-4 flex flex-col pointer-events-none items-center backdrop-blur-sm rounded-4xl w-[30rem] h-2/3 overflow-visible"
+          className={`
+            text-white font-bold break-keep absolute top-8 right-8 transition-[width,height] p-4 flex flex-col pointer-events-none items-center backdrop-blur-sm rounded-4xl w-[30rem] h-2/3 overflow-visible
+            ${nanumGothicCodingBold.className}
+          `}
           onWheel={(e) => {
             e.stopPropagation();
           }}
@@ -137,7 +144,10 @@ export default function ChatNpcScreen({
     case 'entropy':
       content = (
         <div
-          className="text-white break-keep absolute top-8 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-[#ffffff70] w-[30rem] h-2/3 overflow-visible"
+          className={`
+            text-white break-keep absolute top-8 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-[#ffffff70] w-[30rem] h-2/3 overflow-visible
+            ${nanumGothicCodingBold.className}
+          `}
           onWheel={(e) => {
             e.stopPropagation();
           }}

@@ -7,6 +7,7 @@ import FullScreenModal from "../../util/FullScreenModal";
 import UserNameForm from "./UserNameForm";
 import CardModel from "./CardModel";
 import { worldPortals } from "@/app/lib/data/positions/worldPortals";
+import { jersey15 } from "@/app/lib/fonts";
 
 export default function HomeMenu() {
   const [isPurseOpen, setIsPurseOpen] = useState(false);
@@ -23,28 +24,31 @@ export default function HomeMenu() {
   return (
     <>
       {/* 버튼들 */}
-      <div className="relative top-3/5 flex flex-col items-center gap-8 h-auto w-auto">
-        <h1 className="text-center text-white text-5xl w-[20em] break-keep select-none font-bold">Cpnia</h1>
+      <div className={`${jersey15.className} relative top-3/5 flex flex-col items-center gap-8 h-auto w-auto`}>
+        <h1 className="text-center text-white w-50 break-keep select-none">
+          <span className="hidden">Cpnia</span>
+          <img src={'/images/cpnia-logo.png'} />
+        </h1>
 
         <div className="flex flex-col gap-2 pointer-events-auto">
           <Button
             onClick={() => setIsPurseOpen(true)}
-            label="지갑"
+            label="WALLET"
           />
           <Button
             onClick={() => setIsAboutOpen(true)}
-            label="게임에 대해서"
+            label="ABOUT"
           />
+          <UserNameForm />
         </div>
 
-        <UserNameForm />
       </div>
 
       {/* 모달들 */}
 
       {isPurseOpen &&
         <FullScreenModal
-          title="지갑"
+          title="WALLET"
           handleClose={setIsPurseOpen}
         >
           <div className="flex flex-col gap-0">
@@ -64,13 +68,13 @@ export default function HomeMenu() {
 
       {isAboutOpen &&
         <FullScreenModal
-          title="게임에 대해서"
+          title="ABOUT"
           handleClose={setIsAboutOpen}
         >
           <div className="flex flex-col gap-4 w-96 text-center">
             <h3 className="text-white font-bold">About</h3>
             <p className="text-white break-keep w-max-[35rem]">
-              Cpnia에는 인간과 ai의 합작으로 만들어진 3개의 사회와 그 시민들이 있습니다. 오픈 월드를 돌아다니고 퀘스트를 풀면서 각 사회에 대한 정보를 모으고, 시민권을 획득해 보세요.
+              C.pnia에는 인간과 ai의 합작으로 만들어진 3개의 국가와 그 시민들이 있습니다. 오픈 월드를 탐험하고 퀘스트를 깨면서 각 국가에 대한 정보를 모으고, 시민권을 획득해 보세요.
             </p>
           </div>
           <div className="flex flex-col gap-4 w-auto text-center">

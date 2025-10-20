@@ -13,10 +13,8 @@ import { useState } from "react";
 import Button from "./components/util/Button";
 import { useRouter } from "next/navigation";
 import { HomeEffects } from "./components/maps/Effects";
-import Model from "./components/util/Model";
-import { degToRad } from "three/src/math/MathUtils.js";
 import { HomeLights } from "./components/maps/Lights";
-import Scene from "./components/util/Scene";
+import { jersey15, nanumGothicCoding } from "./lib/fonts";
 
 export default function Home() {
   const router = useRouter();
@@ -55,57 +53,42 @@ export default function Home() {
   const worldData = worldPortals.find(world => world.worldKey === focusedWorld);
 
   return (
-    <main className="relative w-full h-full">
+    <main className={`relative w-full h-full ${nanumGothicCoding.className}`}>
       <div className="w-full h-full relative z-0">
       <Canvas shadows camera={{ position: [0, 0, 5], fov: 50 }} frameloop="always">
-        
-        <HomeLights/>
-
         <SceneWithRef
           ref={sceneRef}
           isFocused={isFocused}
           setIsFocused={setIsFocused}
-        >
+          >
           {worldPortals.map(world => 
             <WorldPortal
-              key={world.worldKey}
-              src={world.src}
-              label={world.worldName}
-              worldKey={world.worldKey}
-              position={world.position}
-              rotation={world.rotation}
-              scale={world.scale}
-              rotationAxis={world.rotationAxis}
-              rotationSpeed={world.rotationSpeed}
-              onFocus={focusPortal}
-              setFocusedWorld={setFocusedWorld}
+            key={world.worldKey}
+            src={world.src}
+            label={world.worldName}
+            worldKey={world.worldKey}
+            position={world.position}
+            rotation={world.rotation}
+            scale={world.scale}
+            rotationAxis={world.rotationAxis}
+            rotationSpeed={world.rotationSpeed}
+            onFocus={focusPortal}
+            setFocusedWorld={setFocusedWorld}
             />
           )}
 
-          {/* 효과 */}
+          {/* 빛, 효과 */}
+          <HomeLights/>
           <HomeEffects />
         </SceneWithRef>
       </Canvas>
-
-      <div className="fixed pointer-events-none w-screen h-screen top-0 left-0">
-        <Scene pointer={false}>
-          <Model
-            src="/models/ship.glb"
-            scale={30}
-            position={[5,-42,0]}
-            rotation={[0,degToRad(180),0]}
-          />
-        </Scene>
-      </div>
       
       </div>
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         {!isFocused && <HomeMenu />}
         {isFocused &&
-          <div className="absolute left-3/5 w-96 break-keep text-white text-center h-full flex flex-col justify-center gap-12 items-center pointer-events-auto">
-            <p className="font-bold">{worldData?.label}</p>
-            <p className="font-bold">{worldData?.description}</p>
-            <div className="flex">
+          <>
+            <div className="absolute top-1/2 -translate-y-1/2 left-4 scale-200">
               <Button
                 label="<"
                 onClick={() => {
@@ -118,6 +101,29 @@ export default function Home() {
                 }}
                 small={true}
               />
+            </div>
+
+            <div className="absolute left-4/7 w-96 break-keep text-white text-center h-full flex flex-col justify-center gap-12 items-center pointer-events-auto">
+              <h2 className={`text-5xl ${jersey15.className}`}>{worldData?.worldName}</h2>
+              <p className="font-bold">{worldData?.label}</p>
+              <p className="font-bold">{worldData?.description}</p>
+
+              <div className="flex gap-2">
+                <Button
+                    label="ENTER WORLD"
+                    onClick={() => router.push(`/interview?to=${focusedWorld}`)}
+                  />
+                <Button
+                  label="BACK"
+                  onClick={() => {
+                    unFocusPortal();
+                    setIsFocused(false);
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="absolute top-1/2 -translate-y-1/2 right-4 scale-200">
               <Button
                 label=">"
                 onClick={() => {
@@ -131,21 +137,8 @@ export default function Home() {
                 small={true}
               />
             </div>
-
-            <div className="flex flex-col gap-2">
-              <Button
-                  label="입장하기"
-                  onClick={() => router.push(`/interview?to=${focusedWorld}`)}
-                />
-              <Button
-                label="뒤로"
-                onClick={() => {
-                  unFocusPortal();
-                  setIsFocused(false);
-                }}
-              />
-            </div>
-          </div>}
+          </>
+        }
       </div>
     </main>
   );
