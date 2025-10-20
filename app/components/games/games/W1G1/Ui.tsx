@@ -3,6 +3,188 @@ import { gameRefProp } from "../W1G1";
 import Button from "@/app/components/util/Button";
 import { useRouter } from "next/navigation";
 
+function ConfirmModal({
+  worldKey, setHasBet, motionPhase,
+  bet, currentNum,
+  num, turn,
+  behavior, setModal,
+  betChips,
+}:{
+  worldKey: string;
+  bet: (num: number, turn: number) => void;
+  currentNum: RefObject<number | null>;
+  setHasBet: (hasBet: boolean) => void;
+  motionPhase: RefObject<'idle' | 'bet' | 'npcFail' | 'npcWin'>;
+  num: number;
+  turn: number;
+  behavior: string;
+  setModal: (modal: string | null) => void;
+  betChips: number;
+}) {
+  let label;
+  switch (behavior) {
+    case 'bet': label = `${num}개의 칩을 베팅합니다.`; break;
+    case 'fold': label = `폴드합니다. 베팅된 칩 ${betChips} 개는 상대의 것이 됩니다.`; break;
+    case 'allIn': label = `칩이 부족하여 남은 칩 ${num}을 올인합니다`; break;
+    default: label = 'behavior가 없습니다.'
+  }
+  
+  return (
+    <div className="absolute top-0 left-0 w-96 h-52 -translate-x-1/2 -translate-y-1/2 backdrop-blur-2xl flex flex-col gap-8 items-center justify-center">
+      <p>{label}</p>
+      <div className="flex gap-2">
+        <Button
+          worldKey={worldKey}
+          label="예"
+          autoFocus={true}
+          onClick={() => {
+            if (behavior === 'bet') {
+              bet(num, turn); // minNum, currentNum 업데이트
+              setHasBet(true); // ui 업데이트
+              motionPhase.current = 'bet'; // 모션 flag
+            } else if (behavior === 'fold') {
+              currentNum.current = 0;
+              setHasBet(true);
+            } else if (behavior === 'allIn') {
+              bet(num, turn);
+              setHasBet(true);
+              motionPhase.current = 'bet'
+            }
+          }}
+        />
+        <Button
+          worldKey={worldKey}
+          label="다시고를래요"
+          onClick={() => {
+            setModal(null);
+          }}
+        />
+      </div>
+    </div>
+  )
+}
+
+function BetInput({
+  minNum, gameRef, betChips, turn, worldKey,
+  bet, currentNum, setHasBet, motionPhase,
+}: {
+  minNum: number;
+  gameRef: RefObject<gameRefProp[]>;
+  turn: number;
+  betChips: number;
+  worldKey: string;
+  motionPhase: RefObject<'idle' | 'bet' | 'npcFail' | 'npcWin'>;
+  bet: (num: number, turn: number) => void;
+  currentNum: RefObject<number | null>;
+  setHasBet: (hasBet: boolean) => void;
+}) {
+  const [num, setNum] = useState(minNum);
+  const [modal, setModal] = useState<string | null>(null);
+  const lack = gameRef.current[0].leftChips < minNum;
+
+  if (lack) {
+    setNum(gameRef.current[0].leftChips);
+
+    return (
+      <ConfirmModal
+        worldKey={worldKey}
+        setHasBet={setHasBet}
+        motionPhase={motionPhase}
+        bet={bet}
+        currentNum={currentNum}
+        num={num}
+        turn={turn}
+        behavior={'allIn'}
+        setModal={setModal}
+        betChips={betChips}
+      />
+    )
+  } else {
+    return (
+      <>
+        <div className="flex flex-col gap-10">
+          <div className="flex flex-col gap-2">
+            <span>콜: 상대방과 같은 양을 베팅합니다. 카드를 오픈해 승자를 가릅니다.</span>
+            <span>레이즈: 상대방보다 올려 베팅합니다. 베팅을 지속합니다.</span>
+            <span>폴드: 게임을 포기합니다. 베팅된 칩 {betChips}개는 상대의 것이 됩니다.</span>
+          </div>
+  
+          <div className="flex flex-col gap-2">
+            <span>남은 칩: {gameRef.current[turn % 2].leftChips}개</span>
+            <span>베팅할 경우 남은 칩: {gameRef.current[turn % 2].leftChips - num}개</span>
+            <span>베팅한 칩: {gameRef.current[turn % 2].betChips}개</span>
+            <div>최소 베팅가능 칩 갯수: {minNum}</div>
+          </div>
+  
+          {turn % 2 === 0 && (
+            // 인풋
+            <div className="flex flex-col gap-2">
+              <div>내가 베팅할 칩 갯수: {num}</div>
+              <div className="flex gap-2">
+                <Button
+                  label="+"
+                  onClick={() => {
+                    if (num < gameRef.current[0].leftChips) {
+                      setNum(prev => prev + 1);
+                    }
+                  }}
+                  disabled={num >= gameRef.current[0].leftChips ? true : false}
+                  worldKey={worldKey}
+                />
+                <Button
+                  label="-"
+                  onClick={() => {
+                    if (num > minNum) {
+                      setNum(prev => prev - 1);
+                    }
+                  }}
+                  disabled={num <= minNum ? true : false}
+                  worldKey={worldKey}
+                />
+                <Button
+                  label="올인"
+                  onClick={() => setNum(gameRef.current[0].leftChips)}
+                  worldKey={worldKey}
+                />
+              </div>
+  
+              <div className="flex gap-2">
+                <Button
+                  label="베팅"
+                  worldKey={worldKey}
+                  autoFocus={true}
+                  onClick={() => setModal('bet')}
+                />
+                <Button
+                  label="폴드"
+                  worldKey={worldKey}
+                  autoFocus={true}
+                  onClick={() => setModal('fold')}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+  
+        {modal &&
+          <ConfirmModal
+            worldKey={worldKey}
+            setHasBet={setHasBet}
+            motionPhase={motionPhase}
+            bet={bet}
+            currentNum={currentNum}
+            num={num}
+            turn={turn}
+            behavior={modal}
+            setModal={setModal}
+            betChips={betChips}
+          />
+        }
+      </>
+    )
+  }
+}
+
 export default function Ui({
   hasPicked, pickCard, gameRef, turn, minNum,
   currentNum,
@@ -28,7 +210,6 @@ export default function Ui({
   const [, setVersion] = useState(0);
 
   const [hasBet, setHasBet] = useState(false);
-  const [num, setNum] = useState(minNum.current);
 
   useEffect(() => {
     currentNum.current = null;
@@ -118,29 +299,19 @@ export default function Ui({
         // 내차례
         if (turn.current % 2 === 0) {
           currentNum.current = null;
+
           return (
-            <>
-              <span>남은 칩: {gameRef.current[turn.current % 2].leftChips}개</span>
-              <span>베팅한 칩: {gameRef.current[turn.current % 2].betChips}개</span>
-              <div>최소 베팅가능 칩 갯수: {minNum.current}</div>
-              {turn.current % 2 === 0 && (
-                // 인풋
-                <div>
-                  <div>내가 베팅할 칩 갯수: {num}</div>
-                  <div>+</div>
-                  <div>-</div>
-                  <Button
-                    label="확인"
-                    onClick={() => {
-                      bet(num, turn.current); // minNum, currentNum 업데이트
-                      setHasBet(true); // ui 업데이트
-                      motionPhase.current = 'bet'; // 모션 flag
-                    }}
-                  />
-                  <div>확인</div>
-                </div>
-              )}
-            </>
+            <BetInput
+              minNum={minNum.current}
+              gameRef={gameRef}
+              turn={turn.current}
+              betChips={gameRef.current[0].betChips + gameRef.current[1].betChips}
+              worldKey={worldKey}
+              motionPhase={motionPhase}
+              bet={bet}
+              currentNum={currentNum}
+              setHasBet={setHasBet}
+            />
           )
           // 상대 차례
         } else {
@@ -150,6 +321,20 @@ export default function Ui({
       // --- 턴 2/2: 베팅 후 ---
     } else {
       if (currentNum.current === null || currentNum.current === undefined) return <p>베팅된 칩 몇갠지 찾을수없음</p>
+      if (!gameRef.current[0].card || !gameRef.current[1].card) {
+        return (
+          <div>
+            <p>엥.. npc랑 플레이어 중 한명의 카드가 없어졌다.</p>
+            <p>아마 당신이 버그를 발견한듯. 어케한거..? 일단 축하함..</p>
+            <Button
+              label="월드로 돌아가기"
+              onClick={() => router.push(`/${worldKey}`)}
+              autoFocus={true}
+              worldKey={worldKey}
+            />
+          </div>
+        )
+      }
 
       // 최초
       if (turn.current === 0) {
@@ -204,11 +389,13 @@ export default function Ui({
           }
           // 2. 콜
         } else if (currentNum.current != null && currentNum.current === minNum.current) {
-          if (gameRef.current[0].card && gameRef.current[1].card) {
-            const success = gameRef.current[1].card < gameRef.current[0].card;
+          const success = gameRef.current[1].card < gameRef.current[0].card;
+
+          if (turn.current % 2 === 0) {
             return (
               <div>
-                <p>{success ? '니가 이겼다' : '너 졌다'}</p>
+                <p>상대와 같은 갯수 {currentNum.current}를 베팅했습니다. 베팅을 종료합니다.</p>
+                <p>결과 확인하기:</p>
 
                 {/* 카드 오픈 */}
                 <p>내 카드: {gameRef.current[0].card}</p>
@@ -218,6 +405,8 @@ export default function Ui({
                   <Card
                 </SmallScene> */}
 
+                <p>{success ? '니가 이겼다' : '너 졌다'}</p>
+
                 <Button
                   label="확인"
                   onClick={() => onGameEnd(success)}
@@ -226,18 +415,31 @@ export default function Ui({
                 />
               </div>
             )
-          } else return (
-            <div>
-              <p>엥.. npc랑 플레이어 중 한명의 카드가 없어졌다.</p>
-              <p>아마 당신이 버그를 발견한듯. 어케한거..? 일단 축하함..</p>
-              <Button
-                label="월드로 돌아가기"
-                onClick={() => router.push(`/${worldKey}`)}
-                autoFocus={true}
-                worldKey={worldKey}
-              />
-            </div>
-          )
+          } else {
+            return (
+              <div>
+                <p>상대가 당신과 같은 갯수 {currentNum.current}를 베팅했습니다. 베팅을 종료합니다.</p>
+                <p>결과 확인하기:</p>
+
+                {/* 카드 오픈 */}
+                <p>내 카드: {gameRef.current[0].card}</p>
+                <p>상대 카드: {gameRef.current[1].card}</p>
+                {/* <SmallScene>
+                  <Card
+                  <Card
+                </SmallScene> */}
+
+                <p>{success ? '니가 이겼다' : '너 졌다'}</p>
+
+                <Button
+                  label="확인"
+                  onClick={() => onGameEnd(success)}
+                  worldKey={worldKey}
+                  autoFocus={true}
+                />
+              </div>
+            )
+          }
           // 3. 레이즈
         } else if (currentNum.current > minNum.current) {
           // 나
@@ -280,8 +482,52 @@ export default function Ui({
             )
           }
         } else {
-          console.log('currentNum', currentNum.current, 'minNum', minNum)
-          return <p>currentNum이 minNum보다 작다는, 일어나면 안 되는 일이 일어났다</p>
+          console.log('올인', 'currentNum', currentNum.current, 'minNum', minNum);
+          const success = gameRef.current[1].card < gameRef.current[0].card;
+
+          if (turn.current % 2 === 0) {
+            return (
+              <div>
+                <p>당신의 칩이 부족해 모든 칩 {currentNum.current}를 베팅했습니다.</p>
+                <p>결과 확인하기:</p>
+  
+                  {/* 카드 오픈 */}
+                  <p>내 카드: {gameRef.current[0].card}</p>
+                  <p>상대 카드: {gameRef.current[1].card}</p>
+                  {/* <SmallScene>
+                    <Card
+                    <Card
+                  </SmallScene> */}
+  
+                  <p>{success ? '니가 이겼다' : '너 졌다'}</p>
+  
+                  <Button
+                    label="확인"
+                    onClick={() => onGameEnd(success)}
+                    worldKey={worldKey}
+                    autoFocus={true}
+                  />
+              </div>
+            )
+          } else {
+            return (
+              <div>
+                <p>상대의 칩이 부족해 모든 칩 {currentNum.current}를 베팅했습니다.</p>
+                <Button
+                  autoFocus={true}
+                  worldKey={worldKey}
+                  label="확인"
+                  onClick={() => {
+                    turn.current += 1;
+                    if (currentNum.current !== null && currentNum.current > minNum.current) {
+                      minNum.current = currentNum.current;
+                    }
+                    setHasBet(false);
+                  }}
+                />
+              </div>
+            )
+          }
         }
       }
     }
