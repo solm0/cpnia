@@ -67,10 +67,7 @@ export default function InterviewForms() {
   }
 
   const handleClick = () => {
-    if (!input.trim()) {
-      alert("답변을 입력해주시죠?");
-      return;
-    }
+    if (!input.trim()) return;
 
     const newAnswers = allAnswers + " " + input
     setAllAnswers(newAnswers);
@@ -111,7 +108,7 @@ export default function InterviewForms() {
             <Button
               onClick={handleClick}
               label={loading ? "답변을 분석중입니다...": "다음"}
-              disabled={loading}
+              disabled={loading || !input.trim()}
               gpTabIndex={0}
             />
           </form>

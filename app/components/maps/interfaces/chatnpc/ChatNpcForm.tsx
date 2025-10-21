@@ -17,7 +17,6 @@ export default function ChatNpcForm({
   loading: boolean;
   setLoading: (loading: boolean) => void;
 }) {
-  const alertRef = useRef(false);
   const npcName = npcData.name;
   const npcWorld = npcData.world;
 
@@ -91,10 +90,7 @@ export default function ChatNpcForm({
   }
 
   function handleSubmit() {
-    if (!input.trim()) {
-      alertRef.current = true;
-      return;
-    }
+    if (!input.trim()) return;
     onSubmit(input.trim());
     setInput("");
   }
@@ -144,7 +140,6 @@ export default function ChatNpcForm({
             }}
             className="shrink-0 fixed flex flex-col gap-4 w-full h-28 px-5 bottom-8"
           >
-
             <SacrificePlayerAnswerInput
               input={input}
               setInput={setInput}

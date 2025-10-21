@@ -4,7 +4,7 @@ import { useFrame, } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import { Mesh, MeshStandardMaterial, AnimationAction, AnimationMixer, LoopRepeat } from "three";
 import { usePlayerStore } from "@/app/lib/state/playerStore";
-import { Billboard, Text, useGLTF } from "@react-three/drei";
+import { Billboard, Image, Text, useGLTF } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
 import { Euler, Quaternion } from "three";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
@@ -225,6 +225,12 @@ export default function ChatNpc({
       >
         <Billboard position={[0,7.5,0]}>
           <Text fontSize={0.4}>{name}</Text>
+          <Image
+            url="/images/y.png"
+            scale={[1,1]}
+            position={[0,1.5,0]}
+            transparent
+          />
         </Billboard>
         
         <ChatNpcAvatar

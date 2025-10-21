@@ -23,6 +23,7 @@ export function TimePlayerAnswerInput({
         onClick={() => handleSubmit()}
         label="전송"
         worldKey="time"
+        disabled={!input.trim()}
       />
     </div>
   )
@@ -51,6 +52,7 @@ export function SacrificePlayerAnswerInput({
         onClick={() => handleSubmit()}
         label="전송"
         worldKey="sacrifice"
+        disabled={!input.trim()}
       />
     </div>
   )

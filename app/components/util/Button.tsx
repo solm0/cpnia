@@ -46,7 +46,7 @@ export default function Button({
           onClick={() => onClick?.()}
           className={`
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'}
-            "px-3 py-1 rounded-2xl bg-yellow-300 hover:opacity-50 transition-opacity text-gray-700 break-keep w-auto pointer-events-auto"
+            "px-3 py-1 rounded-2xl bg-yellow-300 hover:opacity-50 transition-opacity text-gray-700 break-keep w-auto pointer-events-auto shrink-0"
           `}
           tabIndex={autoFocus ? -1 : gpTabIndex}
           disabled={disabled ? true : false}
