@@ -111,7 +111,13 @@ export function BetInput({
           <UiCoinPile
             coin={coin}
             count={gameRef.current[0].leftChips}
+            tmpCount={gameRef.current[0].leftChips - num}
+          />
+          <UiCoinPile
+            coin={coin}
+            count={gameRef.current[0].leftChips}
             tmpCount={num}
+            x={1.3}
           />
         </div>
   

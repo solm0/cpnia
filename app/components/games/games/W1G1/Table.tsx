@@ -1,4 +1,4 @@
-import { RefObject, useEffect } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { gameRefProp } from "../W1G1";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
@@ -6,12 +6,14 @@ import { Object3D, Vector3 } from "three";
 import { BoxHelper } from "./BoxHelper";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { PosHelper } from "../W2G2/AnchorHelper";
+import { CoinPileOnTable } from "./CoinPile";
 
 useGLTF.preload("/models/table.glb");
 useGLTF.preload("/models/avatars/default.glb");
+useGLTF.preload("/models/cardPile.glb");
 
 export default function Table({
-  hasPicked, gameRef, turn, currentNum, cards, coin
+  hasPicked, gameRef, turn, currentNum, cards, coin,
 }: {
   hasPicked: boolean;
   gameRef: RefObject<gameRefProp[]>;
@@ -22,6 +24,7 @@ export default function Table({
 }) {
   const table = useGLTF('/models/table.glb').scene;
   const avatar = useGLTF('/models/avatars/default.glb').scene;
+  const cardPile = useGLTF("/models/cardPile.glb").scene;
 
   const tableScale = 5;
   const tableSurface = {
@@ -60,6 +63,16 @@ export default function Table({
     tableSurface.center.z + tableSurface.sizeZ - 3
   );
 
+  const [version, setVersion] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newCount = gameRef.current[0].betChips + gameRef.current[1].betChips;
+      setVersion(newCount); // update whenever count changes
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
       {/* npc */}
@@ -90,19 +103,46 @@ export default function Table({
         color="green"
       />
 
-      {/* 각자의 칩 위치 */}
+      {/* 각자의 칩 */}
       <PosHelper
         pos={npcChipPos}
         size={0.1}
       />
-      <PosHelper
+      {/* <PosHelper
         pos={playerChipPos}
         size={0.1}
+      /> */}
+      <CoinPileOnTable
+        coin={coin.clone()}
+        count={gameRef.current[1].leftChips}
+        position={npcChipPos}
       />
 
+      {/* 테이블 중앙 */}
+      {!hasPicked ? (
+        <primitive
+          object={cardPile}
+          position={[
+            tableSurface.center.x,
+            tableSurface.center.y + 0.01,
+            tableSurface.center.z
+          ]}
+          scale={tableScale * 0.15}
+        />
+      ): (
+        <CoinPileOnTable
+          key={version}
+          coin={coin.clone()}
+          count={gameRef.current[0].betChips + gameRef.current[1].betChips}
+          position={new Vector3(
+            tableSurface.center.x,
+            tableSurface.center.y + 0.01,
+            tableSurface.center.z
+          )}
+        />
+      )}
 
       {/* <OrbitControls /> */}
-      {/* Pick에서 setHasPicked */}
       <directionalLight intensity={3} position={[0, 10, 5]} />
     </>
   )
