@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { HomeEffects } from "./components/maps/Effects";
 import { HomeLights } from "./components/maps/Lights";
 import { jersey15, nanumGothicCoding } from "./lib/fonts";
+import { useGamepadControls } from "./lib/hooks/useGamepadControls";
 
 export default function Home() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function Home() {
     warmth: '적대적인',
   }
   const setNpcConfig = useNpcConfigStore(state => state.setNpcConfig);
+  const gamepad = useGamepadControls();
 
   useEffect(() => {
     const savedConfig = localStorage.getItem('npc-config')
@@ -52,6 +54,22 @@ export default function Home() {
 
   const worldData = worldPortals.find(world => world.worldKey === focusedWorld);
 
+  useEffect(() => {
+    function checkPause() {
+      if (gamepad?.current?.buttons[12]) {
+        setIsFocused(true);
+        focusPortal(worldPortals[0].position, worldPortals[0].rotation);
+        setFocusedWorld(worldPortals[0].worldKey)
+      } else if (gamepad?.current?.buttons[13]) {
+        unFocusPortal();
+        setIsFocused(false);
+      }
+    }
+  
+    const interval = setInterval(checkPause, 50); // check every 50ms
+    return () => clearInterval(interval);
+  }, [gamepad]);
+
   return (
     <main className={`relative w-full h-full ${nanumGothicCoding.className}`}>
       <div className="w-full h-full relative z-0">
@@ -63,17 +81,17 @@ export default function Home() {
           >
           {worldPortals.map(world => 
             <WorldPortal
-            key={world.worldKey}
-            src={world.src}
-            label={world.worldName}
-            worldKey={world.worldKey}
-            position={world.position}
-            rotation={world.rotation}
-            scale={world.scale}
-            rotationAxis={world.rotationAxis}
-            rotationSpeed={world.rotationSpeed}
-            onFocus={focusPortal}
-            setFocusedWorld={setFocusedWorld}
+              key={world.worldKey}
+              src={world.src}
+              label={world.worldName}
+              worldKey={world.worldKey}
+              position={world.position}
+              rotation={world.rotation}
+              scale={world.scale}
+              rotationAxis={world.rotationAxis}
+              rotationSpeed={world.rotationSpeed}
+              onFocus={focusPortal}
+              setFocusedWorld={setFocusedWorld}
             />
           )}
 
@@ -85,6 +103,9 @@ export default function Home() {
       
       </div>
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+        <p className="absolute top-20 text-sm left-1/2 -translate-x-1/2 text-white animate-pulse">
+          {`게임패드: ${isFocused ? '▽ 눌러 뒤로가기' : '△ 눌러 월드 선택'}`}
+        </p>
         {!isFocused && <HomeMenu />}
         {isFocused &&
           <>

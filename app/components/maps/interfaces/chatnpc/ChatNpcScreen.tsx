@@ -8,6 +8,7 @@ import { TimeNpcChatBlock, SacrificeNpcChatBlock, EntropyNpcChatBlock } from "./
 import { TimePlayerChatBlock, SacrificePlayerChatBlock, EntropyPlayerChatBlock } from "./PlayerChatBlocks";
 import { TimeNpcLoadingBlock, SacrificeNpcLoadingBlock, EntropyNpcLoadingBlock } from "./NpcLoadingBlocks";
 import { nanumGothicCodingBold } from "@/app/lib/fonts";
+import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 
 export default function ChatNpcScreen({
   npcData, worldKey, setIsChatOpen, isChatOpen
@@ -41,12 +42,31 @@ export default function ChatNpcScreen({
 
   let content:React.ReactNode = null;
 
+  const gamepad = useGamepadControls();
+
+  useEffect(() => {
+    let prevPressed = false;
+  
+    function checkPause() {
+      const pressed = Boolean(gamepad?.current?.buttons[2]);
+      if (pressed && !prevPressed) {
+        // @ts-expect-error fff
+        setIsChatOpen(prev => !prev);
+      }
+      prevPressed = pressed;
+    }
+  
+    const interval = setInterval(checkPause, 50);
+    return () => clearInterval(interval);
+  }, [gamepad]);
+
   switch(worldKey) {
     case 'time':
       content = (
         <div
           className={`
-            text-white break-keep absolute top-8 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-[#ffffff70] w-[30rem] h-2/3 overflow-visible
+            text-white break-keep absolute top-8 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-auto items-center backdrop-blur-sm border-3 border-[#ffffff70] w-[30rem] h-2/3 overflow-visible
+            z-80
             ${nanumGothicCodingBold.className}
           `}
           onWheel={(e) => { e.stopPropagation() }}

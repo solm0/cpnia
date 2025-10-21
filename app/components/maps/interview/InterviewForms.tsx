@@ -111,6 +111,8 @@ export default function InterviewForms() {
             <Button
               onClick={handleClick}
               label={loading ? "답변을 분석중입니다...": "다음"}
+              disabled={loading}
+              gpTabIndex={0}
             />
           </form>
         </>

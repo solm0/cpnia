@@ -25,7 +25,8 @@ export default function PausedScreen({
   // 일시정지
   useEffect(() => {
     function checkPause() {
-      if (pressedKeys.current.has("KeyQ") || (gamepad?.current?.buttons[9])) {
+      if (pressedKeys.current.has("KeyQ") || (gamepad?.current?.buttons[17])) {
+        console.log('quit')
         setIsPaused(true);
       }
     }

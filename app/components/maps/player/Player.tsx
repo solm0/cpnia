@@ -62,6 +62,8 @@ export default function Player({
     const moveSpeed = 40;
     let nextAction = 0; // idle
 
+    // console.log(Object.entries(gamepad.current.buttons).find((button) => button[1] === true))
+
     // Input
     let horizontal = 0;
     let vertical = 0;

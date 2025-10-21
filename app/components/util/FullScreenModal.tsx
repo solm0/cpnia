@@ -23,6 +23,7 @@ export default function FullScreenModal({
         <Button
           onClick={() => handleClose(false)}
           label="닫기"
+          autoFocus={true}
         />
       }
     </div>

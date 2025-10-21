@@ -78,7 +78,6 @@ export function W2G1Interface({
   useEffect(() => {
     if (penalty >= 5) {
       gameOver(false)
-      alert('멀쩡한 주민들을 마구잡이로 죽이다니!');
     }
   }, [penalty])
 

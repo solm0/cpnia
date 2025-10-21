@@ -17,6 +17,7 @@ export default function ChatNpcForm({
   loading: boolean;
   setLoading: (loading: boolean) => void;
 }) {
+  const alertRef = useRef(false);
   const npcName = npcData.name;
   const npcWorld = npcData.world;
 
@@ -91,7 +92,7 @@ export default function ChatNpcForm({
 
   function handleSubmit() {
     if (!input.trim()) {
-      alert('예시 질문중에 고르거나 말을 입력해주시죠?');
+      alertRef.current = true;
       return;
     }
     onSubmit(input.trim());

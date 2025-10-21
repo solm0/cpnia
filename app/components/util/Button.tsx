@@ -2,7 +2,7 @@ import { jersey15 } from "@/app/lib/fonts";
 import { useEffect, useRef } from "react";
 
 export default function Button({
-  onClick, label, worldKey, small, autoFocus, disabled = false
+  onClick, label, worldKey, small, autoFocus, disabled = false, gpTabIndex = 0,
 }: {
   onClick: (param?: number | string) => void;
   label: string;
@@ -10,6 +10,7 @@ export default function Button({
   small?: boolean;
   autoFocus?: boolean;
   disabled?: boolean;
+  gpTabIndex?: number;
 }) {
   const divRef = useRef<HTMLButtonElement>(null);
 
@@ -32,7 +33,7 @@ export default function Button({
             flex items-center border-1 border-[#ffffff70] pointer-events-auto hover:opacity-50 transition-opacity cursor-pointer
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'}
           `}
-          tabIndex={autoFocus ? -1 : 0}
+          tabIndex={autoFocus ? -1 : gpTabIndex}
           disabled={disabled ? true : false}
         >
           {label}
@@ -47,13 +48,13 @@ export default function Button({
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'}
             "px-3 py-1 rounded-2xl bg-yellow-300 hover:opacity-50 transition-opacity text-gray-700 break-keep w-auto pointer-events-auto"
           `}
-          tabIndex={autoFocus ? -1 : 0}
+          tabIndex={autoFocus ? -1 : gpTabIndex}
           disabled={disabled ? true : false}
         >
           {label}
         </button>
       )
-    case 'sacrifice':
+    case 'entropy':
       return (
         <button
           ref={divRef}
@@ -62,7 +63,7 @@ export default function Button({
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'}
             "px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 break-keep w-auto pointer-events-auto"
           `}
-          tabIndex={autoFocus ? -1 : 0}
+          tabIndex={autoFocus ? -1 : gpTabIndex}
           disabled={disabled ? true : false}
         >
           {label}
@@ -81,7 +82,7 @@ export default function Button({
             relative flex gap-4 items-center justify-center pointer-events-auto
             group focus:outline-none
           `}
-          tabIndex={autoFocus ? -1 : 0}
+          tabIndex={autoFocus ? -1 : gpTabIndex}
           disabled={disabled ? true : false}
         >
           <div className={`

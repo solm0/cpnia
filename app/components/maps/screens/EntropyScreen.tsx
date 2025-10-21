@@ -11,6 +11,7 @@ import { Physics } from "@react-three/rapier";
 import Npcs from "../Npcs";
 import { EntropyEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
+import Model from "../../util/Model";
 
 export default function EntropyScreen() {
   const worldKey = 'entropy'
@@ -32,6 +33,9 @@ export default function EntropyScreen() {
 
           {/* 지형 */}
           <PlaceHolder label="엔트로피 체제의 맵" />
+          <Model
+            src="/models/entropy.glb"
+          />
 
           {/* 포탈들 */}
           <Portals worldKey={worldKey} />
@@ -55,6 +59,8 @@ export default function EntropyScreen() {
 
         {/* 효과 */}
         <EntropyEffects />
+        <directionalLight intensity={10} position={[10,80,10]} />
+        <directionalLight intensity={10} position={[-10,80,-10]} />
       </Scene>
       
       {/* --- 월드 인터페이스 --- */}

@@ -5,7 +5,7 @@ import { useNpcConfigStore } from "../../../lib/state/npcConfigState";
 import { GameStateModal } from "./GameStateModal";
 import SmallScene from "../../util/SmallScene";
 import Model from "../../util/Model";
-import { Environment, OrbitControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import PausedScreen from "../../util/PausedScreen";
 import AudioPlayer from "../../util/AudioPlayer";
 import { useRef } from "react";
@@ -123,7 +123,11 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
       {/* 오른쪽 */}
       <div className="absolute w-auto h-auto top-8 right-8 text-white flex gap-4">
         <div className="flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity">
-          <button onClick={() => router.push('/')} className="pointer-events-auto">
+          <button
+            onClick={() => router.push('/')}
+            className="pointer-events-auto"
+            tabIndex={0}
+          >
             <House className="w-7 h-7 text-white" />
             <p>home</p>
           </button>

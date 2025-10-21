@@ -50,6 +50,19 @@ export function useFollowCam(
     if (pressedKeys.has("KeyK") || (gamepad && gamepad.axes[3] > deadzone)) {
       pitch.rotation.x = Math.min(1, pitch.rotation.x + rotateSpeed);
     }
+
+    const zoomSpeed = 2;
+
+    if (gamepad) {
+      if (gamepad.buttons[12]) {
+        zoomDistance.current -= zoomSpeed;
+      }
+      if (gamepad.buttons[13]) {
+        zoomDistance.current += zoomSpeed;
+      }
+    }
+  
+    zoomDistance.current = Math.min(Math.max(zoomDistance.current, 10), 300);
   }
 
   function onWheel(e: WheelEvent) {
