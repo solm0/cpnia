@@ -2,195 +2,16 @@ import { RefObject, useEffect, useState } from "react";
 import { gameRefProp } from "../W1G1";
 import Button from "@/app/components/util/Button";
 import { useRouter } from "next/navigation";
-
-function ConfirmModal({
-  worldKey, setHasBet, motionPhase,
-  bet, currentNum,
-  num, turn,
-  behavior, setModal,
-  betChips,
-}:{
-  worldKey: string;
-  bet: (num: number, turn: number) => void;
-  currentNum: RefObject<number | null>;
-  setHasBet: (hasBet: boolean) => void;
-  motionPhase: RefObject<'idle' | 'bet' | 'npcFail' | 'npcWin'>;
-  num: number;
-  turn: number;
-  behavior: string;
-  setModal: (modal: string | null) => void;
-  betChips: number;
-}) {
-  let label;
-  switch (behavior) {
-    case 'bet': label = `${num}개의 칩을 베팅합니다.`; break;
-    case 'fold': label = `폴드합니다. 베팅된 칩 ${betChips} 개는 상대의 것이 됩니다.`; break;
-    case 'allIn': label = `칩이 부족하여 남은 칩 ${num}을 올인합니다`; break;
-    default: label = 'behavior가 없습니다.'
-  }
-  
-  return (
-    <div className="absolute top-0 left-0 w-96 h-52 -translate-x-1/2 -translate-y-1/2 backdrop-blur-2xl flex flex-col gap-8 items-center justify-center">
-      <p>{label}</p>
-      <div className="flex gap-2">
-        <Button
-          worldKey={worldKey}
-          label="예"
-          autoFocus={true}
-          onClick={() => {
-            if (behavior === 'bet') {
-              bet(num, turn); // minNum, currentNum 업데이트
-              setHasBet(true); // ui 업데이트
-              motionPhase.current = 'bet'; // 모션 flag
-            } else if (behavior === 'fold') {
-              currentNum.current = 0;
-              setHasBet(true);
-            } else if (behavior === 'allIn') {
-              bet(num, turn);
-              setHasBet(true);
-              motionPhase.current = 'bet'
-            }
-          }}
-        />
-        <Button
-          worldKey={worldKey}
-          label="다시고를래요"
-          onClick={() => {
-            setModal(null);
-          }}
-        />
-      </div>
-    </div>
-  )
-}
-
-function BetInput({
-  minNum, gameRef, betChips, turn, worldKey,
-  bet, currentNum, setHasBet, motionPhase,
-}: {
-  minNum: number;
-  gameRef: RefObject<gameRefProp[]>;
-  turn: number;
-  betChips: number;
-  worldKey: string;
-  motionPhase: RefObject<'idle' | 'bet' | 'npcFail' | 'npcWin'>;
-  bet: (num: number, turn: number) => void;
-  currentNum: RefObject<number | null>;
-  setHasBet: (hasBet: boolean) => void;
-}) {
-  const [num, setNum] = useState(minNum);
-  const [modal, setModal] = useState<string | null>(null);
-  const lack = gameRef.current[0].leftChips < minNum;
-
-  if (lack) {
-    setNum(gameRef.current[0].leftChips);
-
-    return (
-      <ConfirmModal
-        worldKey={worldKey}
-        setHasBet={setHasBet}
-        motionPhase={motionPhase}
-        bet={bet}
-        currentNum={currentNum}
-        num={num}
-        turn={turn}
-        behavior={'allIn'}
-        setModal={setModal}
-        betChips={betChips}
-      />
-    )
-  } else {
-    return (
-      <>
-        <div className="flex flex-col gap-10">
-          <div className="flex flex-col gap-2">
-            <span>콜: 상대방과 같은 양을 베팅합니다. 카드를 오픈해 승자를 가릅니다.</span>
-            <span>레이즈: 상대방보다 올려 베팅합니다. 베팅을 지속합니다.</span>
-            <span>폴드: 게임을 포기합니다. 베팅된 칩 {betChips}개는 상대의 것이 됩니다.</span>
-          </div>
-  
-          <div className="flex flex-col gap-2">
-            <span>남은 칩: {gameRef.current[turn % 2].leftChips}개</span>
-            <span>베팅할 경우 남은 칩: {gameRef.current[turn % 2].leftChips - num}개</span>
-            <span>베팅한 칩: {gameRef.current[turn % 2].betChips}개</span>
-            <div>최소 베팅가능 칩 갯수: {minNum}</div>
-          </div>
-  
-          {turn % 2 === 0 && (
-            // 인풋
-            <div className="flex flex-col gap-2">
-              <div>내가 베팅할 칩 갯수: {num}</div>
-              <div className="flex gap-2">
-                <Button
-                  label="+"
-                  onClick={() => {
-                    if (num < gameRef.current[0].leftChips) {
-                      setNum(prev => prev + 1);
-                    }
-                  }}
-                  disabled={num >= gameRef.current[0].leftChips ? true : false}
-                  worldKey={worldKey}
-                />
-                <Button
-                  label="-"
-                  onClick={() => {
-                    if (num > minNum) {
-                      setNum(prev => prev - 1);
-                    }
-                  }}
-                  disabled={num <= minNum ? true : false}
-                  worldKey={worldKey}
-                />
-                <Button
-                  label="올인"
-                  onClick={() => setNum(gameRef.current[0].leftChips)}
-                  worldKey={worldKey}
-                />
-              </div>
-  
-              <div className="flex gap-2">
-                <Button
-                  label="베팅"
-                  worldKey={worldKey}
-                  autoFocus={true}
-                  onClick={() => setModal('bet')}
-                />
-                <Button
-                  label="폴드"
-                  worldKey={worldKey}
-                  autoFocus={true}
-                  onClick={() => setModal('fold')}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-  
-        {modal &&
-          <ConfirmModal
-            worldKey={worldKey}
-            setHasBet={setHasBet}
-            motionPhase={motionPhase}
-            bet={bet}
-            currentNum={currentNum}
-            num={num}
-            turn={turn}
-            behavior={modal}
-            setModal={setModal}
-            betChips={betChips}
-          />
-        }
-      </>
-    )
-  }
-}
+import { BetInput } from "./BetInput";
+import { Object3D } from "three";
+import UiCoinPile from "./UiCoinPile";
 
 export default function Ui({
   hasPicked, pickCard, gameRef, turn, minNum,
   currentNum,
   onGameEnd,
   motionPhase, bet,
-  npcWaitSec,
+  npcWaitSec, coin
 }: {
   hasPicked: boolean;
   pickCard: () => void;
@@ -202,27 +23,18 @@ export default function Ui({
   motionPhase: RefObject<'idle' | 'bet' | 'npcFail' | 'npcWin'>;
   bet: (num: number, turn: number) => void;
   npcWaitSec: number;
+  coin: Object3D;
 }) {
   const worldKey = 'time';
   const router = useRouter();
-
-  // turn 바뀔때 재렌더링, 필요한 것 초기화
-  const [, setVersion] = useState(0);
 
   const [hasBet, setHasBet] = useState(false);
 
   useEffect(() => {
     currentNum.current = null;
     setHasBet(false);
-    console.log('currentNum', currentNum.current, 'minNum', minNum.current, 'hasBet', hasBet)
-
-    const interval = setInterval(() => {
-      if (turn.current !== null) {
-        setVersion(v => v + 1);
-      }
-    }, 16);
-    return () => clearInterval(interval);
-  }, []);
+    console.log('currentNum', currentNum.current, 'minNum', minNum.current, 'hasBet', hasBet);
+  }, [turn.current]);
 
   // npc의 베팅
   function decideNpcBet() {
@@ -273,6 +85,10 @@ export default function Ui({
           worldKey={worldKey}
           autoFocus={true}
         />
+        <UiCoinPile
+          coin={coin}
+          count={gameRef.current[0].leftChips}
+        />
       </>
     )
   } else {
@@ -293,6 +109,10 @@ export default function Ui({
               label="확인"
               autoFocus={true}
             />
+            <UiCoinPile
+              coin={coin}
+              count={gameRef.current[0].leftChips}
+            />
           </div>
         )
       } else {
@@ -311,11 +131,20 @@ export default function Ui({
               bet={bet}
               currentNum={currentNum}
               setHasBet={setHasBet}
+              coin={coin}
             />
           )
           // 상대 차례
         } else {
-          return <div>상대가 베팅 중입니다...</div>
+          return (
+            <>
+              <div>상대가 베팅 중입니다...</div>
+              <UiCoinPile
+                coin={coin}
+                count={gameRef.current[0].leftChips}
+              />
+            </>
+          )
         }
       }
       // --- 턴 2/2: 베팅 후 ---
@@ -351,6 +180,10 @@ export default function Ui({
               worldKey={worldKey}
               autoFocus={true}
             />
+            <UiCoinPile
+              coin={coin}
+              count={gameRef.current[0].leftChips}
+            />
           </div>
         )
       } else {
@@ -369,6 +202,10 @@ export default function Ui({
                     motionPhase.current = 'npcWin'
                   }}
                 />
+                <UiCoinPile
+                  coin={coin}
+                  count={gameRef.current[0].leftChips}
+                />
               </div>
             )
             // 그게 상대일경우
@@ -383,6 +220,10 @@ export default function Ui({
                     onGameEnd(true);
                     motionPhase.current = 'npcFail'
                   }}
+                />
+                <UiCoinPile
+                  coin={coin}
+                  count={gameRef.current[0].leftChips}
                 />
               </div>
             )
@@ -413,6 +254,11 @@ export default function Ui({
                   worldKey={worldKey}
                   autoFocus={true}
                 />
+
+                <UiCoinPile
+                  coin={coin}
+                  count={gameRef.current[0].leftChips}
+                />
               </div>
             )
           } else {
@@ -437,6 +283,11 @@ export default function Ui({
                   worldKey={worldKey}
                   autoFocus={true}
                 />
+
+              <UiCoinPile
+                coin={coin}
+                count={gameRef.current[0].leftChips}
+              />
               </div>
             )
           }
@@ -459,6 +310,11 @@ export default function Ui({
                     setHasBet(false);
                   }}
                 />
+
+              <UiCoinPile
+                coin={coin}
+                count={gameRef.current[0].leftChips}
+              />
               </div>
             )
             // 상대
@@ -477,6 +333,10 @@ export default function Ui({
                     }
                     setHasBet(false);
                   }}
+                />
+                <UiCoinPile
+                  coin={coin}
+                  count={gameRef.current[0].leftChips}
                 />
               </div>
             )
@@ -507,6 +367,10 @@ export default function Ui({
                     worldKey={worldKey}
                     autoFocus={true}
                   />
+                  <UiCoinPile
+                    coin={coin}
+                    count={gameRef.current[0].leftChips}
+                  />
               </div>
             )
           } else {
@@ -524,6 +388,10 @@ export default function Ui({
                     }
                     setHasBet(false);
                   }}
+                />
+                <UiCoinPile
+                  coin={coin}
+                  count={gameRef.current[0].leftChips}
                 />
               </div>
             )

@@ -1,6 +1,6 @@
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useGLTF } from "@react-three/drei";
 import { Object3D } from "three";
 import Table from "./W1G1/Table";
@@ -31,6 +31,7 @@ export default function W1G1({
     9: useGLTF('/models/card-9.gltf').scene,
     10: useGLTF('/models/card-10.gltf').scene,
   }
+
   const coin = useGLTF('/models/coin.gltf').scene;
 
   // 게임 진행상황
@@ -66,7 +67,6 @@ export default function W1G1({
   // npc의 베팅
   const npcWaitSec = 3000;
 
-
   // W1G1에서 npc의 생각 끝에, Ui에서 플레이어의 확인버튼 클릭 시 호출
   function bet(num: number, turn: number) {
     if (turn === 0) {
@@ -91,14 +91,18 @@ export default function W1G1({
   return (
     <main className="w-full h-full">
       {/* 게임 */}
-      <Scene>
-        <Table
-          hasPicked={hasPicked}
-          gameRef={gameRef}
-          turn={turn}
-          currentNum={currentNum}
-        />
-      </Scene>
+      <div className="w-[calc(100%-20rem)] h-full">
+        <Scene>
+          <Table
+            hasPicked={hasPicked}
+            gameRef={gameRef}
+            turn={turn}
+            currentNum={currentNum}
+            cards={cards}
+            coin={coin}
+          />
+        </Scene>
+      </div>
 
       {/* 게임 인터페이스 */}
       <div className="flex flex-col items-center justify-center gap-2 h-screen bg-[#00000007] pointer-events-none absolute right-0 top-0 w-1/2">
@@ -113,6 +117,7 @@ export default function W1G1({
           motionPhase={motionPhase}
           bet={bet}
           npcWaitSec={npcWaitSec}
+          coin={coin}
         />
       </div>
       <GameMenu
