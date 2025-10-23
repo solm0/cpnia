@@ -23,7 +23,7 @@ export const worldPortals: worldPortalProp[] = [
     scale: 2,
     rotationAxis: [1, 0.2, 0],
     rotationSpeed: 0.25, 
-    bgm:'/audio/sacrifice_bg.mp3'
+    bgm:'/audio/time_bg.mp3'
   },
   {
     label: "희생 기반 체제",

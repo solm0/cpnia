@@ -12,7 +12,7 @@ export function ConfirmModal({
   bet: (num: number, turn: number) => void;
   currentNum: RefObject<number | null>;
   setHasBet: (hasBet: boolean) => void;
-  motionPhase: RefObject<'idle' | 'bet' | 'npcFail' | 'npcWin'>;
+  motionPhase: RefObject<'idle' | 'pick' | 'bet' | 'npcFail' | 'npcWin'>;
   num: number;
   turn: number;
   behavior: string;
@@ -37,16 +37,20 @@ export function ConfirmModal({
           autoFocus={true}
           onClick={() => {
             if (behavior === 'bet') {
-              bet(num, turn); // minNum, currentNum 업데이트
-              setHasBet(true); // ui 업데이트
-              motionPhase.current = 'bet'; // 모션 flag
+              motionPhase.current = 'bet';
+              setTimeout(() => {
+                bet(num, turn);
+                setHasBet(true);
+              }, 1000)
             } else if (behavior === 'fold') {
               currentNum.current = 0;
               setHasBet(true);
             } else if (behavior === 'allIn') {
-              bet(num, turn);
-              setHasBet(true);
               motionPhase.current = 'bet'
+              setTimeout(() => {
+                bet(num, turn);
+                setHasBet(true);
+              }, 1000)
             }
           }}
         />

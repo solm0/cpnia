@@ -62,6 +62,7 @@ export default function W1G1({
     gameRef.current[0].card = a;
     gameRef.current[1].card = b;
     setHasPicked(true);
+    motionPhase.current = 'pick'
   }
 
   // npc의 베팅
@@ -84,9 +85,10 @@ export default function W1G1({
     }
 
     currentNum.current = num;
+    console.log(currentNum.current)
   }
 
-  const motionPhase = useRef<'idle' | 'bet' | 'npcFail' | 'npcWin'>('idle');
+  const motionPhase = useRef<'idle' | 'pick' | 'bet' | 'npcFail' | 'npcWin'>('idle');
 
   return (
     <main className="w-full h-full">
@@ -100,6 +102,7 @@ export default function W1G1({
             currentNum={currentNum}
             cards={cards}
             coin={coin}
+            motionPhase={motionPhase}
           />
         </Scene>
       </div>
@@ -118,6 +121,7 @@ export default function W1G1({
           bet={bet}
           npcWaitSec={npcWaitSec}
           coin={coin}
+          cards={cards}
         />
       </div>
       <GameMenu

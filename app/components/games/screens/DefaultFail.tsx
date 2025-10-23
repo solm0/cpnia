@@ -21,10 +21,14 @@ export default function DefaultFail({
         />
         <OrbitControls minDistance={30} maxDistance={100} />
       </Scene>
-      <div className="absolute top-2/3 w-screen h-auto flex justify-center">
+      <div className="absolute top-2/3 w-screen h-auto flex flex-col justify-center gap-4">
         <Button
           onClick={() => nextFunction.onClick?.()}
           label={nextFunction.label}
+        />
+        <Button
+          onClick={() => window.location.reload()}
+          label='다시 하기'
         />
       </div>
     </main>

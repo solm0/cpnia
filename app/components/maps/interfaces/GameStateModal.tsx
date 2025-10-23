@@ -5,6 +5,7 @@ import Model from "../../util/Model";
 import { Environment, OrbitControls } from "@react-three/drei";
 import { degToRad } from "three/src/math/MathUtils.js";
 import clsx from "clsx";
+import CardModel from "../../home/interfaces/CardModel";
 
 export function GameStateModal({
   worldKey
@@ -70,19 +71,10 @@ export function GameStateModal({
         </div>
 
         <div className="absolute left-[calc(100%-18rem)] bottom-2 w-52 h-52">
-          <SmallScene>
-            <Model
-              src="/models/citizenship-card.glb"
-              scale={1.3}
-              position={[0,0,0]}
-              rotation={[degToRad(90), degToRad(30), degToRad(60)]}
-            />
-            <OrbitControls
-              enableZoom={false}
-              minPolarAngle={Math.PI / 2}
-              maxPolarAngle={Math.PI / 2}
-            />
-          </SmallScene>
+          <CardModel
+            worldKey={worldKey}
+            isCompleted={stage === 3}
+          />
         </div>
       </div>
     </>

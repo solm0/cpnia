@@ -15,7 +15,7 @@ export function BetInput({
   turn: number;
   betChips: number;
   worldKey: string;
-  motionPhase: RefObject<'idle' | 'bet' | 'npcFail' | 'npcWin'>;
+  motionPhase: RefObject<'idle' | 'pick' | 'bet' | 'npcFail' | 'npcWin'>;
   bet: (num: number, turn: number) => void;
   currentNum: RefObject<number | null>;
   setHasBet: (hasBet: boolean) => void;
@@ -101,7 +101,6 @@ export function BetInput({
                 <Button
                   label="폴드"
                   worldKey={worldKey}
-                  autoFocus={true}
                   onClick={() => setModal('fold')}
                 />
               </div>

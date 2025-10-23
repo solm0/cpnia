@@ -1,12 +1,9 @@
-import Model from "@/app/components/util/Model";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
-import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { OrbitControls, Text, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
-import { RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Object3D } from "three";
-import FullScreenModal from "@/app/components/util/FullScreenModal";
 import Button from "@/app/components/util/Button";
 
 export default function RouletteTable({
@@ -66,7 +63,6 @@ export default function RouletteTable({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // 게임패드 (아직 확정은 구현안함.)
   const [moveCooldown, setMoveCooldown] = useState(0);
 
   useFrame((_, delta) => {
@@ -86,9 +82,6 @@ export default function RouletteTable({
       setMoveCooldown(0.3); // prevent rapid movement (300ms delay)
     }
   });
-
-  // 클릭하면 베팅하시겠습가? ok하면
-  // setBetNum()
 
   return (
     <>

@@ -53,9 +53,15 @@ export default function HomeMenu() {
         >
           <div className="flex flex-col gap-0">
             <div className="flex h-auto">
-              <CardModel worldKey="time" isCompleted={timeCompleted} />
-              <CardModel worldKey="sacrifice" isCompleted={sacrificeCompleted} />
-              <CardModel worldKey="entropy" isCompleted={entropyCompleted} />
+              <div className="w-[23rem] h-[35rem]">
+                <CardModel worldKey="time" isCompleted={timeCompleted} />
+              </div>
+              <div className="w-[23rem] h-[35rem]">
+                <CardModel worldKey="sacrifice" isCompleted={sacrificeCompleted} />
+              </div>
+              <div className="w-[23rem] h-[35rem]">
+                <CardModel worldKey="entropy" isCompleted={entropyCompleted} />
+              </div>
             </div>
             <div className="flex h-10 font-bold text-white">
               <div className="rounded-lg w-[23rem] flex justify-center">{timeCompleted ? `${timeWorldName} 시민권` : '???'}</div>

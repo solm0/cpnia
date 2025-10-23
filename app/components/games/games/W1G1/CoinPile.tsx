@@ -1,4 +1,5 @@
 import Scene from "@/app/components/util/Scene";
+import { forwardRef, RefObject } from "react";
 import { Object3D, Vector3 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 
@@ -30,13 +31,14 @@ export default function CoinPile({
 }
 
 export function CoinPileOnTable({
-  coin, count, position
+  coin, count, position,
 }: {
   coin: Object3D;
   count: number;
-  position: Vector3
+  position: Vector3;
 }) {
-  return (
+  if (count === 0) return null;
+  else return (
     <group position={position}>
       {[...Array(count).keys()].map((c) => {
         const y = 0.03 * c;
@@ -52,3 +54,32 @@ export function CoinPileOnTable({
     </group>
   )
 }
+
+export const CoinPileOnTableWRef = forwardRef(function CoinPileOnTable(
+  {
+    coin,
+    count,
+    position
+  }: {
+    coin: Object3D;
+    count: number;
+    position: Vector3;
+  },
+  ref
+) {
+  return (
+    <group position={position} ref={ref}>
+      {[...Array(count).keys()].map((c) => {
+        const y = 0.03 * c;
+        return (
+          <primitive
+            key={c}
+            object={coin.clone()}
+            scale={0.00004}
+            position={[0, y, 0]}
+          />
+        );
+      })}
+    </group>
+  );
+});

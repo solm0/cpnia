@@ -5,13 +5,15 @@ import { useRouter } from "next/navigation";
 import { BetInput } from "./BetInput";
 import { Object3D } from "three";
 import UiCoinPile from "./UiCoinPile";
+import SmallScene from "@/app/components/util/SmallScene";
+import CardTurn from "./CardTurn";
 
 export default function Ui({
   hasPicked, pickCard, gameRef, turn, minNum,
   currentNum,
   onGameEnd,
   motionPhase, bet,
-  npcWaitSec, coin
+  npcWaitSec, coin, cards
 }: {
   hasPicked: boolean;
   pickCard: () => void;
@@ -20,15 +22,17 @@ export default function Ui({
   minNum: RefObject<number>;
   currentNum: RefObject<number | null>;
   onGameEnd: (success: boolean) => void;
-  motionPhase: RefObject<'idle' | 'bet' | 'npcFail' | 'npcWin'>;
+  motionPhase: RefObject<'idle' | 'pick' | 'bet' | 'npcFail' | 'npcWin'>;
   bet: (num: number, turn: number) => void;
   npcWaitSec: number;
   coin: Object3D;
+  cards: Record<number, Object3D>;
 }) {
   const worldKey = 'time';
   const router = useRouter();
 
   const [hasBet, setHasBet] = useState(false);
+  const [cardTurned, setCardTurned] = useState(false);
 
   useEffect(() => {
     currentNum.current = null;
@@ -43,13 +47,18 @@ export default function Ui({
     if (!playerCard || !npcCard) return 0;
 
     let raise = 0;
-    if (playerCard === 10) return 0; // 폴드
-    else if (playerCard >= 7) raise = 3 + Math.floor(Math.random() * 2);
-    else if (playerCard >= 4) raise = 5 + Math.floor(Math.random() * 3);
-    else raise = 8 + Math.floor(Math.random() * 3);
 
-    if (minNum.current >= raise) return minNum.current;
-    return raise + minNum.current;
+    if (gameRef.current[1].leftChips < minNum.current) {
+      return gameRef.current[1].leftChips;
+    } else {
+      if (playerCard === 10) return 0; // 폴드
+      else if (playerCard >= 7) raise = 3 + Math.floor(Math.random() * 2);
+      else if (playerCard >= 4) raise = 5 + Math.floor(Math.random() * 3);
+      else raise = 8 + Math.floor(Math.random() * 3);
+  
+      if (minNum.current >= raise) return minNum.current;
+      return raise + minNum.current;
+    }
   }
 
   useEffect(() => {
@@ -58,14 +67,19 @@ export default function Ui({
         const npcNum = decideNpcBet();
         console.log('NPC decided to bet', npcNum);
   
-        bet(npcNum, turn.current);
-        setHasBet(true);
-        motionPhase.current = 'bet';
+        if (!hasBet) { // guard
+          motionPhase.current = 'bet';
+          setTimeout(() => {
+            bet(npcNum, turn.current);
+            console.log(npcNum)
+            setHasBet(true);
+          }, 1000)
+        }
       }, npcWaitSec);
   
       return () => clearTimeout(timeout);
     }
-  }, [turn.current, hasBet]);
+  }, [hasBet, npcWaitSec]);
 
   if (!hasPicked) {
     // --- 게임 시작 ---
@@ -236,24 +250,36 @@ export default function Ui({
             return (
               <div>
                 <p>상대와 같은 갯수 {currentNum.current}를 베팅했습니다. 베팅을 종료합니다.</p>
-                <p>결과 확인하기:</p>
+                <p>결과를 확인하려면 카드를 클릭하세요.</p>
 
                 {/* 카드 오픈 */}
-                <p>내 카드: {gameRef.current[0].card}</p>
-                <p>상대 카드: {gameRef.current[1].card}</p>
-                {/* <SmallScene>
-                  <Card
-                  <Card
-                </SmallScene> */}
+                <div
+                  className="w-96 h-50"
+                  onClick={() => {
+                    setCardTurned(true);
+                    motionPhase.current = success ? 'npcFail' : 'npcWin';
+                  }}
+                  tabIndex={-1}
+                >
+                  <SmallScene>
+                    <CardTurn cardTurned={cardTurned} object={cards[gameRef.current[0].card]} />
+                    <directionalLight intensity={5} position={[0,5,5]} />
+                  </SmallScene>
+                </div>
 
-                <p>{success ? '니가 이겼다' : '너 졌다'}</p>
-
-                <Button
-                  label="확인"
-                  onClick={() => onGameEnd(success)}
-                  worldKey={worldKey}
-                  autoFocus={true}
-                />
+                {cardTurned &&
+                  <div className="flex flex-col gap-2 items-start">
+                    <p>내 카드: {gameRef.current[0].card}</p>
+                    <p>상대 카드: {gameRef.current[1].card}</p>
+                    <p>{success ? '당신의 승리입니다.' : '상대의 승리입니다.'}</p>
+                    <Button
+                      label="확인"
+                      onClick={() => onGameEnd(success)}
+                      worldKey={worldKey}
+                      autoFocus={true}
+                    />
+                  </div>
+                }
 
                 <UiCoinPile
                   coin={coin}
@@ -265,29 +291,40 @@ export default function Ui({
             return (
               <div>
                 <p>상대가 당신과 같은 갯수 {currentNum.current}를 베팅했습니다. 베팅을 종료합니다.</p>
-                <p>결과 확인하기:</p>
+                <p>결과를 확인하려면 카드를 클릭하세요.</p>
 
                 {/* 카드 오픈 */}
-                <p>내 카드: {gameRef.current[0].card}</p>
-                <p>상대 카드: {gameRef.current[1].card}</p>
-                {/* <SmallScene>
-                  <Card
-                  <Card
-                </SmallScene> */}
+                <div
+                  className="w-96 h-50"
+                  onClick={() => {
+                    setCardTurned(true);
+                    motionPhase.current = success ? 'npcFail' : 'npcWin';
+                  }}
+                >
+                  <SmallScene>
+                    <CardTurn cardTurned={cardTurned} object={cards[gameRef.current[0].card]} />
+                    <directionalLight intensity={5} position={[0,5,5]} />
+                  </SmallScene>
+                </div>
 
-                <p>{success ? '니가 이겼다' : '너 졌다'}</p>
+                {cardTurned &&
+                  <div className="flex flex-col gap-2 items-start">
+                    <p>내 카드: {gameRef.current[0].card}</p>
+                    <p>상대 카드: {gameRef.current[1].card}</p>
+                    <p>{success ? '당신의 승리입니다.' : '상대의 승리입니다.'}</p>
+                    <Button
+                      label="확인"
+                      onClick={() => onGameEnd(success)}
+                      worldKey={worldKey}
+                      autoFocus={true}
+                    />
+                  </div>
+                }
 
-                <Button
-                  label="확인"
-                  onClick={() => onGameEnd(success)}
-                  worldKey={worldKey}
-                  autoFocus={true}
+                <UiCoinPile
+                  coin={coin}
+                  count={gameRef.current[0].leftChips}
                 />
-
-              <UiCoinPile
-                coin={coin}
-                count={gameRef.current[0].leftChips}
-              />
               </div>
             )
           }
@@ -352,42 +389,48 @@ export default function Ui({
                 <p>결과 확인하기:</p>
   
                   {/* 카드 오픈 */}
-                  <p>내 카드: {gameRef.current[0].card}</p>
-                  <p>상대 카드: {gameRef.current[1].card}</p>
-                  {/* <SmallScene>
-                    <Card
-                    <Card
-                  </SmallScene> */}
-  
-                  <p>{success ? '니가 이겼다' : '너 졌다'}</p>
-  
-                  <Button
-                    label="확인"
-                    onClick={() => onGameEnd(success)}
-                    worldKey={worldKey}
-                    autoFocus={true}
-                  />
-                  <UiCoinPile
-                    coin={coin}
-                    count={gameRef.current[0].leftChips}
-                  />
+                <p>내 카드: {gameRef.current[0].card}</p>
+                <p>상대 카드: {gameRef.current[1].card}</p>
+                {/* <SmallScene>
+                  <Card
+                  <Card
+                </SmallScene> */}
+
+                <p>{success ? '니가 이겼다' : '너 졌다'}</p>
+
+                <Button
+                  label="확인"
+                  onClick={() => onGameEnd(success)}
+                  worldKey={worldKey}
+                  autoFocus={true}
+                />
+                <UiCoinPile
+                  coin={coin}
+                  count={gameRef.current[0].leftChips}
+                />
               </div>
             )
           } else {
             return (
               <div>
                 <p>상대의 칩이 부족해 모든 칩 {currentNum.current}를 베팅했습니다.</p>
+                <p>결과 확인하기:</p>
+  
+                  {/* 카드 오픈 */}
+                <p>내 카드: {gameRef.current[0].card}</p>
+                <p>상대 카드: {gameRef.current[1].card}</p>
+                {/* <SmallScene>
+                  <Card
+                  <Card
+                </SmallScene> */}
+
+                <p>{success ? '니가 이겼다' : '너 졌다'}</p>
+
                 <Button
-                  autoFocus={true}
-                  worldKey={worldKey}
                   label="확인"
-                  onClick={() => {
-                    turn.current += 1;
-                    if (currentNum.current !== null && currentNum.current > minNum.current) {
-                      minNum.current = currentNum.current;
-                    }
-                    setHasBet(false);
-                  }}
+                  onClick={() => onGameEnd(success)}
+                  worldKey={worldKey}
+                  autoFocus={true}
                 />
                 <UiCoinPile
                   coin={coin}

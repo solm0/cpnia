@@ -1,9 +1,6 @@
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { useLoader } from "@react-three/fiber";
-import { Suspense, useMemo } from "react";
-import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
+import { Suspense } from "react";
 import SmallScene from "../../util/SmallScene";
-import { Loader, OrbitControls } from "@react-three/drei";
+import { Loader, OrbitControls, useGLTF } from "@react-three/drei";
 import { degToRad } from "three/src/math/MathUtils.js";
 
 export default function CardModel({
@@ -12,29 +9,23 @@ export default function CardModel({
   worldKey: string;
   isCompleted: boolean;
 }) {
-  // worldKey에 따라 맞는 카드 src
-  // isCompleted 이면 빈 카드 src
-
-  const gltf = useLoader(GLTFLoader, '/models/citizenship-card.glb');
-  const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
+  const unknown = useGLTF('/models/citizenship/unknown.glb').scene.clone();
+  const card = useGLTF(`/models/citizenship/${worldKey}.glb`);
 
   return (
-    <div className="w-[23rem] h-[35rem]">
-      <Suspense fallback={<Loader />}>
-        <SmallScene>
-          <ambientLight />
-          <primitive
-            object={clonedScene}
-            position={[0,0,0]}
-            rotation={[degToRad(90), degToRad(30), degToRad(60)]}
-          />
-          <OrbitControls
-            enableZoom={false}
-            minPolarAngle={Math.PI / 2}
-            maxPolarAngle={Math.PI / 2}
-          />
-        </SmallScene>
-      </Suspense>
-    </div>
+    <Suspense fallback={<Loader />}>
+      <SmallScene>
+        <primitive
+          object={isCompleted ? card : unknown}
+          position={[0,0,0]}
+          rotation={[degToRad(90), degToRad(30), degToRad(60)]}
+        />
+        <OrbitControls
+          enableZoom={false}
+          minPolarAngle={Math.PI / 2}
+          maxPolarAngle={Math.PI / 2}
+        />
+      </SmallScene>
+    </Suspense>
   )
 }
