@@ -54,6 +54,8 @@ export function SacrificeEffects() {
 
 export function EntropyEffects() {
   return (
-    <></>
+    <>
+      <color attach="background" args={["#101010"]} />
+    </>
   )
 }

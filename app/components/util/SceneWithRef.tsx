@@ -41,7 +41,7 @@ const SceneWithRef = forwardRef(({
       // Animate camera position
       gsap.to(camera.position, {
         x: newPos.x + 6,
-        y: newPos.y - 2,
+        y: newPos.y,
         z: newPos.z,
         duration: 1.2,
         ease: "power2.inOut",
@@ -50,7 +50,7 @@ const SceneWithRef = forwardRef(({
 
       gsap.to(controlsRef.current.target, {
         x: target[0] + 6,
-        y: target[1] - 2,
+        y: target[1],
         z: target[2],
         duration: 1.2,
         ease: "power2.inOut",

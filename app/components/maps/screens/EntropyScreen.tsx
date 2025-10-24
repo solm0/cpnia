@@ -1,4 +1,4 @@
-import Player from "../player/Player";
+
 import PlaceHolder from "../../util/PlaceHolder";
 import Scene from "../../util/Scene";
 import { EntropyLights } from "../Lights";
@@ -12,10 +12,10 @@ import Npcs from "../Npcs";
 import { EntropyEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
 import Model from "../../util/Model";
+import PlayerEntropy from "../player/PlayerEntropy";
 
 export default function EntropyScreen() {
   const worldKey = 'entropy'
-
 
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
 
@@ -26,7 +26,7 @@ export default function EntropyScreen() {
     <main className="w-full h-full">
       {/* 월드 씬 */}
       <Scene>
-        <Physics debug gravity={[0,-9,0]}>
+        <Physics gravity={[0,-9,0]}>
 
           {/* 빛 */}
           <EntropyLights />
@@ -35,6 +35,7 @@ export default function EntropyScreen() {
           <PlaceHolder label="엔트로피 체제의 맵" />
           <Model
             src="/models/entropy.glb"
+            scale={8}
           />
 
           {/* 포탈들 */}
@@ -54,7 +55,7 @@ export default function EntropyScreen() {
           />
 
           {/* 플레이어 */}
-          <Player worldKey={worldKey} />
+          <PlayerEntropy worldKey={worldKey} />
         </Physics>
 
         {/* 효과 */}
