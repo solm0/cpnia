@@ -2,11 +2,11 @@ import { RefObject, useEffect, useRef, useState } from "react";
 import { Core, Field, PlayerData } from "../W3G2";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
-import { Mesh, MeshStandardMaterial, PointLight, Vector3 } from "three";
+import { Color, Mesh, MeshStandardMaterial, PointLight, Vector3 } from "three";
 import { Physics } from "@react-three/rapier";
-import { Html } from "@react-three/drei";
 import Player from "./Player";
 import { useFrame } from "@react-three/fiber";
+import CoreLabel from "./CoreLabel";
 
 export default function GameScene({
   scoreRef, coresRef, playerRef, setScore, field,
@@ -23,6 +23,7 @@ export default function GameScene({
   const pressedKeys = useKeyboardControls();
   const gamepad = useGamepadControls();
   const lightRef = useRef<PointLight>(null);
+  const isBreaking = useRef<boolean>(false);
 
   // map gltf 가져오기
 
@@ -34,6 +35,7 @@ export default function GameScene({
   }
 
   const [coreLabels, setCoreLabels] = useState<CoreLabel[]>([]);
+  const color = new Color();
 
   useEffect(() => {
     // 코어 초기화 시 material을 독립적으로 복제, 각 core에 meshes 배열을 만들어둠
@@ -85,13 +87,21 @@ export default function GameScene({
     }
     nearestCoreRef.current = nearestCore;
 
+    const maxClicks =
+    coresRef.current?.reduce((max, c) => Math.max(max, c.leftClicks), 1) ?? 1;
+
     // --- 색상 변경 ---
     coresRef.current.forEach(core => {
       const isTarget = core.isTarget;
       if (!core.meshes) return;
       core.meshes.forEach((mesh: Mesh) => {
         const mat = mesh.material as MeshStandardMaterial;
-        mat.emissive.set(isTarget ? 0x33ff66 : 0x000000);
+        const ratio = Math.min(core.leftClicks / maxClicks, 1);
+        const lerped = color
+          .setHex(0xff3333)
+          .lerp(new Color(0x33ff66), ratio)
+          .getHex();
+        mat.emissive.set(isTarget ? lerped : 0x000000);
         mat.emissiveIntensity = isTarget ? 0.5 : 0;
       });
     });
@@ -99,6 +109,7 @@ export default function GameScene({
     // --- 클릭 감지 ---
     const isClicking = pressedKeys.current.has("Enter") || gamepad.current.buttons[0];
     if (isClicking && nearestCore && !clickProcessed.current) {
+      isBreaking.current = true;
       if (nearestCore.leftClicks > 0) nearestCore.leftClicks -= 1;
 
       setCoreLabels(
@@ -127,6 +138,7 @@ export default function GameScene({
     
     if (!isClicking) {
       clickProcessed.current = false;
+      isBreaking.current = false;
     }
 
     // --- 빛 ---
@@ -134,12 +146,10 @@ export default function GameScene({
       lightRef.current.position.set(
         playerRef.current.position.x,
         playerRef.current.position.y + 20,
-        playerRef.current.position.z 
+        playerRef.current.position.z - 10
       )
     }
   })
-
-  console.log(coresRef.current, coreLabels)
 
   return (
     <Physics>
@@ -154,21 +164,11 @@ export default function GameScene({
         />
       ))}
       {coreLabels.map(label => (
-        <Html
-          key={label.id}
-          position={[label.position.x, label.position.y + 2, label.position.z]}
-          center
-          className={`
-            bg-amber-500 w-auto h-auto absolute top-0 left-0
-            ${label.isVisible ? 'block' : 'hidden'}
-          `}
-        >
-          {label.leftClicks}
-        </Html>
+        <CoreLabel key={label.id} label={label} />
       ))}
 
       {/* 플레이어 */}
-      <Player playerRef={playerRef} field={field} />
+      <Player playerRef={playerRef} field={field} isBreaking={isBreaking} />
       <pointLight 
         ref={lightRef}
         intensity={300}

@@ -35,7 +35,7 @@ export default function W3G2({
   gameKey: string;
   onGameEnd: (success: boolean) => void;
 }) {
-  const sec = 60;
+  const sec = 90;
   const initialPlayer = {
     position: new Vector3(0,0,0),
     rotation: new Quaternion()
@@ -48,6 +48,7 @@ export default function W3G2({
   const coreCount = 10;
   const maxClicks = 20;
   const coreGltf = useGLTF('/models/placeholder.glb').scene;
+
   useEffect(() => {
     coreGltf.traverse((child) => {
       if ((child as Mesh).isMesh) {

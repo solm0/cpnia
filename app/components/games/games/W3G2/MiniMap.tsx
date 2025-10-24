@@ -48,8 +48,8 @@ export default function MiniMap({
         // 0 → 초록(0x33ff66), max → 빨강(0xff3333)
         const ratio = Math.min(coreData.leftClicks / maxClicks, 1);
         const lerped = color
-          .setHex(0x33ff66)
-          .lerp(new Color(0xff3333), ratio)
+          .setHex(0xff3333)
+          .lerp(new Color(0x33ff66), ratio)
           .getHex();
 
         return (

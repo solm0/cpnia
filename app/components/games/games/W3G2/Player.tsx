@@ -14,10 +14,11 @@ import { Field, PlayerData } from "../W3G2";
 import { clampToField } from "./clampToField";
 
 export default function Player({
-  playerRef, field
+  playerRef, field, isBreaking
 }: {
   playerRef: RefObject<PlayerData>;
   field: Field;
+  isBreaking: RefObject<boolean>;
 }) {
   const playerGrounded = useRef(false);
   const inJumpAction = useRef(false);
@@ -48,7 +49,7 @@ export default function Player({
 
     const deadzone = 0.5;
     const speed = 1;
-    const moveSpeed = 40;
+    const moveSpeed = 50;
     let nextAction = 0; // idle
 
     // console.log(Object.entries(gamepad.current.buttons).find((button) => button[1] === true))
@@ -56,40 +57,21 @@ export default function Player({
     // Input
     let horizontal = 0;
     let vertical = 0;
-    if (pressedKeys.current.has("KeyD")) {
+    if (pressedKeys.current.has("KeyD") || gamepad.current.axes[0] > deadzone) {
       horizontal += speed;
       nextAction = 1
     }
-    if (pressedKeys.current.has("KeyA")) {
+    if (pressedKeys.current.has("KeyA") || gamepad.current.axes[0] < -deadzone) {
       horizontal -= speed;
       nextAction = 1
     }
-    if (pressedKeys.current.has("KeyS")) {
+    if (pressedKeys.current.has("KeyS") || gamepad.current.axes[1] > deadzone) {
       vertical += speed;
       nextAction = 1
     }
-    if (pressedKeys.current.has("KeyW")) {
+    if (pressedKeys.current.has("KeyW") || gamepad.current.axes[1] < -deadzone) {
       vertical -= speed;
       nextAction = 1
-    }
-
-    if (gamepad) {
-      if (gamepad.current.axes[0] > deadzone) {
-        horizontal += speed;
-        nextAction = 1
-      }
-      if (gamepad.current.axes[0] < -deadzone) {
-        horizontal -= speed;
-        nextAction = 1
-      }
-      if (gamepad.current.axes[1] > deadzone) {
-        vertical += speed;
-        nextAction = 1
-      }
-      if (gamepad.current.axes[1] < -deadzone) {
-        vertical -= speed;
-        nextAction = 1
-      }
     }
     
     const horizontalInput = new Vector3(horizontal, 0, vertical);
@@ -118,6 +100,11 @@ export default function Player({
       nextAction = 1;
     } else {
       nextAction = 0;
+    }
+
+    // Breaking
+    if (isBreaking.current === true) {
+      nextAction = 3;
     }
     
     const t = body.current.translation();
