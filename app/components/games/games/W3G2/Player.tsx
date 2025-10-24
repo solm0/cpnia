@@ -12,7 +12,6 @@ import { CuboidCollider } from "@react-three/rapier";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { Field, PlayerData } from "../W3G2";
 import { clampToField } from "./clampToField";
-import { FieldHelper } from "./FieldHelper";
 
 export default function Player({
   playerRef, field
@@ -192,7 +191,7 @@ export default function Player({
         </mesh>
         <Avatar animIndex={activeAction} />
       </RigidBody>
-      <FieldHelper field={field} />
+      {/* <FieldHelper field={field} /> */}
     </>
   );
 }

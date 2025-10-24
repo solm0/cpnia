@@ -4,7 +4,7 @@ import GameMenu from "../interfaces/GameMenu";
 import { useState } from "react";
 import { OrbitControls } from "@react-three/drei";
 
-export default function W3G2({
+export default function W3G1({
   worldKey, gameKey, onGameEnd
 }: {
   worldKey: string;

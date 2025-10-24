@@ -7,8 +7,8 @@ import W1G3 from "../games/W1G3";
 import W2G1 from "../games/W2G1";
 import W2G2 from "../games/W2G2";
 import W2G3 from "../games/W2G3";
-import W3G1 from "../games/W3G2";
-import W3G2 from "../games/W3G1";
+import W3G1 from "../games/W3G1";
+import W3G2 from "../games/W3G2";
 import W3G3 from "../games/W3G3";
 import PausedScreen from "../../util/PausedScreen";
 
