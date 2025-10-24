@@ -122,6 +122,13 @@ export default function Player({
     }
     
     const t = body.current.translation();
+    const r = body.current.rotation();
+
+    // playerRef 업데이트
+    if (playerRef.current) {
+      playerRef.current.position = new Vector3(t.x, t.y, t.z);
+      playerRef.current.rotation = new Quaternion(r.x, r.y, r.z, r.w);
+    }
     
     // Move rigidbody
     const move = horizontalInput.clone();
@@ -171,8 +178,6 @@ export default function Player({
       body.current.setNextKinematicRotation(slerped);
     }
   });
-
-  console.log(activeAction)
 
   return (
     <>

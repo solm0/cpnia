@@ -2,22 +2,26 @@ import Scene from "../../util/Scene";
 import { RefObject, useEffect, useRef, useState } from "react";
 import FullScreenModal from "../../util/FullScreenModal";
 import Button from "../../util/Button";
-import { Mesh, MeshStandardMaterial, Object3D, Vector3 } from "three";
+import { Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from "three";
 import { useFrame } from "@react-three/fiber";
 import Player from "./W3G2/Player";
 import { Physics } from "@react-three/rapier";
-import { useGLTF } from "@react-three/drei";
+import { Html, useGLTF } from "@react-three/drei";
+import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
+import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 
 export interface Core {
+  id: number;
   object: Object3D;
   position: Vector3;
   leftClicks: number;
   isTarget: boolean;
+  meshes?: Mesh[];
 }
 
 export interface PlayerData {
   position: Vector3;
-  rotation: Vector3;
+  rotation: Quaternion;
 }
 
 export interface Field {
@@ -63,30 +67,115 @@ function GameScene({
   setScore: (score: number) => void;
   field: Field;
 }) {
-  // map gltf 가져오기
+  const nearestCoreRef = useRef<Core | null>(null);
+  const targetDistance = 8;
   
-  useFrame(() => {
-    // isTarget이면 색
-    coresRef.current.forEach((core) => {
+  const pressedKeys = useKeyboardControls();
+  const gamepad = useGamepadControls();
+
+  // map gltf 가져오기
+
+  type CoreLabel = {
+    id: number;
+    position: Vector3;
+    leftClicks: number;
+  }
+
+  const [coreLabels, setCoreLabels] = useState<CoreLabel[]>([]);
+
+  useEffect(() => {
+    // 코어 초기화 시 material을 독립적으로 복제, 각 core에 meshes 배열을 만들어둠
+    coresRef.current.forEach((core, i) => {
+      core.id = i;
+      const meshes: Mesh[] = [];
+
       core.object.traverse((child) => {
         if ((child as Mesh).isMesh) {
-          const mat = (child as Mesh).material as MeshStandardMaterial;
-          if (core.isTarget) {
-            mat.emissive.set(0x33ff66);
-            mat.emissiveIntensity = 0.5;
-          } else {
-            mat.emissive.set(0x000000);
-          }
+          const mesh = child as Mesh;
+          mesh.material = (mesh.material as MeshStandardMaterial).clone();
+          meshes.push(child as Mesh)
         }
       });
+      core.meshes = meshes;
     });
-    // 플레이어와 코어들의 거리계산: playerRef.current.position과 coresRef[?].current.position 계산
-    // 타겟 한개 선택해 coresRef.current[?].isTarget = true
-    // 클릭 감지: useKeyboardControl, useGamepadControl
-    // 클릭 시 coresRef.current.find((core) => core.isTarget === true).leftClicks --
-    // 어떤 core의 leftClick가 0이 아니었는데 0이 되면? scoreRef.current += 1, setScore(scoreRef.current)
-    // playerRef.current.position, rotation 업데이트(camera에 ref를 달아서 copy해야 하나? 좀이따 Player컴포넌트 뜯어보기)
+
+    // coreLabels 초기화
+    setCoreLabels(
+      coresRef.current.map(core => ({
+        id: core.id,
+        position: core.position.clone(),
+        leftClicks: core.leftClicks,
+      }))
+    );
+  }, []);
+
+  const clickProcessed = useRef(false);
+
+  useFrame(() => {
+    // --- 타겟 설정 ---
+    const playerPos = playerRef.current.position;
+    let nearestCore: Core | null = null;
+    let nearestDist = Infinity;
+
+    // 모든 coresRef를 순회하며 거리 계산 후 nearestCore 결정
+    for (const core of coresRef.current) {
+      const dist = playerPos.distanceTo(core.position);
+      core.isTarget = false
+      if (dist <= targetDistance && dist < nearestDist) {
+        nearestCore = core;
+        nearestDist = dist;
+      };
+    }
+
+    if (nearestCore) {
+      nearestCore.isTarget = true;
+    }
+    nearestCoreRef.current = nearestCore;
+
+    // --- 색상 변경 ---
+    coresRef.current.forEach(core => {
+      const isTarget = core.isTarget;
+      if (!core.meshes) return;
+      core.meshes.forEach((mesh: Mesh) => {
+        const mat = mesh.material as MeshStandardMaterial;
+        mat.emissive.set(isTarget ? 0x33ff66 : 0x000000);
+        mat.emissiveIntensity = isTarget ? 0.5 : 0;
+      });
+    });
+
+    // --- 클릭 감지 ---
+    const isClicking = pressedKeys.current.has("Enter") || gamepad.current.buttons[0];
+    if (isClicking && nearestCore && !clickProcessed.current) {
+      if (nearestCore.leftClicks > 0) nearestCore.leftClicks -= 1;
+
+      setCoreLabels(
+        coresRef.current.map(core => ({
+          id: core.id,
+          position: core.position.clone(),
+          leftClicks: core.leftClicks,
+        }))
+      );
+
+      if (nearestCore.leftClicks === 0) {
+        scoreRef.current += 1;
+        setScore(scoreRef.current);
+
+        // 코어 배열에서 제거
+        const index = coresRef.current.indexOf(nearestCore);
+        if (index !== -1) coresRef.current.splice(index, 1);
+
+        // coreLabel, 타겟 없애기
+        setCoreLabels(prev => prev.filter(label => label.id !== nearestCore.id));
+        nearestCoreRef.current = null;
+      }
+      clickProcessed.current = true;
+    };
+    
+    if (!isClicking) {
+      clickProcessed.current = false;
+    }
   })
+
   return (
     <Physics>
       {/* 맵 */}
@@ -94,10 +183,20 @@ function GameScene({
       {/* 코어 */}
       {coresRef.current.map((core, i) => (
         <primitive
-          key={i}
+          key={core.id}
           object={core.object}
           position={core.position}
         />
+      ))}
+      {coreLabels.map(label => (
+        <Html
+          key={label.id}
+          position={[label.position.x, label.position.y + 2, label.position.z]}
+          center
+          className="bg-amber-500 w-auto h-auto absolute top-0 left-0"
+        >
+          {label.leftClicks}
+        </Html>
       ))}
 
       {/* 플레이어 */}
@@ -132,7 +231,7 @@ export default function W3G1({
   const sec = 60;
   const initialPlayer = {
     position: new Vector3(0,0,0),
-    rotation: new Vector3(0,0,0)
+    rotation: new Quaternion()
   }
   const field: Field = {
     center: [0, 0],
@@ -185,27 +284,26 @@ export default function W3G1({
 
   // 코어 데이터 생성
   useEffect(() => {
-    const array = Array.from({length: coreCount}, (_, i) => i + 1);
-    array.forEach(() => {
-      const maxX = field.center[0] + field.size[0] / 2;
-      const minX = field.center[0] - field.size[0] / 2;
+    const initialCores: Core[] = Array.from({ length: coreCount }, (_, i) => {
+      const maxX = field.center[0] - field.size[0] / 2;
+      const minX = field.center[0] + field.size[0] / 2;
       const maxY = 5;
       const minY = 0;
-      const maxZ = field.center[1] + field.size[1] / 2;
-      const minZ = field.center[1] - field.size[1] / 2;
-
-      initialCores.push({
+      const maxZ = field.center[1] - field.size[1] / 4;
+      const minZ = field.center[1] + field.size[1] / 4;
+    
+      return {
+        id: i,
         object: coreGltf.clone(),
         position: new Vector3(
-          Math.floor(Math.random() * (maxX - minX)),
-          Math.floor(Math.random() * (maxY - minY)),
-          Math.floor(Math.random() * (maxZ - minZ)),
+          Math.floor(Math.random() * (maxX - minX) + minX),
+          Math.floor(Math.random() * (maxY - minY) + minY),
+          Math.floor(Math.random() * (maxZ - minZ) + minZ)
         ),
         leftClicks: Math.floor(Math.random() * (maxClicks - 1)),
         isTarget: false,
-      })
+      }
     });
-
     coresRef.current = initialCores;
   }, []);
 
