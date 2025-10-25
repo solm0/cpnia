@@ -1,9 +1,8 @@
 import Scene from "../../util/Scene";
-import { RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FullScreenModal from "../../util/FullScreenModal";
 import Button from "../../util/Button";
-import { BufferAttribute, Color, Line, Mesh, Object3D, Quaternion, Sprite, Vector3 } from "three";
-import { useFrame } from "@react-three/fiber";
+import { Mesh, Object3D, Quaternion, Vector3 } from "three";
 import { useGLTF } from "@react-three/drei";
 import GameScene from "./W3G2/GameScene";
 import Ui from "./W3G2/Ui";
@@ -73,7 +72,7 @@ export default function W3G2({
         setLeftSec(prev => {
           if (prev <= 1) {
             clearInterval(timer);
-            // onGameEnd(false);
+            onGameEnd(false);
             return 0;
           }
           return prev - 1;

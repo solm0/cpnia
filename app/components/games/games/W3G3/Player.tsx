@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Euler, Quaternion, Vector3 } from "three";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
@@ -8,8 +8,13 @@ import { RigidBody, CuboidCollider } from "@react-three/rapier";
 import { Avatar } from "@/app/components/maps/player/Avatar";
 import { useFollowCam } from "@/app/components/maps/player/useFollowCam";
 import { degToRad } from "three/src/math/MathUtils.js";
+import { PlayerData } from "../W3G2";
 
-export default function Player() {
+export default function Player({
+  playerRef,
+}: {
+  playerRef: RefObject<PlayerData>;
+}) {
   const body = useRef<any>(null);
   const [activeAction, setActiveAction] = useState(0);
 
@@ -76,6 +81,15 @@ export default function Player() {
         horizontalInput.clone().normalize()
       );
       body.current.setRotation(targetQuat, true);
+    }
+
+    const t = body.current.translation();
+    const r = body.current.rotation();
+
+    // playerRef 업데이트
+    if (playerRef.current) {
+      playerRef.current.position = new Vector3(t.x, t.y, t.z);
+      playerRef.current.rotation = new Quaternion(r.x, r.y, r.z, r.w);
     }
 
     if (activeAction !== nextAction) setActiveAction(nextAction);

@@ -158,7 +158,6 @@ export default function W2G1({
           const newRound = prev + 1;
 
           const time = W2G1roundConfig[newRound].time;
-          console.log(time)
           secondsRef.current = time;
 
           return newRound;
@@ -171,7 +170,6 @@ export default function W2G1({
 
   function startRound(round: number) {
     const time = W2G1roundConfig[round].time;
-    console.log(round, time)
     secondsRef.current = time;
   
     if (timerRef.current) clearInterval(timerRef.current);
