@@ -10,7 +10,7 @@ type RandomRectanglesProps = {
 
 export default function Planes({
   count = 20,
-  spread = 500,
+  spread = 1000,
   size = [0.5, 1000],
   y = 0,
 }: RandomRectanglesProps) {

@@ -96,7 +96,7 @@ export default function Player({
   });
 
   return (
-    <RigidBody ref={body} type="dynamic" gravityScale={0.5}>
+    <RigidBody ref={body} type="dynamic" gravityScale={0.5} colliders={'cuboid'}>
       <mesh visible={false}>
         <CuboidCollider args={[0.5, 1, 0.5]} />
       </mesh>

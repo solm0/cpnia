@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import Fragment from "./Fragment";
+import { Fragment } from "./Fragment";
 import { RigidBody } from "@react-three/rapier";
 
 export default function Debris({
@@ -10,7 +10,7 @@ export default function Debris({
   position?: Vector3;
 }) {
   return (
-    <RigidBody type="dynamic">
+    <RigidBody type="dynamic" colliders={'cuboid'} gravityScale={0.5}>
       <group scale={scale} position={position}>
         <Fragment />
         <Fragment />

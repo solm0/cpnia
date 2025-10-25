@@ -62,7 +62,7 @@ export function Avatar({
   return (
     <group>
       <primitive
-        object={charGltf.scene}
+        object={charGltf.scene.clone()}
         scale={8}
         position={[0, 0, 0]}
         rotation={[0, Math.PI, 0]}
