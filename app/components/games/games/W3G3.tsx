@@ -13,13 +13,11 @@ import { useTimerRef } from "./W3G3/useTimerRef";
 import { useFrame } from "@react-three/fiber";
 import { PlayerData } from "./W3G2";
 import { Group } from "three";
-import { PosHelper } from "./W2G2/AnchorHelper";
 import DebrisPool from "./W3G3/DebrisPool";
-import Planes from "./W3G3/Planes";
+import Health from "./W3G3/Health";
+import CollisionOverlay from "./W1G1/CollisionOverlay";
 
 interface Config {
-  crowd: number,
-  debris: number,
   lines: string[],
   lineStyle: string,
   lineTerm: number,
@@ -47,40 +45,35 @@ function GameScene({
   const playerRef = useRef<PlayerData>(initialPlayer);
   const arrowRef = useRef<Group>(null);
 
+  const [health, setHealth] = useState(10);
+  const isColliding = useRef(false);
+  const phaseRef = useRef(0);
+  const [phase, setPhase] = useState(0);
+
   function CollideDebris() {
     healthRef.current -= 1;
-    console.log(healthRef.current)
-    // 빨간 필터
+    setHealth(prev => prev - 1);
+    isColliding.current = true;
+
+    console.log('ref', healthRef.current, 'state', health, 'isColliding', isColliding.current);
 
     if (healthRef.current <= 0) {
       onGameEnd(false);
     }
   }
 
-  const phaseRef = useRef(0);
-  const [phase, setPhase] = useState(0);
-
   const phaseConfig: Config[] = [
     {
-      crowd: 5, // 한 구역(플레이어로부터 x,y,x축으로 +10 -10 거리 안에) 5명의 관중.
-      // 이 구역에서 벗어난 개체는 삭제되고 playerRef로 인해 업데이트된 구역 안에 새로운 개체가 생긴다.
-      // 한 번 생긴 개체는 삭제되기 전까지 임의로 position rotation이 수정되지 않지만 중력의 영향은 받는다.
-      debris: 5, // 파편의 갯수. 위와 같음.
       lines: ['우리의 구원자!', '해방자!', '영웅!', '무질서의 수호자!', '자유의 화신!'],
-      // lineTerm에 한 번씩, 관중 중 랜덤한 CrowdRef[?].current.line
       lineStyle: 'bg-white text-black px-2',
       lineTerm: 1 // 1초에 한 번씩 대사가 나타남
     },
     {
-      crowd: 5,
-      debris: 7,
       lines: ['그런데 왜 도망쳐?', '설마 죽음이 무서운 거야?', '죽음이야말로 가장 숭고한 무질서라고!', '무질서로부터 도망치지 마!'],
       lineStyle: 'bg-black text-white px-2 text-lg',
       lineTerm: 2,
     },
     {
-      crowd: 10,
-      debris: 10,
       lines: ['배신자다!', '무질서를 버리다니!', '무질서를 온몸으로 수용해!', '자연스러운 엔트로피의 확산을 거스르지 마!', '생명도 갑갑한 질서일 뿐, 생명 유지의 욕구는 부질없어!'],
       lineStyle: 'bg-blue text-white px-2',
       lineTerm: 0.3,
@@ -251,6 +244,9 @@ function GameScene({
           )}
         />
 
+        {/* 필터 */}
+        <CollisionOverlay isColliding={isColliding} playerRef={playerRef} />
+
         {/* 출구 */}
 
         {/* 출구 위치 표시 */}
@@ -262,6 +258,7 @@ function GameScene({
           <div>출구는 여기에</div>
         </Html>
 
+        
         {/* <PosHelper
           pos={exitPos}
           size={100}
@@ -301,14 +298,6 @@ export default function W3G3({
   const [hasStarted, setHasStarted] = useState(false);
   const { timerRef, start } = useTimerRef();
   const healthRef = useRef(10);
-
-  const color = new Color();
-  const ratio = Math.min(healthRef.current / 10, 1);
-
-  const barColor = color
-    .setHex(0xff3333)
-    .lerp(new Color(0x33ff66), ratio)
-    .getStyle(); // CSS용 색상 문자열
   
   return (
     <main className="w-full h-full">
@@ -349,16 +338,9 @@ export default function W3G3({
         </FullScreenModal>
       }
 
-      <div className="absolute top-8 left-8 w-72 h-10 border-2 border-white rounded-full bg-white overflow-hidden">
-        <div
-          style={{
-            width: `${ratio * 100}%`,
-            height: "100%",
-            background: barColor,
-            transition: "width 0.1s linear, background 0.1s linear",
-          }}
-        />
-      </div>
+
+      <Health healthRef={healthRef} />
+
     </main>
   )
 }

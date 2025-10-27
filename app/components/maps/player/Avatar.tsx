@@ -12,7 +12,7 @@ export function Avatar({
   const actionsRef = useRef<AnimationAction | null>(null);
   const mixer = useRef<AnimationMixer | null>(null);
 
-  const charGltf = useGLTF("/models/avatars/player.glb");
+  const charGltf = useGLTF("/models/avatars/default.gltf");
   const animGltf = useAnimGltf();
   const anim = animGltf[animIndex ?? 0];
 
@@ -62,7 +62,7 @@ export function Avatar({
   return (
     <group>
       <primitive
-        object={charGltf.scene.clone()}
+        object={charGltf.scene}
         scale={8}
         position={[0, 0, 0]}
         rotation={[0, Math.PI, 0]}
