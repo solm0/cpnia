@@ -1,151 +1,170 @@
 import Scene from "../../util/Scene";
 import { RefObject, useEffect, useRef, useState } from "react";
-import { OrbitControls, useGLTF } from "@react-three/drei";
-import { useTimerRef } from "./W3G3/useTimerRef";
+import { Billboard, OrbitControls, Text, useGLTF } from "@react-three/drei";
 import FullScreenModal from "../../util/FullScreenModal";
 import Button from "../../util/Button";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
+import { Group, MathUtils, Vector3 } from "three";
 
 function Player({
-  timerRef, width, cubeMap, onGameEnd, life, setLife
+  width, cubeMap, onGameEnd, timeRef, runningRef
 }: {
-  timerRef: RefObject<NodeJS.Timeout | null>;
   width: number;
   cubeMap: number[];
   onGameEnd: (success: boolean) => void;
-  life: number;
-  setLife: (life: number) => void;
+  timeRef: React.RefObject<number>;
+  runningRef: React.RefObject<boolean>;
 }) {
-  const [sec, setSec] = useState(0);
   const avatar = useGLTF('/models/avatars/default.gltf').scene;
   const [pos, setPos] = useState(1);
-  const [cubeMapp, setCubeMapp] = useState<number[]>([])
+  const [life, setLife] = useState(10);
 
   // 키보드 컨트롤
   const pressed = useKeyboardControls();
   const gamepad = useGamepadControls();
 
-  useEffect(() => {
-    setCubeMapp(cubeMap);
-
-    timerRef.current = setInterval(() => {
-      if (sec >= 20) {
-        clearInterval(timerRef.current!);
-        onGameEnd(true);
-      } else {
-        setSec(prev => prev + 1);
-      }
-    }, 1000);
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log(cubeMapp[sec], pos, cubeMapp[sec] !== pos)
-    if (cubeMapp[sec] !== pos) {
-      setLife(life - 1);
-    }
-  }, [sec])
+  const lastSecRef = useRef(-1);
 
   useEffect(() => {
     const deadzone = 0.5;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (pressed.current.has("KeyD") || gamepad.current.axes[0] > deadzone) {
-        setPos(prev => {
-          if (prev <= 2) {
-            return prev + 1;
-          }
-          return prev;
-        });
+        setPos((p) => Math.min(2, p + 1));
       } else if (pressed.current.has("KeyA") || gamepad.current.axes[0] < -deadzone) {
-        setPos(prev => {
-          if (prev >= 1) {
-            return prev - 1;
-          }
-          return prev;
-        });
+        setPos((p) => Math.max(0, p - 1));
       }
     };
-  
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [pressed, gamepad]);
 
   useFrame(() => {
-  })
+    if (!runningRef.current) return;
+    const elapsed = timeRef.current; // seconds as float
+    const sec = Math.floor(elapsed);
+
+    if (sec !== lastSecRef.current) {
+      lastSecRef.current = sec;
+
+      // boundary check: if sec exceeds cubeMap length -> finish success
+      if (sec >= cubeMap.length) {
+        onGameEnd(true);
+        return;
+      }
+
+      // logic: check tile at this second
+      const expected = cubeMap[sec];
+      if (expected !== pos) {
+        setLife(life - 1)
+        // you can sync a UI element to lifeRef via separate UI component reading lifeRef
+        if (life - 1 <= 0) {
+          onGameEnd(false);
+        }
+      }
+    }
+  });
 
   return (
-    <primitive
-      object={avatar}
-      scale={width * 0.1}
-      position={[pos * 3, 0, 0]}
-    />
+    <group
+      position={[-width*1.5 + pos*width, width*0.5, width*2]}
+      rotation={[0,Math.PI,0]}
+    >
+      <Billboard position={[0,5,0]}>
+        <Text>{life}</Text>
+      </Billboard>
+      <primitive
+        object={avatar}
+        scale={width * 1.3}
+      />
+    </group>
   )
 }
 
 function GameScene({
-  width, timerRef, onGameEnd, life, setLife
+  width, timeRef, startTimeRef, runningRef, cubeMap,
 }: {
   width: number;
-  timerRef: RefObject<NodeJS.Timeout | null>;
-  onGameEnd: (success: boolean) => void;
-  life: number;
-  setLife: (life: number) => void;
+  timeRef: React.RefObject<number>; // will be written here
+  startTimeRef: React.RefObject<number>;
+  runningRef: React.RefObject<boolean>;
+  cubeMap: number[];
 }) {
   const { camera } = useThree();
-  const cubeMap: number[] = [];
-  const length = 20;
-  const max = 3;
-  const min = 0;
-  useEffect(() => {
-    for (let i = 0; i < length; i++) {
-      const answer = Math.floor(Math.random() * (max+1 - min) + min);
-      cubeMap.push(answer);
-    }
-  }, []);
+  const gutter = 1.1;
 
-  // 초기 카메라
+  const groupRef = useRef<Group>(null);
+
   useEffect(() => {
     camera.position.set(0,5,10);
-    camera.rotation.set(0,0,0);
-    camera.lookAt(0, 5, 0);
+    camera.lookAt(0, 0, 0);
   }, [camera]);
 
-  useFrame(() => {
-    
-    // groupRef의 z축 이동 속도에 width 곱하기
+  useFrame((_, delta) => {
+    if (!runningRef.current) {
+      // not running -> keep timeRef at 0 and group at start
+      timeRef.current = 0;
+      if (groupRef.current) groupRef.current.position.z = 0;
+      return;
+    }
+
+    // compute elapsed seconds from startTimeRef (use same wall clock origin)
+    const elapsed = (performance.now() - startTimeRef.current) / 1000;
+    timeRef.current = elapsed; // float seconds
+
+    // Visual: move group by exactly elapsed seconds -> 1 cell per second
+    // assuming each step should visually move width * 5 * gutter units per second:
+    if (groupRef.current) {
+      groupRef.current.position.z = elapsed * (width * 5 * gutter);
+    }
   })
 
   return (
     <>
       {/* 큐브들 */}
-
-      {/* 플레이어 */}
-      <Player
-        timerRef={timerRef}
-        width={width}
-        cubeMap={cubeMap}
-        onGameEnd={onGameEnd}
-        life={life}
-        setLife={setLife}
-      />
-
-      <OrbitControls minDistance={30} maxDistance={100} />
+      <group ref={groupRef} position={[-width*1.5, 0, 0]}>
+        {cubeMap.map((row, rowIndex) => (
+          <>
+            {Array.from({length: 4}).map((_, i) => (
+              <mesh
+                key={`${rowIndex}-${i}`}
+                position={new Vector3(
+                  i * width * gutter,
+                  row === i ? 0 : -width*0.5,
+                  -rowIndex * width*5 * gutter
+              )}>
+                <boxGeometry args={[width, width, width*5]} />
+                <meshBasicMaterial color={'blue'} transparent opacity={row === i ? 1 : 0.2} />
+              </mesh>
+            ))}
+          </>
+        ))}
+      </group>
     </>
   )
 }
 
-function Ui({
-  life
-}: {
-  life: number;
-}) {
+function StartScreen({worldKey, handleStart}: {worldKey: string; handleStart:() => void;}) {
+  const [hasStarted, setHasStarted] = useState(false);
+
   return (
-    <div className="absolute top-0 left-0 w-auto h-10 bg-amber-600">{life}</div>
+    <>
+      {!hasStarted &&
+        <FullScreenModal>
+          <p>핑크 타일만 터치하세요</p>
+          <Button
+            onClick={() => {
+              handleStart();
+              setHasStarted(true);
+            }}
+            label="시작하기"
+            worldKey={worldKey}
+            autoFocus={true}
+          />
+        </FullScreenModal>
+      }
+    </>
   )
 }
 
@@ -156,14 +175,25 @@ export default function W3G1({
   gameKey: string;
   onGameEnd: (success: boolean) => void;
 }) {
-  const [life, setLife] = useState(10);
-  const width = 50;
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const [hasStarted, setHasStarted] = useState(false);
+  const width = 3;
+  const startTimeRef = useRef<number>(0);
+  const runningRef = useRef<boolean>(false);
+  const timeRef = useRef<number>(0);
+  const length = 20;
+  
+  const [cubeMap] = useState<number[]>(() => {
+    const map: number[] = [];
+    for (let i = 0; i < length; i++) {
+      const answer = Math.floor(Math.random() * 4);
+      map.push(answer);
+    }
+    return map
+  });
 
-  useEffect(() => {
-    if (life <= 0) onGameEnd(false);
-  }, [life])
+  const handleStart = () => {
+    startTimeRef.current = performance.now();
+    runningRef.current = true;
+  };
   
   return (
     <main className="w-full h-full">
@@ -171,32 +201,28 @@ export default function W3G1({
       <Scene>
         <GameScene
           width={width}
-          timerRef={timerRef}
-          onGameEnd={onGameEnd}
-          life={life}
-          setLife={setLife}
+          timeRef={timeRef}
+          startTimeRef={startTimeRef}
+          runningRef={runningRef}
+          cubeMap={cubeMap}
         />
+
+        {/* 플레이어 */}
+        <Player
+          width={width}
+          cubeMap={cubeMap}
+          onGameEnd={onGameEnd}
+          timeRef={timeRef}
+          runningRef={runningRef}
+        />
+        <OrbitControls minDistance={30} maxDistance={100} />
+        <directionalLight intensity={1} position={[0,10,10]} />
         
       </Scene>
 
       {/* 게임 인터페이스 */}
-      <Ui
-        life={life}
-      />
 
-      {!hasStarted &&
-        <FullScreenModal>
-          <p>핑크 타일만 터치하세요</p>
-          <Button
-            onClick={() => {
-              setHasStarted(true);
-            }}
-            label="시작하기"
-            worldKey={worldKey}
-            autoFocus={true}
-          />
-        </FullScreenModal>
-      }
+      <StartScreen worldKey={worldKey} handleStart={handleStart} />
     </main>
   )
 }
