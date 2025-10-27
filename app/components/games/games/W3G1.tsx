@@ -9,21 +9,47 @@ import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 
 function Player({
-  timerRef, width,
+  timerRef, width, cubeMap, onGameEnd, life, setLife
 }: {
-  timerRef: RefObject<{
-    startTime: number;
-    elapsed: number;
-    running: boolean;
-  }>;
-  width: number
+  timerRef: RefObject<NodeJS.Timeout | null>;
+  width: number;
+  cubeMap: number[];
+  onGameEnd: (success: boolean) => void;
+  life: number;
+  setLife: (life: number) => void;
 }) {
+  const [sec, setSec] = useState(0);
   const avatar = useGLTF('/models/avatars/default.gltf').scene;
   const [pos, setPos] = useState(1);
+  const [cubeMapp, setCubeMapp] = useState<number[]>([])
 
   // 키보드 컨트롤
   const pressed = useKeyboardControls();
   const gamepad = useGamepadControls();
+
+  useEffect(() => {
+    setCubeMapp(cubeMap);
+
+    timerRef.current = setInterval(() => {
+      if (sec >= 20) {
+        clearInterval(timerRef.current!);
+        onGameEnd(true);
+      } else {
+        setSec(prev => prev + 1);
+      }
+    }, 1000);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log(cubeMapp[sec], pos, cubeMapp[sec] !== pos)
+    if (cubeMapp[sec] !== pos) {
+      setLife(life - 1);
+    }
+  }, [sec])
 
   useEffect(() => {
     const deadzone = 0.5;
@@ -50,10 +76,6 @@ function Player({
   }, []);
 
   useFrame(() => {
-    // --- 타이머 ---
-    if (timerRef.current.running) {
-      timerRef.current.elapsed = (performance.now() - timerRef.current.startTime) / length;
-    }
   })
 
   return (
@@ -66,16 +88,25 @@ function Player({
 }
 
 function GameScene({
-  width, timerRef
+  width, timerRef, onGameEnd, life, setLife
 }: {
   width: number;
-  timerRef: RefObject<{
-    startTime: number;
-    elapsed: number;
-    running: boolean;
-  }>;
+  timerRef: RefObject<NodeJS.Timeout | null>;
+  onGameEnd: (success: boolean) => void;
+  life: number;
+  setLife: (life: number) => void;
 }) {
   const { camera } = useThree();
+  const cubeMap: number[] = [];
+  const length = 20;
+  const max = 3;
+  const min = 0;
+  useEffect(() => {
+    for (let i = 0; i < length; i++) {
+      const answer = Math.floor(Math.random() * (max+1 - min) + min);
+      cubeMap.push(answer);
+    }
+  }, []);
 
   // 초기 카메라
   useEffect(() => {
@@ -86,7 +117,6 @@ function GameScene({
 
   useFrame(() => {
     
-
     // groupRef의 z축 이동 속도에 width 곱하기
   })
 
@@ -95,7 +125,14 @@ function GameScene({
       {/* 큐브들 */}
 
       {/* 플레이어 */}
-      <Player timerRef={timerRef} width={width} />
+      <Player
+        timerRef={timerRef}
+        width={width}
+        cubeMap={cubeMap}
+        onGameEnd={onGameEnd}
+        life={life}
+        setLife={setLife}
+      />
 
       <OrbitControls minDistance={30} maxDistance={100} />
     </>
@@ -121,7 +158,7 @@ export default function W3G1({
 }) {
   const [life, setLife] = useState(10);
   const width = 50;
-  const { timerRef, start } = useTimerRef();
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
 
   useEffect(() => {
@@ -135,6 +172,9 @@ export default function W3G1({
         <GameScene
           width={width}
           timerRef={timerRef}
+          onGameEnd={onGameEnd}
+          life={life}
+          setLife={setLife}
         />
         
       </Scene>
@@ -150,7 +190,6 @@ export default function W3G1({
           <Button
             onClick={() => {
               setHasStarted(true);
-              start();
             }}
             label="시작하기"
             worldKey={worldKey}
