@@ -31,7 +31,7 @@ export default function CollisionOverlay({
   return (
     <mesh ref={mesh}>
       <planeGeometry args={[100, 100]} />
-      <meshBasicMaterial color="red" transparent opacity={0.2} />
+      <meshBasicMaterial color="red" transparent opacity={0} />
     </mesh>
   );
 }

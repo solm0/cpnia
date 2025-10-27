@@ -1,11 +1,10 @@
 import Scene from "../../util/Scene";
 import { RefObject, useRef, useState } from "react";
-import Debris from "./W3G3/Debris";
-import { Environment, Html, useGLTF } from "@react-three/drei";
+import { Environment, Html } from "@react-three/drei";
 import { Bloom, ChromaticAberration, DepthOfField, EffectComposer, HueSaturation, Noise, } from "@react-three/postprocessing";
 import { BlendFunction } from 'postprocessing'
-import { Physics, RigidBody } from "@react-three/rapier";
-import { Color, Quaternion, Vector3 } from "three";
+import { Physics } from "@react-three/rapier";
+import { Quaternion, Vector3 } from "three";
 import Player from "./W3G3/Player";
 import FullScreenModal from "../../util/FullScreenModal";
 import Button from "../../util/Button";
@@ -15,13 +14,28 @@ import { PlayerData } from "./W3G2";
 import { Group } from "three";
 import DebrisPool from "./W3G3/DebrisPool";
 import Health from "./W3G3/Health";
-import CollisionOverlay from "./W1G1/CollisionOverlay";
+import CollisionOverlay from "./W3G3/CollisionOverlay";
+import LinePool from "./W3G3/LinePool";
 
 interface Config {
   lines: string[],
   lineStyle: string,
-  lineTerm: number,
 }
+
+const phaseConfig: Config[] = [
+  {
+    lines: ['구원자!', '해방자!', '영웅!', '무질서의 수호자!'],
+    lineStyle: 'bg-white text-black px-2',
+  },
+  {
+    lines: ['그런데 왜 도망쳐?', '설마 죽음이 무서운 거야?', '죽음이야말로 완벽한 무질서라고!', '무질서로부터 도망치지 마!'],
+    lineStyle: 'bg-black text-white px-2',
+  },
+  {
+    lines: ['배신자다!', '무질서를 버리다니!', '자연스러운 엔트로피의 확산을 거스르지 마!', '생명도 질서일 뿐, 생명 유지의 욕구는 부질없어!'],
+    lineStyle: 'bg-[#0000ff] text-white px-2',
+  }
+]
 
 function GameScene({
   onGameEnd, timerRef, healthRef,
@@ -36,7 +50,6 @@ function GameScene({
 }) {
   const length = 500;
   const exitPos = new Vector3(length, length, -length);
-  const avatar = useGLTF('/models/avatars/default.glb').scene;
 
   const initialPlayer = {
     position: new Vector3(0,0,0),
@@ -61,24 +74,6 @@ function GameScene({
       onGameEnd(false);
     }
   }
-
-  const phaseConfig: Config[] = [
-    {
-      lines: ['우리의 구원자!', '해방자!', '영웅!', '무질서의 수호자!', '자유의 화신!'],
-      lineStyle: 'bg-white text-black px-2',
-      lineTerm: 1 // 1초에 한 번씩 대사가 나타남
-    },
-    {
-      lines: ['그런데 왜 도망쳐?', '설마 죽음이 무서운 거야?', '죽음이야말로 가장 숭고한 무질서라고!', '무질서로부터 도망치지 마!'],
-      lineStyle: 'bg-black text-white px-2 text-lg',
-      lineTerm: 2,
-    },
-    {
-      lines: ['배신자다!', '무질서를 버리다니!', '무질서를 온몸으로 수용해!', '자연스러운 엔트로피의 확산을 거스르지 마!', '생명도 갑갑한 질서일 뿐, 생명 유지의 욕구는 부질없어!'],
-      lineStyle: 'bg-blue text-white px-2',
-      lineTerm: 0.3,
-    }
-  ]
 
   useFrame(() => {
     // --- 타이머 ---
@@ -113,143 +108,32 @@ function GameScene({
     }
 
     // --- crowdRef, debrisRef 정의, 추가, 삭제 ---
-    if (timerRef.current.elapsed >= 10 && phaseRef.current === 0) {
+    if (timerRef.current.elapsed >= 20 && phaseRef.current === 0) {
       phaseRef.current = 1;
       setPhase(1);
-    } else if (timerRef.current.elapsed >= 20 && phaseRef.current === 1) {
+    } else if (timerRef.current.elapsed >= 30 && phaseRef.current === 1) {
       phaseRef.current = 2;
       setPhase(2);
     }
-    
-    // if (timerRef.current.elapsed <= 10) {
-    //   const config = phaseConfig[phase];
-    // }
 
     // --- crowdRef line 업데이트 ---
-    // TODO. 나중에
+    // 플레이어를 둘러싸고 랜덤한 위치에 
   })
 
   return (
     <>
       {/* <Planes /> */}
       <Physics gravity={[0, 7, 0]}>
+        {/* 조각들 */}
         <DebrisPool playerRef={playerRef} count={150} radius={150} collideDebris={CollideDebris} />
 
-        <RigidBody type="fixed">
-          <primitive
-            scale={1}
-            object={avatar.clone()}
-            position={new Vector3(
-              Math.random() * (length - 0),
-              Math.random() * (length - 0),
-              Math.random() * (-length - 0),
-            )}
-          />
-        </RigidBody>
-        <RigidBody type="fixed">
-          <primitive
-            scale={1}
-            object={avatar.clone()}
-            position={new Vector3(
-              Math.random() * (length - 0),
-              Math.random() * (length - 0),
-              Math.random() * (-length - 0),
-            )}
-          />
-        </RigidBody>
-        <RigidBody type="fixed">
-          <primitive
-            scale={1}
-            object={avatar.clone()}
-            position={new Vector3(
-              Math.random() * (length - 0),
-              Math.random() * (length - 0),
-              Math.random() * (-length - 0),
-            )}
-          />
-        </RigidBody>
-        <RigidBody type="fixed">
-          <primitive
-            scale={1}
-            object={avatar.clone()}
-            position={new Vector3(
-              Math.random() * (length - 0),
-              Math.random() * (length - 0),
-              Math.random() * (-length - 0),
-            )}
-          />
-        </RigidBody>
-        <RigidBody type="fixed">
-          <primitive
-            scale={1}
-            object={avatar.clone()}
-            position={new Vector3(
-              Math.random() * (length - 0),
-              Math.random() * (length - 0),
-              Math.random() * (-length - 0),
-            )}
-          />
-        </RigidBody>
-        <RigidBody type="fixed">
-          <primitive
-            scale={1}
-            object={avatar.clone()}
-            position={new Vector3(
-              Math.random() * (length - 0),
-              Math.random() * (length - 0),
-              Math.random() * (-length - 0),
-            )}
-          />
-        </RigidBody>
-
-        
-        <Debris
-          scale={15}
-          position={new Vector3(
-            Math.random() * (length - 0),
-            Math.random() * (length - 0),
-            Math.random() * (-length - 0),
-          )}
-        />
-        <Debris
-          scale={15}
-          position={new Vector3(
-            Math.random() * (length - 0),
-            Math.random() * (length - 0),
-            Math.random() * (-length - 0),
-          )}
-        />
-        <Debris
-          scale={15}
-          position={new Vector3(
-            Math.random() * (length - 0),
-            Math.random() * (length - 0),
-            Math.random() * (-length - 0),
-          )}
-        />
-        <Debris
-          scale={15}
-          position={new Vector3(
-            Math.random() * (length - 0),
-            Math.random() * (length - 0),
-            Math.random() * (-length - 0),
-          )}
-        />
-        <Debris
-          scale={15}
-          position={new Vector3(
-            Math.random() * (length - 0),
-            Math.random() * (length - 0),
-            Math.random() * (-length - 0),
-          )}
-        />
+        {/* 대사들 */}
+        <LinePool playerRef={playerRef} lines={phaseConfig[phase].lines} lineStyle={phaseConfig[phase].lineStyle} />
 
         {/* 필터 */}
         <CollisionOverlay isColliding={isColliding} playerRef={playerRef} />
 
         {/* 출구 */}
-
-        {/* 출구 위치 표시 */}
         <Html
           position={exitPos}
           center
@@ -258,21 +142,11 @@ function GameScene({
           <div>출구는 여기에</div>
         </Html>
 
-        
-        {/* <PosHelper
-          pos={exitPos}
-          size={100}
-          color="red"
-        /> */}
-
         <group ref={arrowRef}>
-          {/* 몸통: 원점에서 +Y 쪽으로 올라가게 길이 2, center가 그룹 origin보다 위로 오게 설정 */}
           <mesh position={[0, 1, 0]}>
             <cylinderGeometry args={[0.05, 0.05, 2, 8]} />
             <meshStandardMaterial color="yellow" transparent opacity={0.8} />
           </mesh>
-
-          {/* 머리: 몸통 끝(= +Y 방향)에 위치 */}
           <mesh position={[0, 2, 0]}>
             <coneGeometry args={[0.3, 0.8, 8]} />
             <meshStandardMaterial color="orange" emissive="orange" />
