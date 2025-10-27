@@ -6,7 +6,8 @@ import Button from "../../util/Button";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
-import { Group, MathUtils, Vector3 } from "three";
+import { AnimationMixer, Group, LoopRepeat, Vector3 } from "three";
+import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
 
 function Player({
   width, cubeMap, onGameEnd, timeRef, runningRef
@@ -18,6 +19,8 @@ function Player({
   runningRef: React.RefObject<boolean>;
 }) {
   const avatar = useGLTF('/models/avatars/default.gltf').scene;
+  const animGltf = useAnimGltf();
+  const mixer = useRef<AnimationMixer | null>(null);
   const [pos, setPos] = useState(1);
   const [life, setLife] = useState(10);
 
@@ -26,12 +29,14 @@ function Player({
   const gamepad = useGamepadControls();
 
   const lastSecRef = useRef(-1);
+  const groupRef = useRef<Group>(null);
+  const jumpHeight = width * 1.2;
 
   useEffect(() => {
     const deadzone = 0.5;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (pressed.current.has("KeyD") || gamepad.current.axes[0] > deadzone) {
-        setPos((p) => Math.min(2, p + 1));
+        setPos((p) => Math.min(3, p + 1));
       } else if (pressed.current.has("KeyA") || gamepad.current.axes[0] < -deadzone) {
         setPos((p) => Math.max(0, p - 1));
       }
@@ -40,25 +45,59 @@ function Player({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [pressed, gamepad]);
 
-  useFrame(() => {
+  useEffect(() => {
+    mixer.current = new AnimationMixer(avatar);
+    return () => {
+      mixer.current?.stopAllAction();
+    };
+  }, [avatar]);
+
+  useEffect(() => {
+    if (!mixer.current) return;
+    const anim = animGltf[2]?.animations?.[0];
+    if (!anim) return;
+  
+    const action = mixer.current.clipAction(anim);
+    action
+      .reset()
+      .fadeIn(0.2)
+      .setLoop(LoopRepeat, Infinity)
+      .play();
+  
+  }, [animGltf]);
+
+
+  useFrame((_, delta) => {
+    mixer.current?.update(delta);
+
     if (!runningRef.current) return;
-    const elapsed = timeRef.current; // seconds as float
+    const elapsed = timeRef.current;
     const sec = Math.floor(elapsed);
+    const t = elapsed - sec;
+
+    // 🟣 Jump curve y = h * 4t(1-t)
+    const jumpY = jumpHeight * 4 * t * (1 - t);
+
+    // Update player group position
+    if (groupRef.current) {
+      groupRef.current.position.set(
+        -width * 1.5 + pos * width,
+        width * 0.5 + jumpY,
+        width * 2
+      );
+    }
 
     if (sec !== lastSecRef.current) {
       lastSecRef.current = sec;
 
-      // boundary check: if sec exceeds cubeMap length -> finish success
       if (sec >= cubeMap.length) {
         onGameEnd(true);
         return;
       }
 
-      // logic: check tile at this second
       const expected = cubeMap[sec];
       if (expected !== pos) {
         setLife(life - 1)
-        // you can sync a UI element to lifeRef via separate UI component reading lifeRef
         if (life - 1 <= 0) {
           onGameEnd(false);
         }
@@ -68,7 +107,7 @@ function Player({
 
   return (
     <group
-      position={[-width*1.5 + pos*width, width*0.5, width*2]}
+      ref={groupRef}
       rotation={[0,Math.PI,0]}
     >
       <Billboard position={[0,5,0]}>
@@ -187,7 +226,7 @@ export default function W3G1({
       const answer = Math.floor(Math.random() * 4);
       map.push(answer);
     }
-    return map
+    return map;
   });
 
   const handleStart = () => {
