@@ -16,6 +16,7 @@ import { HomeEffects } from "./components/maps/Effects";
 import { HomeLights } from "./components/maps/Lights";
 import { jersey15, nanumGothicCoding } from "./lib/fonts";
 import { useGamepadControls } from "./lib/hooks/useGamepadControls";
+import AudioPlayer from "./components/util/AudioPlayer";
 
 export default function Home() {
   const router = useRouter();
@@ -69,6 +70,8 @@ export default function Home() {
     const interval = setInterval(checkPause, 50); // check every 50ms
     return () => clearInterval(interval);
   }, [gamepad]);
+
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   return (
     <main className={`relative w-full h-full ${nanumGothicCoding.className}`}>
@@ -161,6 +164,11 @@ export default function Home() {
           </>
         }
       </div>
+
+      <AudioPlayer
+        src={'/audio/home_bg.mp3'}
+        audioRef={audioRef}
+      />
     </main>
   );
 }

@@ -13,6 +13,9 @@ export default function CardModel({
   const unknown = useMemo(() => unknownScene.clone(), [unknownScene]);
   const card = useGLTF(`/models/citizenship/${worldKey}.glb`).scene;
 
+
+  
+
   return (
     <Suspense fallback={<Loader />}>
       <SmallScene>
