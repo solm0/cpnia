@@ -1,7 +1,7 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import ClonedModel from "../../util/ClonedModels";
-import * as THREE from "three";
+import { useGLTF } from "@react-three/drei";
+import { Object3D } from "three";
 
 function SpinningCoin({
   position,
@@ -9,7 +9,8 @@ function SpinningCoin({
   index,
   waveDelay = 0.2, // delay per coin
   rotationSpeed = Math.PI * 8, // 1 rotation per second
-  breakTime = 10 // seconds between sets
+  breakTime = 10, // seconds between sets
+  coin,
 }: {
   position: [number, number, number];
   scale?: number;
@@ -17,8 +18,9 @@ function SpinningCoin({
   waveDelay?: number;
   rotationSpeed?: number;
   breakTime?: number;
+  coin: Object3D;
 }) {
-  const ref = useRef<THREE.Object3D>(null);
+  const ref = useRef<Object3D>(null);
 
   useFrame(({ clock }) => {
     if (!ref.current) return;
@@ -34,7 +36,7 @@ function SpinningCoin({
 
   return (
     <group ref={ref} position={position} scale={[scale, scale, scale]}>
-      <ClonedModel src="/models/coin.gltf" scale={1} position={[0, 0, 0]} />
+      <primitive object={coin} />
     </group>
   );
 }
@@ -54,10 +56,15 @@ export default function CoinStairs({
   const xDistance = xLength / count;
   const yDistance = yLength / count;
   const zDistance = zLength / count;
+  const coin = useGLTF('/models/coin.gltf').scene;
+
+  const clonedCoins = useMemo(() => {
+    return Array.from({ length: count }, () => coin.clone());
+  }, [coin, count]);
 
   return (
     <>
-      {Array.from({ length: count }).map((_, i) => {
+      {clonedCoins.map((coin, i) => {
         const x = startPosition[0] + xDistance * i;
         const y = startPosition[1] + yDistance * i;
         const z = startPosition[2] + zDistance * i;
@@ -70,6 +77,7 @@ export default function CoinStairs({
             index={i}
             waveDelay={0.2} // stagger each coin
             breakTime={10}  // pause between sets
+            coin={coin}
           />
         );
       })}

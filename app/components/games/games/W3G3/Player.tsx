@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Euler, Quaternion, Vector3 } from "three";
+import { Euler, Object3D, Quaternion, Vector3 } from "three";
 import { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
@@ -11,9 +11,10 @@ import { degToRad } from "three/src/math/MathUtils.js";
 import { PlayerData } from "../W3G2";
 
 export default function Player({
-  playerRef,
+  playerRef, avatar,
 }: {
   playerRef: RefObject<PlayerData>;
+  avatar: Object3D;
 }) {
   const body = useRef<any>(null);
   const [activeAction, setActiveAction] = useState(0);
@@ -100,7 +101,7 @@ export default function Player({
       <mesh visible={false}>
         <CuboidCollider args={[0.5, 1, 0.5]} />
       </mesh>
-      <Avatar animIndex={activeAction} />
+      <Avatar animIndex={activeAction} avatar={avatar} />
     </RigidBody>
   );
 }

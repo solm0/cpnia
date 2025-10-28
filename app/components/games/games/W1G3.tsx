@@ -4,13 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { OrbitControls } from "@react-three/drei";
 import RouletteRoll from "./W1G3/RouletteRoll";
 import RouletteTable from "./W1G3/RouletteTable";
+import { Object3D } from "three";
 
 export default function W1G3({
-  worldKey, gameKey, onGameEnd
+  worldKey, gameKey, onGameEnd, avatar
 }: {
   worldKey: string;
   gameKey: string;
   onGameEnd: (success: boolean) => void;
+  avatar: Object3D;
 }) {
   const [trial, setTrial] = useState(1)
   const leftMoney = useRef(100);

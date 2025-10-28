@@ -1,6 +1,5 @@
 // 게임 컴포넌트의 선택, 각 게임의 npc 데이터를 골라주는 컴포넌트
 
-import { mapNpcLines } from "@/app/lib/data/lines/mapNpcLines";
 import W1G1 from "../games/W1G1";
 import W1G2 from "../games/W1G2";
 import W1G3 from "../games/W1G3";
@@ -11,18 +10,21 @@ import W3G1 from "../games/W3G1";
 import W3G2 from "../games/W3G2";
 import W3G3 from "../games/W3G3";
 import PausedScreen from "../../util/PausedScreen";
+import { Object3D } from "three";
 
 export default function GameScreen({
-  worldKey, gameKey, handleGameEnd
+  worldKey, gameKey, handleGameEnd, avatar
 }: {
   worldKey: string;
   gameKey: string;
   handleGameEnd: (result: boolean) => void;
+  avatar: Object3D;
 }) {
   type GameComponent = React.FC<{
     worldKey: string;
     gameKey: string;
-    onGameEnd: (success: boolean) => void
+    onGameEnd: (success: boolean) => void;
+    avatar: Object3D;
   }>
   const gameMap: Record<string, Record<string, GameComponent>> = {
     time: {
@@ -45,13 +47,13 @@ export default function GameScreen({
   const SelectedGame = gameMap[worldKey]?.[gameKey];
   if (!SelectedGame) return <div>게임을 찾을 수 없습니다</div>
   
-
   return (
     <>
       <SelectedGame
         worldKey={worldKey}
         gameKey={gameKey}
         onGameEnd={handleGameEnd}
+        avatar={avatar}
       />
       <PausedScreen
         worldKey={worldKey}

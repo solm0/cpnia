@@ -11,8 +11,13 @@ import Portals from "../Portals";
 import PlayerWithStair from "../player/PlayerWithStair";
 import { TimeEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
+import { Object3D } from "three";
 
-export default function TimeScreen() {
+export default function TimeScreen({
+  avatar,
+}: {
+  avatar: Object3D;
+}) {
   const worldKey = 'time';
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
 
@@ -62,6 +67,7 @@ export default function TimeScreen() {
             currentStage={currentStage}
             setCurrentStage={setCurrentStage}
             clickedStair={clickedStair}
+            avatar={avatar}
           />
         </Physics>
 

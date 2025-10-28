@@ -1,17 +1,13 @@
 import { RefObject, useEffect, useRef, useState } from "react";
 import { gameRefProp } from "../W1G1";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { AnimationAction, AnimationMixer, LoopOnce, LoopRepeat, Object3D, Vector3 } from "three";
+import { AnimationAction, AnimationMixer, LoopRepeat, Object3D, Vector3 } from "three";
 import { BoxHelper } from "./BoxHelper";
 import { degToRad, MathUtils } from "three/src/math/MathUtils.js";
 import { PosHelper } from "../W2G2/AnchorHelper";
 import { CoinPileOnTable, CoinPileOnTableWRef } from "./CoinPile";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
-
-useGLTF.preload("/models/table.glb");
-useGLTF.preload("/models/avatars/default.glb");
-useGLTF.preload("/models/cardPile.glb");
 
 function Npc({
   avatarPos, avatarScale, motionPhase
@@ -271,7 +267,7 @@ export default function Table({
         size={0.1}
       /> */}
       <CoinPileOnTable
-        coin={coin.clone()}
+        coin={coin}
         count={gameRef.current[1].leftChips}
         position={npcChipPos}
       />
@@ -298,7 +294,7 @@ export default function Table({
         >
           <CoinPileOnTable
             key={version}
-            coin={coin.clone()}
+            coin={coin}
             count={gameRef.current[0].betChips + gameRef.current[1].betChips}
             position={new Vector3(0,0,0)}
           />
@@ -310,7 +306,7 @@ export default function Table({
       {motionPhase.current === 'bet' &&
         <CoinPileOnTableWRef
           ref={movingCoinRef}
-          coin={coin.clone()}
+          coin={coin}
           count={currentNum.current ?? 0}
           position={turn.current % 2 === 0 ? playerChipPos : npcChipPos}
         />

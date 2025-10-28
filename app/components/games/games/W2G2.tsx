@@ -7,11 +7,12 @@ import Crowd from "./W2G2/Crowd";
 import { Object3D } from "three";
 
 export default function W2G2({
-  worldKey, gameKey, onGameEnd
+  worldKey, gameKey, onGameEnd, avatar
 }: {
   worldKey: string;
   gameKey: string;
   onGameEnd: (success: boolean) => void;
+  avatar: Object3D;
 }) {
   const [round, setRound] = useState(1);
 

@@ -14,12 +14,15 @@ import { SacrificeEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
 import Fire from "../Fire";
 import { stagePositions } from "@/app/lib/data/positions/stagePositions";
-import ClonedModel from "../../util/ClonedModels";
 import Crowd from "../../games/games/W2G2/Crowd";
 import { useGLTF } from "@react-three/drei";
 import { Object3D } from "three";
 
-export default function SacrificeScreen() {
+export default function SacrificeScreen({
+  avatar,
+}: {
+  avatar: Object3D;
+}) {
   const worldKey = 'sacrifice';
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
 
@@ -94,7 +97,7 @@ export default function SacrificeScreen() {
           />
 
           {/* 플레이어 */}
-          <Player worldKey={worldKey} />
+          <Player worldKey={worldKey} avatar={avatar} />
         </Physics>
         
         {/* 효과 */}

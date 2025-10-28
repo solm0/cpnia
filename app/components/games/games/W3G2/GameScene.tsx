@@ -2,20 +2,21 @@ import { RefObject, useEffect, useRef, useState } from "react";
 import { Core, Field, PlayerData } from "../W3G2";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
-import { Color, Mesh, MeshStandardMaterial, PointLight, Vector3 } from "three";
+import { Color, Mesh, MeshStandardMaterial, Object3D, PointLight, Vector3 } from "three";
 import { Physics } from "@react-three/rapier";
 import Player from "./Player";
 import { useFrame } from "@react-three/fiber";
 import CoreLabel from "./CoreLabel";
 
 export default function GameScene({
-  scoreRef, coresRef, playerRef, setScore, field,
+  scoreRef, coresRef, playerRef, setScore, field, avatar,
 }: {
   scoreRef: RefObject<number>;
   coresRef: RefObject<Core[]>;
   playerRef: RefObject<PlayerData>;
   setScore: (score: number) => void;
   field: Field;
+  avatar: Object3D;
 }) {
   const nearestCoreRef = useRef<Core | null>(null);
   const targetDistance = 8;
@@ -168,7 +169,13 @@ export default function GameScene({
       ))}
 
       {/* 플레이어 */}
-      <Player playerRef={playerRef} field={field} isBreaking={isBreaking} />
+      <Player
+        playerRef={playerRef}
+        field={field}
+        isBreaking={isBreaking}
+        avatar={avatar}
+      />
+      
       <pointLight 
         ref={lightRef}
         intensity={300}

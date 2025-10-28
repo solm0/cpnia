@@ -4,7 +4,7 @@ import { Environment, Html } from "@react-three/drei";
 import { Bloom, ChromaticAberration, DepthOfField, EffectComposer, HueSaturation, Noise, } from "@react-three/postprocessing";
 import { BlendFunction } from 'postprocessing'
 import { Physics } from "@react-three/rapier";
-import { Quaternion, Vector3 } from "three";
+import { Object3D, Quaternion, Vector3 } from "three";
 import Player from "./W3G3/Player";
 import FullScreenModal from "../../util/FullScreenModal";
 import Button from "../../util/Button";
@@ -38,7 +38,7 @@ const phaseConfig: Config[] = [
 ]
 
 function GameScene({
-  onGameEnd, timerRef, healthRef,
+  onGameEnd, timerRef, healthRef, avatar,
 }: {
   onGameEnd: (success: boolean) => void;
   timerRef: RefObject<{
@@ -47,6 +47,7 @@ function GameScene({
     running: boolean;
   }>;
   healthRef: RefObject<number>;
+  avatar: Object3D;
 }) {
   const length = 500;
   const exitPos = new Vector3(length, length, -length);
@@ -155,7 +156,7 @@ function GameScene({
         
         <directionalLight intensity={10} position={[10,50,10]} />
       
-        <Player playerRef={playerRef} />
+        <Player playerRef={playerRef} avatar={avatar} />
 
       </Physics>
     </>
@@ -163,11 +164,12 @@ function GameScene({
 }
 
 export default function W3G3({
-  worldKey, gameKey, onGameEnd
+  worldKey, gameKey, onGameEnd, avatar
 }: {
   worldKey: string;
   gameKey: string;
   onGameEnd: (success: boolean) => void;
+  avatar: Object3D;
 }) {
   const [hasStarted, setHasStarted] = useState(false);
   const { timerRef, start } = useTimerRef();
@@ -181,6 +183,7 @@ export default function W3G3({
           onGameEnd={onGameEnd}
           timerRef={timerRef}
           healthRef={healthRef}
+          avatar={avatar}
         />
 
         <Environment files={'/hdri/cloudSky.hdr'} background={true} environmentIntensity={0.05} />

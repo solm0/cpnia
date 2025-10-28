@@ -6,19 +6,19 @@ import Button from "../../util/Button";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
-import { AnimationMixer, Group, LoopRepeat, Vector3 } from "three";
+import { AnimationMixer, Group, LoopRepeat, Object3D, Vector3 } from "three";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
 
 function Player({
-  width, cubeMap, onGameEnd, timeRef, runningRef
+  width, cubeMap, onGameEnd, timeRef, runningRef, avatar
 }: {
   width: number;
   cubeMap: number[];
   onGameEnd: (success: boolean) => void;
   timeRef: React.RefObject<number>;
   runningRef: React.RefObject<boolean>;
+  avatar: Object3D;
 }) {
-  const avatar = useGLTF('/models/avatars/default.gltf').scene;
   const animGltf = useAnimGltf();
   const mixer = useRef<AnimationMixer | null>(null);
   const [pos, setPos] = useState(1);
@@ -208,11 +208,12 @@ function StartScreen({worldKey, handleStart}: {worldKey: string; handleStart:() 
 }
 
 export default function W3G1({
-  worldKey, gameKey, onGameEnd
+  worldKey, gameKey, onGameEnd, avatar,
 }: {
   worldKey: string;
   gameKey: string;
   onGameEnd: (success: boolean) => void;
+  avatar: Object3D;
 }) {
   const width = 3;
   const startTimeRef = useRef<number>(0);
@@ -253,6 +254,7 @@ export default function W3G1({
           onGameEnd={onGameEnd}
           timeRef={timeRef}
           runningRef={runningRef}
+          avatar={avatar}
         />
         <OrbitControls minDistance={30} maxDistance={100} />
         <directionalLight intensity={1} position={[0,10,10]} />

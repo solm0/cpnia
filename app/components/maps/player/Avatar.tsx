@@ -1,26 +1,24 @@
 import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { AnimationAction, AnimationMixer, LoopRepeat, Mesh } from "three";
-import { useGLTF } from "@react-three/drei";
+import { AnimationAction, AnimationMixer, LoopRepeat, Mesh, Object3D } from "three";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
 
 export function Avatar({
-  animIndex,
+  animIndex, avatar,
 }: {
   animIndex?: number;
+  avatar: Object3D;
 }) {
   const actionsRef = useRef<AnimationAction | null>(null);
   const mixer = useRef<AnimationMixer | null>(null);
-
-  const charGltf = useGLTF("/models/avatars/default.gltf");
   const animGltf = useAnimGltf();
   const anim = animGltf[animIndex ?? 0];
 
   // set up mixer once
   useEffect(() => {
-    if (charGltf) {
-      mixer.current = new AnimationMixer(charGltf.scene);
-      charGltf.scene.traverse((child) => {
+    if (avatar) {
+      mixer.current = new AnimationMixer(avatar);
+      avatar.traverse((child) => {
         if ((child as Mesh).isMesh) {
           child.castShadow = true;
           child.receiveShadow = true;
@@ -32,7 +30,7 @@ export function Avatar({
       mixer.current?.stopAllAction();
       mixer.current = null;
     };
-  }, [charGltf]);
+  }, [avatar]);
 
   // switch animation when actionKey changes
   useEffect(() => {
@@ -62,7 +60,7 @@ export function Avatar({
   return (
     <group>
       <primitive
-        object={charGltf.scene}
+        object={avatar}
         scale={8}
         position={[0, 0, 0]}
         rotation={[0, Math.PI, 0]}

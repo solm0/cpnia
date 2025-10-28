@@ -10,7 +10,7 @@ export function PizzaModel({
   normal: Vector3,
   scale?: number;
 }) {
-  const { scene } = useGLTF("/models/pizza.gltf");
+  const pizza = useGLTF("/models/pizza.gltf").scene;
 
   const quaternion = useMemo(
     () =>
@@ -21,13 +21,13 @@ export function PizzaModel({
     [normal]
   );
 
-  const ref = useRef<Object3D>(scene);
+  const ref = useRef<Object3D>(pizza);
 
   useFrame(() => {
     ref.current.position.copy(center); // <- update position every frame
   });
 
-  scene.traverse((child) => {
+  pizza.traverse((child) => {
     if ((child as Mesh).isMesh) {
       child.castShadow = true;
       child.receiveShadow = true;
@@ -36,7 +36,7 @@ export function PizzaModel({
 
   return (
     <primitive
-      object={scene}
+      object={pizza}
       position={center}
       quaternion={quaternion}
       scale={scale}

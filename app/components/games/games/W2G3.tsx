@@ -4,13 +4,15 @@ import { useState } from "react";
 import CameraController from "./W2G1/CameraController";
 import { FugitiveLineModal } from "../../maps/interfaces/NpcLineModals";
 import Fugitive from "./W2G3/Fugitive";
+import { Object3D } from "three";
 
 export default function W2G3({
-  worldKey, gameKey, onGameEnd
+  worldKey, gameKey, onGameEnd, avatar
 }: {
   worldKey: string;
   gameKey: string;
   onGameEnd: (success: boolean) => void;
+  avatar: Object3D;
 }) {
   // 게임마다 다른 게임 상태 저장. 점수만 Game으로 올려줌.
   const [score, setScore] = useState(0);

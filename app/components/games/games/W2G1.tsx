@@ -5,7 +5,7 @@ import BattleField from "./W2G1/BattleField";
 import { degToRad } from "three/src/math/MathUtils.js";
 import Loader from "../../util/Loader";
 import { W2G1roundConfig } from "./roundConfig";
-import { Vector3 } from "three";
+import { Object3D, Vector3 } from "three";
 import Timer from "./W2G1/Timer";
 import Button from "../../util/Button";
 
@@ -117,11 +117,12 @@ export function W2G1Interface({
 }
 
 export default function W2G1({
-  worldKey, gameKey, onGameEnd
+  worldKey, gameKey, onGameEnd, avatar
 }: {
   worldKey: string;
   gameKey: string;
   onGameEnd: (success: boolean) => void;
+  avatar: Object3D;
 }) {
   const [round, setRound] = useState(1);
   

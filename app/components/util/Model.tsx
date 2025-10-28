@@ -1,7 +1,6 @@
 import { useEffect } from "react";
-import { useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as THREE from "three";
+import { useGLTF } from "@react-three/drei";
 
 export default function Model({
   src,
@@ -14,7 +13,7 @@ export default function Model({
   position?: [number, number, number];
   rotation?: [number, number, number];
 }) {
-  const gltf = useLoader(GLTFLoader, src);
+  const gltf = useGLTF(src);
 
   useEffect(() => {
     gltf.scene.traverse((child) => {

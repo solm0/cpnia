@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Euler, Quaternion, Vector3 } from "three";
+import { Euler, Object3D, Quaternion, Vector3 } from "three";
 import { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
@@ -14,11 +14,12 @@ import { Field, PlayerData } from "../W3G2";
 import { clampToField } from "./clampToField";
 
 export default function Player({
-  playerRef, field, isBreaking
+  playerRef, field, isBreaking, avatar
 }: {
   playerRef: RefObject<PlayerData>;
   field: Field;
   isBreaking: RefObject<boolean>;
+  avatar: Object3D;
 }) {
   const playerGrounded = useRef(false);
   const inJumpAction = useRef(false);
@@ -176,7 +177,7 @@ export default function Player({
         <mesh visible={false} castShadow receiveShadow>
           <CuboidCollider args={[0.5, 1, 0.5]} /> 
         </mesh>
-        <Avatar animIndex={activeAction} />
+        <Avatar animIndex={activeAction} avatar={avatar} />
       </RigidBody>
       {/* <FieldHelper field={field} /> */}
     </>

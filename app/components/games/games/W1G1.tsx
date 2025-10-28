@@ -13,11 +13,12 @@ export interface gameRefProp {
 }
 
 export default function W1G1({
-  worldKey, gameKey, onGameEnd
+  worldKey, gameKey, onGameEnd, avatar
 }: {
   worldKey: string;
   gameKey: string;
   onGameEnd: (success: boolean) => void;
+  avatar: Object3D;
 }) {
   // 모델 가져오기
   const cards: Record<number, Object3D> = {

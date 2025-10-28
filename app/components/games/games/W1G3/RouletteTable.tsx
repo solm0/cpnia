@@ -13,6 +13,7 @@ export default function RouletteTable({
   n?: number;
   setBetNum: (betNum: number | null) => void;
 }) {
+  const coin = useGLTF("/models/coin.gltf").scene;
   const nums = Array.from({ length: n }, (_, i) => i + 1);
   const tableScale = 7;
   const gutter = 1.1;
@@ -115,7 +116,7 @@ export default function RouletteTable({
 
       {/* 동전 */}
       <primitive
-        object={useGLTF("/models/coin.gltf").scene}
+        object={coin}
         ref={coinRef}
         position={[pos.col * tableScale * gutter, -pos.row * tableScale * gutter, 0.2]}
         rotation={[Math.PI/2, 0, 0]}

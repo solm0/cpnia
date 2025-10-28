@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import SmallScene from "../../util/SmallScene";
 import { Loader, OrbitControls, useGLTF } from "@react-three/drei";
 import { degToRad } from "three/src/math/MathUtils.js";
@@ -9,8 +9,9 @@ export default function CardModel({
   worldKey: string;
   isCompleted: boolean;
 }) {
-  const unknown = useGLTF('/models/citizenship/unknown.glb').scene.clone();
-  const card = useGLTF(`/models/citizenship/${worldKey}.glb`);
+  const unknownScene = useGLTF('/models/citizenship/unknown.glb').scene;
+  const unknown = useMemo(() => unknownScene.clone(), [unknownScene]);
+  const card = useGLTF(`/models/citizenship/${worldKey}.glb`).scene;
 
   return (
     <Suspense fallback={<Loader />}>

@@ -1,8 +1,8 @@
-import { useFrame, useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { useFrame } from "@react-three/fiber";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { useMemo, useEffect, useState } from "react";
 import { Mesh, MeshStandardMaterial } from "three";
+import { useGLTF } from "@react-three/drei";
 
 export default function ClonedModel({
   src,
@@ -17,7 +17,7 @@ export default function ClonedModel({
   rotation?: [number, number, number];
   hoverEffect?: boolean;
 }) {
-  const gltf = useLoader(GLTFLoader, src);
+  const gltf = useGLTF(src);
   const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
   const [hovered, setHovered] = useState(false);
 

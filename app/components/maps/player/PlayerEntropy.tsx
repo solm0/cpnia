@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Euler, Quaternion, Vector3 } from "three";
+import { Euler, Object3D, Quaternion, Vector3 } from "three";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
@@ -21,9 +21,11 @@ const rectArea: Boundary[] = [
 export default function PlayerEntropy({
   worldKey,
   groundY = 0,
+  avatar,
 }: {
   worldKey: string;
   groundY?: number;
+  avatar: Object3D;
 }) {
   const playerGrounded = useRef(false);
   const inJumpAction = useRef(false);
@@ -207,7 +209,7 @@ export default function PlayerEntropy({
         <mesh visible={false} castShadow receiveShadow>
           <CuboidCollider args={[0.5, 1, 0.5]} /> 
         </mesh>
-        <Avatar animIndex={activeAction} />
+        <Avatar animIndex={activeAction} avatar={avatar} />
       </RigidBody>
       {/* <DebugBoundaries boundaries={rectArea} /> */}
     </>

@@ -1,12 +1,11 @@
 'use client'
 
-import { useLoader } from "@react-three/fiber";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import Label from "../util/Label";
 import { Mesh } from "three";
+import { useGLTF } from "@react-three/drei";
 
 export default function PlaceHolder({
   scale, position, rotation, href, gameKey, label, completed = null, onClick
@@ -20,7 +19,7 @@ export default function PlaceHolder({
   completed?: boolean | null;
   onClick?: (param?: number | string) => void;
 }) {
-  const gltf = useLoader(GLTFLoader, '/models/placeholder.glb');
+  const gltf = useGLTF('/models/placeholder.glb');
 
   // Clone the scene once and set shadows
   const clonedScene = useMemo(() => {

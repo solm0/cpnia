@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useGameStore } from "@/app/lib/state/gameState";
 import GameEndScreen from "./screens/GameEndScreen";
 import GameScreen from "./screens/GameScreen";
+import { Object3D } from "three";
 
 export default function Game({
-  worldKey, gameKey
+  worldKey, gameKey, avatar,
 }: {
   worldKey: string;
   gameKey: string;
+  avatar: Object3D;
 }) {
   const [gameEnded, setGameEnded] = useState(false);
 
@@ -30,14 +32,13 @@ export default function Game({
     setEndScreenData(!completedBeforeRun && isWorldCompleted(worldKey))
   }
 
-  // 게임 현재 점수, 일시정지 함수(화면 띄우고 타이머 등 멈추기) 저장하고 GameMenu에 넘겨줘야됨.
-
   if (!gameEnded) {
     return (
       <GameScreen
         worldKey={worldKey}
         gameKey={gameKey}
         handleGameEnd={handleGameEnd}
+        avatar={avatar}
       />
     )
   } else {

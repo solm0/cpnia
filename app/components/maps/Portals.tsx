@@ -18,7 +18,7 @@ export function GamePortal({
   gameKey: string;
   scale?: number;
 }) {
-  const gltf = useGLTF(modelSrc);
+  const gltf = useGLTF(modelSrc).scene;
   const [hovered, setHovered] = useState(false);
   const router = useRouter();
   console.log(locked, modelSrc)
@@ -26,7 +26,7 @@ export function GamePortal({
   useEffect(() => {
     if (gltf) {
 
-      gltf.scene.traverse((child) => {
+      gltf.traverse((child) => {
         if ((child as Mesh).isMesh) {
           child.castShadow = true;
           child.receiveShadow = true;
@@ -62,8 +62,8 @@ export function GamePortal({
   }, [gltf]);
 
   useFrame(() => {
-    if (!gltf.scene) return;
-    gltf.scene.traverse((child) => {
+    if (!gltf) return;
+    gltf.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const shader = child.userData.shader;
         if (shader?.uniforms?.uHighlight) {
@@ -91,7 +91,7 @@ export function GamePortal({
       }}
       scale={scale}
     >
-      <primitive object={gltf.scene} />
+      <primitive object={gltf} />
     </group>
   )
 }

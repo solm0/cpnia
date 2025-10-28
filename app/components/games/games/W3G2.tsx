@@ -28,11 +28,12 @@ export interface Field {
 }
 
 export default function W3G2({
-  worldKey, gameKey, onGameEnd
+  worldKey, gameKey, onGameEnd, avatar
 }: {
   worldKey: string;
   gameKey: string;
   onGameEnd: (success: boolean) => void;
+  avatar: Object3D;
 }) {
   const sec = 90;
   const initialPlayer = {
@@ -123,6 +124,7 @@ export default function W3G2({
           playerRef={playerRef}
           setScore={setScore}
           field={field}
+          avatar={avatar}
         />
       </Scene>
 

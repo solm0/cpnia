@@ -13,8 +13,13 @@ import { EntropyEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
 import Model from "../../util/Model";
 import PlayerEntropy from "../player/PlayerEntropy";
+import { Object3D } from "three";
 
-export default function EntropyScreen() {
+export default function EntropyScreen({
+  avatar,
+}: {
+  avatar: Object3D;
+}) {
   const worldKey = 'entropy'
 
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
@@ -55,7 +60,7 @@ export default function EntropyScreen() {
           />
 
           {/* 플레이어 */}
-          <PlayerEntropy worldKey={worldKey} />
+          <PlayerEntropy worldKey={worldKey} avatar={avatar} />
         </Physics>
 
         {/* 효과 */}

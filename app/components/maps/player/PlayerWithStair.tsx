@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Euler, Quaternion, Vector3 } from "three";
+import { Euler, Object3D, Quaternion, Vector3 } from "three";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
@@ -29,6 +29,7 @@ export default function PlayerWithStair({
   stairClimbMode,
   currentStage, setCurrentStage,
   clickedStair,
+  avatar,
 }: {
   worldKey: string;
   groundY?: number;
@@ -36,6 +37,7 @@ export default function PlayerWithStair({
   currentStage?: number;
   setCurrentStage?: (currentStage: number) => void;
   clickedStair?: number | null;
+  avatar: Object3D;
 }) {
   const playerGrounded = useRef(false);
   const inJumpAction = useRef(false);
@@ -219,7 +221,7 @@ export default function PlayerWithStair({
         <mesh visible={false} castShadow receiveShadow>
           <CuboidCollider args={[0.5, 1, 0.5]} /> 
         </mesh>
-        <Avatar />
+        <Avatar avatar={avatar} />
       </RigidBody>
       {/* <DebugBoundaries boundaries={circleArea} /> */}
     </>
