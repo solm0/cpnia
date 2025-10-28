@@ -32,7 +32,7 @@ export default function W1G1({
     10: useGLTF('/models/card-10.gltf').scene,
   }
 
-  const coin = useGLTF('/models/coin.gltf').scene;
+  const coin = useGLTF('/models/coin2.gltf').scene;
 
   // 게임 진행상황
   const gameRef = useRef<gameRefProp[]>([

@@ -1,6 +1,8 @@
+'use client'
+
 import { RefObject, useEffect, useRef, useState } from "react";
 import { gameRefProp } from "../W1G1";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { AnimationAction, AnimationMixer, LoopOnce, LoopRepeat, Object3D, Vector3 } from "three";
 import { BoxHelper } from "./BoxHelper";
@@ -9,10 +11,6 @@ import { PosHelper } from "../W2G2/AnchorHelper";
 import { CoinPileOnTable, CoinPileOnTableWRef } from "./CoinPile";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
 
-useGLTF.preload("/models/table.glb");
-useGLTF.preload("/models/avatars/default.glb");
-useGLTF.preload("/models/cardPile.glb");
-
 function Npc({
   avatarPos, avatarScale, motionPhase
 }: {
@@ -20,7 +18,13 @@ function Npc({
   avatarScale: number;
   motionPhase: RefObject<'idle' | 'pick' | 'bet' | 'npcFail' | 'npcWin'>
 }) {
-  const avatar = useGLTF('/models/avatars/default.glb').scene;
+  // useEffect(() => {
+  //   useGLTF.preload("/models/table.glb");
+  //   useGLTF.preload("/models/avatars/time-npc.glb");
+  //   useGLTF.preload("/models/cardPile.glb");
+  // }, []);
+
+  const avatar = useGLTF('/models/avatars/time-npc.glb').scene;
   const mixer = useRef<AnimationMixer | null>(null);
   const actionsRef = useRef<AnimationAction | null>(null);
   const animGltf = useAnimGltf();
@@ -98,7 +102,7 @@ export default function Table({
     sizeZ: 5
   }
 
-  const avatarPos = new Vector3(0, tableScale * 0.4, -tableScale);
+  const avatarPos = new Vector3(0, tableScale * 0.3, -tableScale);
   const avatarScale = tableScale * 0.8;
   
   const cardPos = new Vector3(

@@ -16,6 +16,7 @@ import { HomeEffects } from "./components/maps/Effects";
 import { HomeLights } from "./components/maps/Lights";
 import { jersey15, nanumGothicCoding } from "./lib/fonts";
 import { useGamepadControls } from "./lib/hooks/useGamepadControls";
+import AudioPlayer from "./components/util/AudioPlayer";
 
 export default function Home() {
   const router = useRouter();
@@ -70,6 +71,8 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [gamepad]);
 
+  const audioRef = useRef<HTMLAudioElement>(null);
+
   return (
     <main className={`relative w-full h-full ${nanumGothicCoding.className}`}>
       <div className="w-full h-full relative z-0">
@@ -107,6 +110,7 @@ export default function Home() {
           {`게임패드: ${isFocused ? '▽ 눌러 뒤로가기' : '△ 눌러 월드 선택'}`}
         </p>
         {!isFocused && <HomeMenu />}
+
         {isFocused &&
           <>
             <div className="absolute top-1/2 -translate-y-1/2 left-4 scale-200">
@@ -161,6 +165,12 @@ export default function Home() {
           </>
         }
       </div>
+
+      {/* 시작 */}
+      <AudioPlayer
+        src={'/audio/home_bg.mp3'}
+        audioRef={audioRef}
+      />
     </main>
   );
 }

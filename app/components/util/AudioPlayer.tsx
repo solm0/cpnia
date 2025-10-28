@@ -10,7 +10,7 @@ export default function AudioPlayer({
   audioRef
 }: {
   src: string;
-  worldKey: string;
+  worldKey?: string;
   audioRef: RefObject<HTMLAudioElement | null>;
 }) {
   const [started, setStarted] = useState(false);

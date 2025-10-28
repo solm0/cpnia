@@ -1,5 +1,5 @@
 import Scene from "@/app/components/util/Scene";
-import { forwardRef, RefObject } from "react";
+import { forwardRef } from "react";
 import { Object3D, Vector3 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 
@@ -12,14 +12,14 @@ export default function CoinPile({
 }) {
   return (
     <Scene>
-      <group rotation={[degToRad(50), 0, 0]}>
+      <group rotation={[degToRad(40), 0, 0]}>
         {[...Array(count).keys()].map((c) => {
-          const y = 0.11 * c;
+          const y = 0.17 * c -2;
           return (
             <primitive
               key={c}
               object={coin.clone()}
-              scale={0.00016}
+              scale={0.4}
               position={[x, y, 0]}
             />
           )
@@ -46,7 +46,7 @@ export function CoinPileOnTable({
           <primitive
             key={c}
             object={coin.clone()}
-            scale={0.00004}
+            scale={0.08}
             position={[0, y, 0]}
           />
         )

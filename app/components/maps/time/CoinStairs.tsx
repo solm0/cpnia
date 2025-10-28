@@ -34,7 +34,7 @@ function SpinningCoin({
 
   return (
     <group ref={ref} position={position} scale={[scale, scale, scale]}>
-      <ClonedModel src="/models/coin.gltf" scale={1} position={[0, 0, 0]} />
+      <ClonedModel src="/models/coin2.gltf" scale={3000} position={[0, 0, 0]} />
     </group>
   );
 }
