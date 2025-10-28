@@ -69,10 +69,6 @@ export default function SacrificeScreen({
             rotation={[0,0,0]}
           />
 
-          {/* <ClonedModel
-            src="/models/lightbulb.gltf"
-          /> */}
-
           <RigidBody type="fixed">
             <mesh receiveShadow castShadow position={[120, -6.5, -6]} >
               <boxGeometry args={[233, 2, 85]} /> {/* give it a thin height */}

@@ -48,13 +48,13 @@ export default function CoinPile({
 
   return (
     <Scene>
-      <group rotation={[degToRad(50), 0, 0]}>
+      <group rotation={[degToRad(40), 0, 0]}>
         {clones.map((c, i) => (
           <primitive
             key={i}
             object={c}
-            scale={0.00016}
-            position={[x, 0.11 * i, 0]}
+            scale={0.4}
+            position={[x, 0.17 * i - 2, 0]}
           />
         ))}
       </group>
@@ -81,7 +81,7 @@ export function CoinPileOnTable({
         <primitive
           key={i}
           object={c}
-          scale={0.00004}
+          scale={0.08}
           position={[0, 0.03 * i, 0]}
         />
       ))}

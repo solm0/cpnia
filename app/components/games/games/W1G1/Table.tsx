@@ -94,7 +94,7 @@ export default function Table({
     sizeZ: 5
   }
 
-  const avatarPos = new Vector3(0, tableScale * 0.4, -tableScale);
+  const avatarPos = new Vector3(0, tableScale * 0.3, -tableScale);
   const avatarScale = tableScale * 0.8;
   
   const cardPos = new Vector3(

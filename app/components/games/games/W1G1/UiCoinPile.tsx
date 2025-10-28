@@ -10,7 +10,7 @@ export default function UiCoinPile({
   x?: number;
 }) {
   return (
-    <div className="w-50 h-50 absolute bottom-27 left-0 -translate-x-65">
+    <div className="w-50 h-60 absolute bottom-27 left-0 -translate-x-65">
       <CoinPile
         coin={coin}
         count={tmpCount !== undefined ? tmpCount : count}

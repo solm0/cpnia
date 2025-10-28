@@ -68,12 +68,6 @@ export default function TimeMap({
         rotation={[0,0,0]}
       />
 
-      <Model
-        src="/models/roulette-island.glb"
-        position={[50,30,-30]}
-        scale={3}
-      />
-
       {rouletteIslands1.map((island, idx) => 
         <FloatingIsland
           key={idx}

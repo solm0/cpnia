@@ -120,7 +120,7 @@ export default function RouletteTable({
         ref={coinRef}
         position={[pos.col * tableScale * gutter, -pos.row * tableScale * gutter, 0.2]}
         rotation={[Math.PI/2, 0, 0]}
-        scale={0.001}
+        scale={0.1}
       />
 
       {/* ui */}
