@@ -244,7 +244,7 @@ export default function BattleField({
 
       {/* 지형 */}
       <Model
-        src="/models/shop.glb"
+        src="/models/shop-kitchen.gltf"
         scale={0.5}
         position={[60,-15.3,-17]}
         rotation={[0,0,0]}
