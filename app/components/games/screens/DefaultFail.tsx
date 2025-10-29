@@ -5,7 +5,7 @@ import PlaceHolder from "../../util/PlaceHolder"
 import { OrbitControls } from "@react-three/drei"
 import Button from "../../util/Button"
 import { useRouter, useSearchParams } from "next/navigation";
-import TimeFail from "../../fail/Timefail";
+import TimeFail from "./Timefail";
 import { useGameEndStore } from "@/app/lib/state/gameEndState"
 
 export default function DefaultFail() {

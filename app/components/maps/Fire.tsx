@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react";
 import { AnimationAction, AnimationMixer, LoopRepeat } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 
+useGLTF.preload("/models/fire/scene.gltf");
+
 export default function Fire(){
   const gltf = useGLTF("/models/fire/scene.gltf").scene;
   const mixer = useRef<AnimationMixer | null>(null);

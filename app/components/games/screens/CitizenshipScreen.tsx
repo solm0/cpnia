@@ -1,27 +1,24 @@
-import PlaceHolder from "../../util/PlaceHolder";
-import Button from "../../util/Button";
-import { useRouter } from "next/navigation";
-import Scene from "../../util/Scene";
-import { OrbitControls } from "@react-three/drei";
+'use client'
 
-export default function CitizenshipScreen({
-  worldKey
-}: {
-  worldKey: string;
-}) {
+import Button from "../../util/Button";
+import { useRouter, useSearchParams } from "next/navigation";
+import CardModel from "../../home/interfaces/CardModel";
+import { worldPortals } from "@/app/lib/data/positions/worldPortals";
+
+export default function CitizenshipScreen() {
   const router = useRouter();
+  const searchParam = useSearchParams();
+  const worldKey = searchParam.get('world');
+  const worldName = worldPortals.find(world => world.worldKey === worldKey)?.worldName;
+
   return (
-    <main className="w-full h-full bg-sky-900">
-      <Scene>
-        <PlaceHolder
-          scale={1}
-          position={[0, 3, 0]}
-          rotation={[0, 0, 0]}
-          label={`${worldKey} 사회에 성공적으로 동화되셨군요? 당신도 이제 ${worldKey}의 시민입니다. 시민권을 발급해 드리겠습니다. 축하합니다.`}
-        />
-        <OrbitControls minDistance={30} maxDistance={100} />
-      </Scene>
-      <div className="absolute top-2/3 w-screen h-auto flex justify-center">
+    <main className="w-full h-full bg-sky-900 flex flex-col items-center">
+      <div className="w-[23rem] h-[35rem]">
+        <CardModel worldKey={worldKey} />
+      </div>
+      
+      <div className="w-[30rem] h-96 flex flex-col gap-8 justify-center font-bold break-keep">
+        <p>{`${worldName} 사회에 성공적으로 동화되셨군요? 당신도 이제 ${worldName}의 시민입니다. 시민권을 발급해 드리겠습니다. 축하합니다.`}</p>
         <Button
           onClick={() => router.push(`/`)}
           label="홈으로"

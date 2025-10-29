@@ -13,7 +13,7 @@ export default function Fugitive({
   position?: [number, number, number];
   rotation?: [number, number, number];
 }) {
-  const gltf = useGLTF("/models/avatars/default.glb");
+  const gltf = useGLTF("/models/avatars/redPap.gltf");
   const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
   const [hovered, setHovered] = useState(false);
   const groupRef = useRef<Group>(null);

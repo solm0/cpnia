@@ -1,5 +1,6 @@
 import InterviewScene from "@/app/components/maps/interview/InterviewScene";
 import InterviewUi from "@/app/components/maps/interview/InterviewUi";
+import Scene from "@/app/components/util/Scene";
 import { Suspense } from "react";
 
 export const metadata = {
@@ -10,8 +11,10 @@ export const metadata = {
 export default function InterviewPage() {
   return (
     <main className="absolute left-0 top-0 w-screen h-screen">
-      <Suspense>
+      <Scene>
         <InterviewScene />
+      </Scene>
+      <Suspense>
         <InterviewUi />
       </Suspense>
     </main>

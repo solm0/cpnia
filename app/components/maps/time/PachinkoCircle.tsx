@@ -5,6 +5,9 @@ import { useGLTF } from "@react-three/drei";
 import { useMemo } from "react";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
+useGLTF.preload("/models/pachinko-big.glb");
+useGLTF.preload("/models/pachinko-small.glb");
+
 export default function PachinkoCircle({
   center = [0, 0, 0],
   count = 6,
@@ -20,8 +23,8 @@ export default function PachinkoCircle({
 }) {
   const bigPachinko = useGLTF("/models/pachinko-big.glb").scene;
   const smallPachinkoScene = useGLTF("/models/pachinko-small.glb").scene;
-  const smallPachinko = useMemo(() => {
-    return Array.from({ length: count }, () => clone(smallPachinkoScene))
+  const smallPachinkos = useMemo(() => {
+    return Array.from({ length: count+1 }, () => clone(smallPachinkoScene))
   }, [smallPachinkoScene, count])
 
   const items = [
@@ -53,7 +56,7 @@ export default function PachinkoCircle({
           colliders="cuboid"
         >
           <Model
-            scene={i === 0 ? bigPachinko : smallPachinko[i]}
+            scene={i === 0 ? bigPachinko : smallPachinkos[i]}
             scale={item.scale}
           />
         </RigidBody>

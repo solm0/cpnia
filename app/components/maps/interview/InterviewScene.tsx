@@ -1,17 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 'use client'
 
 import { AnimationMixer, LoopRepeat, MathUtils, Object3D, PointLight } from "three";
 import Model from "../../util/Model";
-import Scene from "../../util/Scene";
 import { OrbitControls, useGLTF } from "@react-three/drei";
-import { EffectComposer, DepthOfField, Noise, Vignette } from "@react-three/postprocessing";
 import { useEffect, useRef, useState } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import Label from "../../util/Label";
 import { useSearchParams } from "next/navigation";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
+
+useGLTF.preload("/models/animations/idle.glb");
+useGLTF.preload("/models/animations/walk.glb");
+useGLTF.preload("/models/animations/jump.glb");
+useGLTF.preload("/models/animations/arm.glb");
+useGLTF.preload("/models/avatars/time-npc.glb");
+useGLTF.preload("/models/avatars/olive.gltf");
+useGLTF.preload("/models/avatars/entropy-npc.glb");
+useGLTF.preload("/models/computer.glb");
 
 function Npc({
   model
@@ -47,13 +52,13 @@ function Npc({
     <Model
       scene={model}
       scale={3}
-      position={[-2.5, -1.5, -1.5]}
+      position={[-2.5, -1.8, -1.5]}
       rotation={[0, MathUtils.degToRad(30), 0]}
     />
   )
 }
 
-export function FlickeringPointLight(props: any) {
+export function FlickeringPointLight() {
   const lightRef = useRef<PointLight>(null);
   const [nextToggle, setNextToggle] = useState(0);
 
@@ -61,27 +66,27 @@ export function FlickeringPointLight(props: any) {
     const t = clock.getElapsedTime();
 
     if (t > nextToggle) {
-      const newIntensity = Math.floor(Math.random() * 4);
+      const newIntensity = Math.floor(Math.random() * 30);
 
       if (lightRef.current) {
         lightRef.current.intensity = newIntensity;
       }
 
-      const duration = 0.5 + Math.random() * 2;
+      const duration = Math.random() * 2;
       setNextToggle(t + duration);
     }
   });
 
-  return <pointLight ref={lightRef} {...props} />;
+  return <pointLight ref={lightRef} position={[-1.5,0.5,0]} color={'blue'} />;
 }
 
 export default function InterviewScene() {
   const searchParam = useSearchParams();
   const worldTo = searchParam.get('to');
 
-  const timeNpc = useGLTF('models/avatars/time-npc.glb').scene;
-  const sacrificeNpc = useGLTF('models/avatars/olive.gltf').scene;
-  const entropyNpc = useGLTF('models/avatars/entropy-npc.glb').scene;
+  const timeNpc = useGLTF('/models/avatars/time-npc.glb').scene;
+  const sacrificeNpc = useGLTF('/models/avatars/olive.gltf').scene;
+  const entropyNpc = useGLTF('/models/avatars/entropy-npc.glb').scene;
   const computer = useGLTF("/models/computer.glb").scene;
 
   let model;
@@ -91,34 +96,36 @@ export default function InterviewScene() {
     case 'entropy': model = entropyNpc; break;
     default: model = entropyNpc;
   }
+
+  const { camera } = useThree();
+  useEffect(() => {
+    camera.position.set(0,0,5.5);
+    camera.lookAt(0, 0, 0);
+  }, [camera]);
   
   return (
-    <Scene>
+    <>
       <color attach="background" args={["lightgray"]} />
 
       <directionalLight
-        intensity={1}
-        position={[50,30,20]}
+        intensity={5}
+        position={[30,20,20]}
         castShadow
       />
-      <FlickeringPointLight
-        position={[-1.5,1,0]}
-        intensity={3}
-        color={'blue'}
-      />
+      <FlickeringPointLight />
       <Label
         text={'입국심사실'}
-        position={[-3,2,-3]}
+        position={[-3,2.7,-3]}
         rotation={[0, MathUtils.degToRad(30), 0]}
       />
       <Npc model={model} />
       <Model
         scene={computer}
         scale={2}
-        position={[-1.5,-1,0]}
+        position={[-1.5,-1.3,0]}
         rotation={[0, MathUtils.degToRad(210), 0]}
       />
       <OrbitControls  />
-    </Scene>
+    </>
   )
 }

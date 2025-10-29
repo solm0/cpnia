@@ -7,6 +7,8 @@ import { chatNpcProp } from "@/app/lib/data/positions/chatNpcs";
 import { Billboard, Image, useGLTF } from "@react-three/drei";
 import { Object3D } from "three";
 
+useGLTF.preload('/models/avatars/cutter.gltf');
+
 export default function Npcs({
   worldKey, activeNpc, setActiveNpc, setIsChatOpen, chatNpc,
   models,

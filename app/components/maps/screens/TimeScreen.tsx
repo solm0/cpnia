@@ -29,7 +29,7 @@ export default function TimeScreen({
       ...Array.from({ length: 3 }, () => clone(npcModelScene)),
       gandalf
     ];
-  }, [npcModelScene]);
+  }, [npcModelScene, gandalf]);
 
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
 

@@ -17,6 +17,11 @@ import { stagePositions } from "@/app/lib/data/positions/stagePositions";
 import { useGLTF } from "@react-three/drei";
 import { Object3D } from "three";
 
+useGLTF.preload("/models/animations/idle.glb");
+useGLTF.preload("/models/animations/walk.glb");
+useGLTF.preload("/models/animations/jump.glb");
+useGLTF.preload("/models/animations/arm.glb");
+
 export default function SacrificeScreen({
   avatar,
 }: {
@@ -35,7 +40,7 @@ export default function SacrificeScreen({
     useGLTF("/models/avatars/yellowpap.gltf").scene,
   ];
 
-  const kitchen = useGLTF("/models/shop-kitchen.gltf").scene;
+  const kitchen = useGLTF("/models/kitchen.gltf").scene;
   const shop = useGLTF("/models/shop.gltf").scene
 
   return (

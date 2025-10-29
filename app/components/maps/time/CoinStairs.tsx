@@ -4,6 +4,8 @@ import { useGLTF } from "@react-three/drei";
 import { Object3D } from "three";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
+useGLTF.preload('/models/coin.gltf');
+
 function SpinningCoin({
   position,
   scale = 3,

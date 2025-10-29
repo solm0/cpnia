@@ -7,6 +7,8 @@ import Model from "./Model";
 import { useMemo } from "react";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
+useGLTF.preload('/models/placeholder.glb');
+
 export default function PlaceHolder({
   scale, position, rotation, href, gameKey, label, completed = null, onClick
 }: {

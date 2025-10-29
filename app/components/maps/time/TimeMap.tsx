@@ -8,6 +8,12 @@ import { degToRad } from "three/src/math/MathUtils.js";
 import { FloatingIsland } from "./FloatingIsland";
 import { stagePositions } from "@/app/lib/data/positions/stagePositions";
 import { useGLTF } from "@react-three/drei";
+import { useMemo } from "react";
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
+
+useGLTF.preload("/models/card.glb");
+useGLTF.preload("/models/pachinko-stage.glb");
+useGLTF.preload("/models/roulette.gltf");
 
 export default function TimeMap({
   stairClimbMode,
@@ -20,6 +26,9 @@ export default function TimeMap({
   const card = useGLTF("/models/card.glb").scene;
   const pachinko = useGLTF("/models/pachinko-stage.glb").scene;
   const roulette = useGLTF("/models/roulette.gltf").scene;
+  const rouletteIslands = useMemo(() => {
+    return Array.from({ length: rouletteIslands1.length }, () => clone(roulette))
+  }, [roulette])
 
   function handleClickStair(clickedStair: number) {
     setClickedStair(clickedStair);
@@ -74,13 +83,14 @@ export default function TimeMap({
       {rouletteIslands1.map((island, idx) => 
         <FloatingIsland
           key={idx}
-          scene={roulette}
+          scene={rouletteIslands[idx]}
           scale={island.scale}
           position={island.position}
           rotation={island.rotation}
           waitTime={idx}
         />
       )}
+      
       <RigidBody type="fixed" colliders={'ball'}>
         <mesh position={[0,0,-37]}>
           <sphereGeometry args={[12, 10]} />

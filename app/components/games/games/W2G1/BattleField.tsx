@@ -86,8 +86,8 @@ export default function BattleField({
     onion: useGLTF('/models/avatars/onion.gltf').scene,
     olive: useGLTF('/models/avatars/olive.gltf').scene,
   };
-  const kitchen = useGLTF("/models/shop-kitchen.gltf").scene;
-  const pizza = useGLTF("/models/shop-kitchen.gltf").scene;
+  const kitchen = useGLTF("/models/kitchen.gltf").scene;
+  const pizza = useGLTF("/models/pizza.gltf").scene;
 
   useEffect(() => {
     const config = W2G1roundConfig[round];

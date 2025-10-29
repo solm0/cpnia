@@ -25,7 +25,7 @@ export default function ShootingRange({
   prey: [string, Object3D<Object3DEventMap>];
   pizzaMoveSpeed: number;
 }) {
-  const kitchen = useGLTF("/models/shop-kitchen.gltf").scene;
+  const kitchen = useGLTF("/models/kitchen.gltf").scene;
   const slingshot = useGLTF("/models/slingshot.glb").scene;
 
   // 카메라

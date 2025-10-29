@@ -1,10 +1,11 @@
 'use client'
 
 import { Html, useGLTF } from "@react-three/drei";
-import Scene from "../util/Scene";
+import Scene from "../../util/Scene";
 import { EffectComposer, Vignette } from "@react-three/postprocessing";
-import Button from "../util/Button";
+import Button from "../../util/Button";
 import { useRouter } from "next/navigation";
+import { useGameEndStore } from "@/app/lib/state/gameEndState";
 
 export default function TimeFail({
   gameKey,
@@ -13,7 +14,8 @@ export default function TimeFail({
 }) {
   const gandalf = useGLTF('/models/avatars/gandalf.gltf').scene;
   const router = useRouter();
-  const worldKey = 'time'
+  const worldKey = 'time';
+  const setGameEnded = useGameEndStore(state => state.setGameEnded);
 
   return (
     <main className="w-full h-full">
@@ -29,7 +31,10 @@ export default function TimeFail({
             worldKey={worldKey}
             autoFocus={true}
             label="다시 하기"
-            onClick={() => router.push(`/${worldKey}?game=${gameKey}`)}
+            onClick={() => {
+              router.push(`/${worldKey}?game=${gameKey}`);
+              setGameEnded(false);
+            }}
           />
           <Button
             worldKey={worldKey}

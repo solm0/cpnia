@@ -4,10 +4,10 @@ import { Loader, OrbitControls, useGLTF } from "@react-three/drei";
 import { degToRad } from "three/src/math/MathUtils.js";
 
 export default function CardModel({
-  worldKey, isCompleted
+  worldKey, isCompleted = true,
 }: {
-  worldKey: string;
-  isCompleted: boolean;
+  worldKey: string | null;
+  isCompleted?: boolean;
 }) {
   const card = useGLTF(`/models/citizenship/${worldKey}.glb`).scene;
 
