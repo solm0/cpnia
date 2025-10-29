@@ -1,11 +1,11 @@
 'use client'
 
 import { useRouter } from "next/navigation";
+import Label from "../util/Label";
+import { useGLTF } from "@react-three/drei";
+import Model from "./Model";
 import { useMemo } from "react";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
-import Label from "../util/Label";
-import { Mesh } from "three";
-import { useGLTF } from "@react-three/drei";
 
 export default function PlaceHolder({
   scale, position, rotation, href, gameKey, label, completed = null, onClick
@@ -19,20 +19,9 @@ export default function PlaceHolder({
   completed?: boolean | null;
   onClick?: (param?: number | string) => void;
 }) {
-  const gltf = useGLTF('/models/placeholder.glb');
-
-  // Clone the scene once and set shadows
-  const clonedScene = useMemo(() => {
-    const scene = clone(gltf.scene);
-    scene.traverse((child) => {
-      if (child instanceof Mesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-    return scene;
-  }, [gltf.scene]);
-
+  const placeholderScene = useGLTF('/models/placeholder.glb').scene;
+  const placeholder = useMemo(() => clone(placeholderScene), [placeholderScene]);
+  
   const router = useRouter();
 
   const handleClick = () => {
@@ -48,7 +37,7 @@ export default function PlaceHolder({
       rotation={rotation ?? [0, 0, 0]}
       onClick={handleClick}
     >
-      <primitive object={clonedScene} />
+      <Model scene={placeholder} />
       {label && <Label text={label} position={[0, 2.5, 0]} />}
       {completed !== null && <Label text={completed ? 'completed!' : 'not completed'} position={[0, 2, 0]} />}
     </group>

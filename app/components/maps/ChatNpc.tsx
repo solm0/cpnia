@@ -2,7 +2,7 @@
 
 import { useFrame, } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
-import { Mesh, MeshStandardMaterial, AnimationAction, AnimationMixer, LoopRepeat } from "three";
+import { Mesh, MeshStandardMaterial, AnimationAction, AnimationMixer, LoopRepeat, Object3D } from "three";
 import { usePlayerStore } from "@/app/lib/state/playerStore";
 import { Billboard, Image, Text, useGLTF } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
@@ -15,6 +15,7 @@ export function ChatNpcAvatar({
   setIsChatOpen,
   closeActiveNpc,
   actionKey = 0,
+  model,
 }: {
   name: string;
   hoveredNpc: string | null;
@@ -22,18 +23,17 @@ export function ChatNpcAvatar({
   setIsChatOpen: (isChatOpen: boolean) => void;
   closeActiveNpc: (name: string | null) => void;
   actionKey: number;
+  model: Object3D;
 }){
   const actionsRef = useRef<AnimationAction | null>(null);
   const mixer = useRef<AnimationMixer | null>(null);
-
-  const charGltf = useGLTF('/models/avatars/chat-npc.glb');
   const animGltf = useAnimGltf();
 
   useEffect(() => {
-    if (charGltf) {
-      mixer.current = new AnimationMixer(charGltf.scene);
+    if (model) {
+      mixer.current = new AnimationMixer(model);
 
-      charGltf.scene.traverse((child) => {
+      model.traverse((child) => {
         if ((child as Mesh).isMesh) {
           child.castShadow = true;
           child.receiveShadow = true;
@@ -71,11 +71,11 @@ export function ChatNpcAvatar({
       mixer.current?.stopAllAction();
       mixer.current = null;
     }
-  }, [charGltf]);
+  }, [model]);
 
   useFrame(() => {
-    if (!charGltf.scene) return;
-    charGltf.scene.traverse((child) => {
+    if (!model) return;
+    model.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const shader = child.userData.shader;
         if (shader?.uniforms?.uHighlight) {
@@ -121,7 +121,7 @@ export function ChatNpcAvatar({
         closeActiveNpc(null);
       }}
     >
-      <primitive object={charGltf.scene} />
+      <primitive object={model} />
     </group>
   )
 }
@@ -131,12 +131,14 @@ export default function ChatNpc({
   hoveredNpc, setHoveredNpc,
   setIsChatOpen,
   closeActiveNpc,
+  model,
 }: {
   name: string;
   hoveredNpc: string | null;
   setHoveredNpc: (name: string | null) => void;
   setIsChatOpen: (isChatOpen: boolean) => void;
   closeActiveNpc: (name: string | null) => void;
+  model: Object3D;
 }) {
   // --- player가 움직이면 그 옆으로 따라가기
   const body = useRef<any>(null);
@@ -240,6 +242,7 @@ export default function ChatNpc({
           setIsChatOpen={setIsChatOpen}
           closeActiveNpc={closeActiveNpc}
           actionKey={chatNpcIsMoving ? 1 : 0}
+          model={model}
         />
       </RigidBody>
     </>

@@ -1,32 +1,29 @@
 import { useEffect } from "react";
-import * as THREE from "three";
-import { useGLTF } from "@react-three/drei";
+import { Mesh, Object3D } from "three";
 
 export default function Model({
-  src,
+  scene,
   scale = 1,
   position = [0, 0, 0],
   rotation = [0, 0, 0]
 }: {
-  src: string;
+  scene: Object3D;
   scale?: number;
   position?: [number, number, number];
   rotation?: [number, number, number];
 }) {
-  const gltf = useGLTF(src);
-
   useEffect(() => {
-    gltf.scene.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) {
+    scene.traverse((child) => {
+      if ((child as Mesh).isMesh) {
         child.castShadow = true;
         child.receiveShadow = true;
       }
     });
-  }, [gltf]);
+  }, [scene]);
 
   return (
     <primitive
-      object={gltf.scene}
+      object={scene}
       scale={scale}
       position={position}
       rotation={rotation}

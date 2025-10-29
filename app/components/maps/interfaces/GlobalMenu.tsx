@@ -5,7 +5,7 @@ import { useNpcConfigStore } from "../../../lib/state/npcConfigState";
 import { GameStateModal } from "./GameStateModal";
 import SmallScene from "../../util/SmallScene";
 import Model from "../../util/Model";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, useGLTF } from "@react-three/drei";
 import PausedScreen from "../../util/PausedScreen";
 import AudioPlayer from "../../util/AudioPlayer";
 import { useRef } from "react";
@@ -16,6 +16,7 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
   const npcConfig = useNpcConfigStore(state => state.npcConfig)
   const worldPortal = worldPortals.find(portal => portal.worldKey === worldKey);
   const router = useRouter();
+  const head = useGLTF("/models/avatars/head.glb").scene;
 
   function calculateWidth(param: string, value: string) {
     let width;
@@ -84,7 +85,7 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
           <div className="w-25 h-30">
             <SmallScene>
               <Model
-                src="/models/avatars/head.glb"
+                scene={head}
                 scale={3.9}
                 position={[0,0,0]}
               />

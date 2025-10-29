@@ -1,11 +1,9 @@
-import { gamePortals } from "@/app/lib/data/positions/gamePortals"
 import { useGameStore } from "@/app/lib/state/gameState";
 import SmallScene from "../../util/SmallScene";
 import Model from "../../util/Model";
-import { Environment, OrbitControls } from "@react-three/drei";
-import { degToRad } from "three/src/math/MathUtils.js";
 import clsx from "clsx";
 import CardModel from "../../home/interfaces/CardModel";
+import { Environment, OrbitControls, useGLTF } from "@react-three/drei";
 
 export function GameStateModal({
   worldKey
@@ -13,7 +11,12 @@ export function GameStateModal({
   worldKey: string;
 }){
   const gameState = useGameStore(state => state.worlds[worldKey].games);
-  const gameIconUrls = gamePortals[worldKey];
+
+  const gameIcons = [
+    useGLTF(`/models/world-icon/${worldKey}-1.gltf`).scene,
+    useGLTF(`/models/world-icon/${worldKey}-2.gltf`).scene,
+    useGLTF(`/models/world-icon/${worldKey}-3.gltf`).scene
+  ];
 
   let width;
   let stage;
@@ -44,26 +47,28 @@ export function GameStateModal({
           </div>
 
           <div className="absolute bottom-10 w-[calc(100%-4rem)] h-30 flex items-center justify-center">
-            {gameIconUrls.map((_, index) => (
+            {gameIcons.map((icon, i) => (
               <div
-                key={index}
+                key={i}
                 className={clsx(
                   'absolute w-35',
-                  index === 0 && 'left-[31%]',
-                  index === 1 && 'left-[61%]',
-                  index === 2 && 'left-[95%]'
+                  i === 0 && 'left-[31%]',
+                  i === 1 && 'left-[61%]',
+                  i === 2 && 'left-[95%]'
                 )}
               >
                 <SmallScene>
                   <Model
-                    src={`/models/world-icon/${worldKey}-${index+1}.gltf`}
+                    scene={icon}
                     scale={0.5}
                   />
                   <OrbitControls enableZoom={false} minPolarAngle={Math.PI / 2} maxPolarAngle={0} />
-                  {stage >= index+1 && <>
-                    <directionalLight intensity={3} position={[10,-10,0]} />
-                    <Environment files={'/hdri/sky.hdr'} />
-                  </>}
+                  {stage >= i+1 &&
+                    <>
+                      <directionalLight intensity={3} position={[10,-10,0]} />
+                      <Environment files={'/hdri/sky.hdr'} />
+                    </>
+                  }
                 </SmallScene>
               </div>
             ))}

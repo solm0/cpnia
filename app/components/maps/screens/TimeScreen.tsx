@@ -1,7 +1,7 @@
 import Scene from "../../util/Scene";
 import Npcs from "../Npcs";
 import { chatNpcs } from "@/app/lib/data/positions/chatNpcs";
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { TimeLights } from "../Lights";
 import { TimeNpcLineModal } from "../interfaces/NpcLineModals";
 import ChatNpcScreen from "../interfaces/chatnpc/ChatNpcScreen";
@@ -12,6 +12,8 @@ import PlayerWithStair from "../player/PlayerWithStair";
 import { TimeEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
 import { Object3D } from "three";
+import { useGLTF } from "@react-three/drei";
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
 export default function TimeScreen({
   avatar,
@@ -19,6 +21,16 @@ export default function TimeScreen({
   avatar: Object3D;
 }) {
   const worldKey = 'time';
+  const npcModelScene = useGLTF('/models/avatars/time-npc.glb').scene;
+  const gandalf = useGLTF('/models/avatars/gandalf.gltf').scene;
+
+  const npcModel = useMemo(() => {
+    return [
+      ...Array.from({ length: 3 }, () => clone(npcModelScene)),
+      gandalf
+    ];
+  }, [npcModelScene]);
+
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
 
   const chatNpc = chatNpcs[worldKey];
@@ -57,6 +69,7 @@ export default function TimeScreen({
             setActiveNpc={setActiveNpc}
             setIsChatOpen={setIsChatOpen}
             chatNpc={chatNpc}
+            models={npcModel}
           />
 
           {/* 플레이어 */}

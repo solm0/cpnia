@@ -8,12 +8,10 @@ export const metadata = {
 };
 
 export default function InterviewPage() {
-  
-
   return (
     <main className="absolute left-0 top-0 w-screen h-screen">
-      <InterviewScene />
       <Suspense>
+        <InterviewScene />
         <InterviewUi />
       </Suspense>
     </main>

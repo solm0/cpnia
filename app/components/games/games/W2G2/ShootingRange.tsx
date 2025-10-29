@@ -7,7 +7,7 @@ import Model from "@/app/components/util/Model";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { SlingshotString } from "./SlingshotString";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, useGLTF } from "@react-three/drei";
 import { TrajectoryLine } from "./\bTrajectoryLine";
 
 const pizzaSurface = {
@@ -25,6 +25,9 @@ export default function ShootingRange({
   prey: [string, Object3D<Object3DEventMap>];
   pizzaMoveSpeed: number;
 }) {
+  const kitchen = useGLTF("/models/shop-kitchen.gltf").scene;
+  const slingshot = useGLTF("/models/slingshot.glb").scene;
+
   // 카메라
   const { camera } = useThree();
 
@@ -188,7 +191,7 @@ export default function ShootingRange({
         <meshStandardMaterial color="white" />
       </mesh> */}
       <Model
-        src="/models/shop-kitchen.gltf"
+        scene={kitchen}
         scale={1}
         position={[-60,-30.6,68]}
         rotation={[0,0,0]}
@@ -209,7 +212,7 @@ export default function ShootingRange({
 
       {/* 새총 */}
       <Model
-        src="/models/slingshot.glb"
+        scene={slingshot}
         position={slingshotCenter}
         scale={slingshotScale}
       />

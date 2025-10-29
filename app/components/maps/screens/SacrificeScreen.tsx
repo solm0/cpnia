@@ -14,7 +14,6 @@ import { SacrificeEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
 import Fire from "../Fire";
 import { stagePositions } from "@/app/lib/data/positions/stagePositions";
-import Crowd from "../../games/games/W2G2/Crowd";
 import { useGLTF } from "@react-three/drei";
 import { Object3D } from "three";
 
@@ -29,15 +28,15 @@ export default function SacrificeScreen({
   const chatNpc = chatNpcs[worldKey];
   const [isChatOpen, setIsChatOpen] = useState(false);
 
-  const gltfMap: Record<string, Object3D> = {
-    pepperoni: useGLTF("/models/avatars/pepperoni.gltf").scene,
-    mushroom: useGLTF("/models/avatars/mushroom.gltf").scene,
-    cheese: useGLTF("/models/avatars/cheese.gltf").scene,
-    onion: useGLTF("/models/avatars/onion.gltf").scene,
-    redpap: useGLTF("/models/avatars/redpap.gltf").scene,
-    yellowpap: useGLTF("/models/avatars/yellowpap.gltf").scene,
-    olive: useGLTF("/models/avatars/olive.gltf").scene,
-  };
+  const gltfMap: Object3D[] = [
+    useGLTF("/models/avatars/pepperoni.gltf").scene,
+    useGLTF("/models/avatars/mushroom.gltf").scene,
+    useGLTF("/models/avatars/cheese.gltf").scene,
+    useGLTF("/models/avatars/yellowpap.gltf").scene,
+  ];
+
+  const kitchen = useGLTF("/models/shop-kitchen.gltf").scene;
+  const shop = useGLTF("/models/shop.gltf").scene
 
   return (
     <main className="w-full h-full">
@@ -49,7 +48,7 @@ export default function SacrificeScreen({
 
           {/* 지형 */}
           <Model
-            src="/models/shop-kitchen.gltf"
+            scene={kitchen}
             scale={4.5}
             position={[
               stagePositions.shop.x,
@@ -59,7 +58,7 @@ export default function SacrificeScreen({
             rotation={[0,0,0]}
           />
           <Model
-            src="/models/shop.gltf"
+            scene={shop}
             scale={4.5}
             position={[
               stagePositions.shop.x,
@@ -81,7 +80,6 @@ export default function SacrificeScreen({
 
           {/* 기타 모델들 */}
           <Fire />
-          <Crowd gltfMap={gltfMap} scale={8} />
 
           {/* npc들 */}
           <Npcs
@@ -90,6 +88,7 @@ export default function SacrificeScreen({
             setActiveNpc={setActiveNpc}
             setIsChatOpen={setIsChatOpen}
             chatNpc={chatNpc}
+            models={gltfMap}
           />
 
           {/* 플레이어 */}

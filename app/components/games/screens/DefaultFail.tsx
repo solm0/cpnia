@@ -6,11 +6,13 @@ import { OrbitControls } from "@react-three/drei"
 import Button from "../../util/Button"
 import { useRouter, useSearchParams } from "next/navigation";
 import TimeFail from "../../fail/Timefail";
+import { useGameEndStore } from "@/app/lib/state/gameEndState"
 
 export default function DefaultFail() {
   const router = useRouter();
   const searchParam = useSearchParams();
   const [worldKey, gameKey] = searchParam.get('from')?.split('-') ?? [];
+  const setGameEnded = useGameEndStore(state => state.setGameEnded);
 
   if (worldKey === 'time') {
     return <TimeFail gameKey={gameKey} />
@@ -28,12 +30,16 @@ export default function DefaultFail() {
         </Scene>
         <div className="absolute top-2/3 w-screen h-auto flex flex-col justify-center gap-4">
           <Button
-            onClick={() => router.push(`/${worldKey}`)}
-            label="월드로 돌아가기"
+            onClick={() => {
+              router.push(`/${worldKey}?game=${gameKey}`);
+              setGameEnded(false);
+            }}
+            label='다시 하기'
+            autoFocus={true}
           />
           <Button
-            onClick={() => window.location.reload()}
-            label='다시 하기'
+            onClick={() => router.push(`/${worldKey}`)}
+            label="월드로 돌아가기"
           />
         </div>
       </main>

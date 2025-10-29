@@ -2,10 +2,11 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import { Object3D } from "three";
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
 function SpinningCoin({
   position,
-  scale = 0.001,
+  scale = 3,
   index,
   waveDelay = 0.2, // delay per coin
   rotationSpeed = Math.PI * 8, // 1 rotation per second
@@ -35,7 +36,7 @@ function SpinningCoin({
   });
 
   return (
-    <group ref={ref} position={position} scale={[scale, scale, scale]}>
+    <group ref={ref} position={position} scale={scale}>
       <primitive object={coin} />
     </group>
   );
@@ -59,7 +60,7 @@ export default function CoinStairs({
   const coin = useGLTF('/models/coin.gltf').scene;
 
   const clonedCoins = useMemo(() => {
-    return Array.from({ length: count }, () => coin.clone());
+    return Array.from({ length: count }, () => clone(coin));
   }, [coin, count]);
 
   return (

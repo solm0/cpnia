@@ -1,8 +1,6 @@
-
-import PlaceHolder from "../../util/PlaceHolder";
 import Scene from "../../util/Scene";
 import { EntropyLights } from "../Lights";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { EntropyNpcLineModal } from "../interfaces/NpcLineModals";
 import { chatNpcs } from "@/app/lib/data/positions/chatNpcs";
 import ChatNpcScreen from "../interfaces/chatnpc/ChatNpcScreen";
@@ -14,6 +12,8 @@ import GlobalMenu from "../interfaces/GlobalMenu";
 import Model from "../../util/Model";
 import PlayerEntropy from "../player/PlayerEntropy";
 import { Object3D } from "three";
+import { useGLTF } from "@react-three/drei";
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
 export default function EntropyScreen({
   avatar,
@@ -21,6 +21,11 @@ export default function EntropyScreen({
   avatar: Object3D;
 }) {
   const worldKey = 'entropy'
+  const npcModelScene = useGLTF('/models/avatars/entropy-npc.glb').scene;
+  const npcModel = useMemo(() => {
+    return Array.from({ length: 4 }, () => clone(npcModelScene));
+  }, [npcModelScene]);
+  const map1 = useGLTF("/models/entropy.glb").scene;
 
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
 
@@ -37,9 +42,8 @@ export default function EntropyScreen({
           <EntropyLights />
 
           {/* 지형 */}
-          <PlaceHolder label="엔트로피 체제의 맵" />
           <Model
-            src="/models/entropy.glb"
+            scene={map1}
             scale={8}
           />
 
@@ -57,6 +61,7 @@ export default function EntropyScreen({
             setActiveNpc={setActiveNpc}
             setIsChatOpen={setIsChatOpen}
             chatNpc={chatNpc}
+            models={npcModel}
           />
 
           {/* 플레이어 */}

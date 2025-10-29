@@ -1,18 +1,20 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { Object3D } from "three";
 import { useFrame } from "@react-three/fiber";
-import ClonedModel from "../../util/ClonedModels";
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
+import Model from "../../util/Model";
 
 export function FloatingIsland({
-  src, scale, position, rotation, waitTime
+  scene, scale, position, rotation, waitTime
 }: {
-  src: string;
+  scene: Object3D;
   scale: number;
   position: [number, number, number];
   rotation: [number, number, number];
   waitTime: number;
 }) {
   const ref = useRef<Object3D>(null);
+  const clonedScene = useMemo(() => clone(scene), [scene]);
 
   useFrame(({ clock }) => {
     if (ref.current) {
@@ -23,8 +25,8 @@ export function FloatingIsland({
 
   return (
     <group ref={ref}>
-      <ClonedModel
-        src={src}
+      <Model
+        scene={clonedScene}
         scale={scale}
         position={position}
         rotation={rotation}

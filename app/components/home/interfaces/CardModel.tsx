@@ -1,4 +1,4 @@
-import { Suspense, useMemo } from "react";
+import { Suspense } from "react";
 import SmallScene from "../../util/SmallScene";
 import { Loader, OrbitControls, useGLTF } from "@react-three/drei";
 import { degToRad } from "three/src/math/MathUtils.js";
@@ -9,18 +9,13 @@ export default function CardModel({
   worldKey: string;
   isCompleted: boolean;
 }) {
-  const unknownScene = useGLTF('/models/citizenship/unknown.glb').scene;
-  const unknown = useMemo(() => unknownScene.clone(), [unknownScene]);
   const card = useGLTF(`/models/citizenship/${worldKey}.glb`).scene;
-
-
-  
 
   return (
     <Suspense fallback={<Loader />}>
       <SmallScene>
         <primitive
-          object={isCompleted ? card : unknown}
+          object={card}
           position={[0,0,0]}
           rotation={[degToRad(90), degToRad(30), degToRad(60)]}
         />
@@ -29,6 +24,10 @@ export default function CardModel({
           minPolarAngle={Math.PI / 2}
           maxPolarAngle={Math.PI / 2}
         />
+        {isCompleted && <>
+          <directionalLight intensity={3} position={[0, 50, 0]} />
+          <directionalLight intensity={3} position={[0, 10, -10]} />
+        </>}
       </SmallScene>
     </Suspense>
   )

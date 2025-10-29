@@ -1,6 +1,9 @@
 import { RigidBody } from "@react-three/rapier";
-import ClonedModel from "../../util/ClonedModels";
 import { degToRad } from "three/src/math/MathUtils.js";
+import Model from "../../util/Model";
+import { useGLTF } from "@react-three/drei";
+import { useMemo } from "react";
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
 export default function PachinkoCircle({
   center = [0, 0, 0],
@@ -15,6 +18,12 @@ export default function PachinkoCircle({
   scale?: number;
   initialRotation?: [number, number, number];
 }) {
+  const bigPachinko = useGLTF("/models/pachinko-big.glb").scene;
+  const smallPachinkoScene = useGLTF("/models/pachinko-small.glb").scene;
+  const smallPachinko = useMemo(() => {
+    return Array.from({ length: count }, () => clone(smallPachinkoScene))
+  }, [smallPachinkoScene, count])
+
   const items = [
     {
       position: [0, 13, 0] as [number, number, number],
@@ -43,8 +52,8 @@ export default function PachinkoCircle({
           rotation={item.rotation}
           colliders="cuboid"
         >
-          <ClonedModel
-            src={i === 0 ? "/models/pachinko-big.glb" : "/models/pachinko-small.glb"}
+          <Model
+            scene={i === 0 ? bigPachinko : smallPachinko[i]}
             scale={item.scale}
           />
         </RigidBody>

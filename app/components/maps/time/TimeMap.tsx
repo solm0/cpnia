@@ -1,5 +1,4 @@
 import { timeIsland } from "@/app/lib/data/positions/timeIslands"
-import ClonedModel from "../../util/ClonedModels"
 import CoinStairs from "./CoinStairs";
 import PachinkoCircle from "./PachinkoCircle";
 import { RigidBody } from "@react-three/rapier";
@@ -8,6 +7,7 @@ import Model from "../../util/Model";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { FloatingIsland } from "./FloatingIsland";
 import { stagePositions } from "@/app/lib/data/positions/stagePositions";
+import { useGLTF } from "@react-three/drei";
 
 export default function TimeMap({
   stairClimbMode,
@@ -17,6 +17,9 @@ export default function TimeMap({
   setClickedStair: (clickedStair: number | null) => void;
 }) {
   const rouletteIslands1 = timeIsland['roulette1'];
+  const card = useGLTF("/models/card.glb").scene;
+  const pachinko = useGLTF("/models/pachinko-stage.glb").scene;
+  const roulette = useGLTF("/models/roulette.gltf").scene;
 
   function handleClickStair(clickedStair: number) {
     setClickedStair(clickedStair);
@@ -28,15 +31,15 @@ export default function TimeMap({
     <>
       {/* Stage 1. 카드 */}
       <Model
-        src="/models/card.glb"
+        scene={card}
         scale={2}
         position={[stagePositions.card.x, stagePositions.card.y, stagePositions.card.z]}
         rotation={[0,degToRad(90),0]}
       />
 
       {/* Stage 2. 파친코 */}
-      <ClonedModel
-        src="/models/pachinko-stage.glb"
+      <Model
+        scene={pachinko}
         scale={2.2}
         position={[
           stagePositions.pachinko.x,
@@ -57,8 +60,8 @@ export default function TimeMap({
       />
 
       {/* Stage 3. 룰렛 */}
-      <ClonedModel
-        src="/models/roulette.gltf"
+      <Model
+        scene={roulette}
         scale={0.02}
         position={[
           stagePositions.roulette.x,
@@ -71,7 +74,7 @@ export default function TimeMap({
       {rouletteIslands1.map((island, idx) => 
         <FloatingIsland
           key={idx}
-          src="/models/roulette.gltf"
+          scene={roulette}
           scale={island.scale}
           position={island.position}
           rotation={island.rotation}

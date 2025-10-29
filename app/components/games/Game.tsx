@@ -3,6 +3,7 @@ import { useGameStore } from "@/app/lib/state/gameState";
 import GameEndScreen from "./screens/GameEndScreen";
 import GameScreen from "./screens/GameScreen";
 import { Object3D } from "three";
+import { useGameEndStore } from "@/app/lib/state/gameEndState";
 
 export default function Game({
   worldKey, gameKey, avatar,
@@ -11,7 +12,8 @@ export default function Game({
   gameKey: string;
   avatar: Object3D;
 }) {
-  const [gameEnded, setGameEnded] = useState(false);
+  const gameEnded = useGameEndStore(state => state.gameEnded);
+  const setGameEnded = useGameEndStore(state => state.setGameEnded);
 
   const [success, setSuccess] = useState(false);
   const [endScreenData, setEndScreenData] = useState(false); // 시민권화면을 보여줄것인지

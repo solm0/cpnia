@@ -2,32 +2,71 @@
 
 'use client'
 
-import { MathUtils } from "three";
+import { AnimationMixer, LoopRepeat, MathUtils, Object3D, PointLight } from "three";
 import Model from "../../util/Model";
 import Scene from "../../util/Scene";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, useGLTF } from "@react-three/drei";
 import { EffectComposer, DepthOfField, Noise, Vignette } from "@react-three/postprocessing";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
 import Label from "../../util/Label";
+import { useSearchParams } from "next/navigation";
+import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
+
+function Npc({
+  model
+}: {
+  model: Object3D;
+}) {
+  const animGltf = useAnimGltf()[3];
+  const mixer = useRef<AnimationMixer | null>(null);
+  useEffect(() => {
+    mixer.current = new AnimationMixer(model);
+    return () => {
+      mixer.current?.stopAllAction();
+    };
+  }, [model]);
+
+  useEffect(() => {
+    if (!mixer.current) return;
+    const anim = animGltf?.animations?.[0];
+    if (!anim) return;
+  
+    const action = mixer.current.clipAction(anim);
+    action
+      .reset()
+      .setLoop(LoopRepeat, Infinity)
+      .play();
+  }, [animGltf]);
+
+  useFrame((_, delta) => {
+    mixer.current?.update(delta);
+  });
+
+  return (
+    <Model
+      scene={model}
+      scale={3}
+      position={[-2.5, -1.5, -1.5]}
+      rotation={[0, MathUtils.degToRad(30), 0]}
+    />
+  )
+}
 
 export function FlickeringPointLight(props: any) {
-  const lightRef = useRef<THREE.PointLight>(null);
+  const lightRef = useRef<PointLight>(null);
   const [nextToggle, setNextToggle] = useState(0);
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
 
     if (t > nextToggle) {
-      // Pick a new intensity level randomly (0–3)
       const newIntensity = Math.floor(Math.random() * 4);
 
       if (lightRef.current) {
         lightRef.current.intensity = newIntensity;
       }
 
-      // Schedule next toggle between 1–3 seconds later
       const duration = 0.5 + Math.random() * 2;
       setNextToggle(t + duration);
     }
@@ -37,23 +76,34 @@ export function FlickeringPointLight(props: any) {
 }
 
 export default function InterviewScene() {
+  const searchParam = useSearchParams();
+  const worldTo = searchParam.get('to');
+
+  const timeNpc = useGLTF('models/avatars/time-npc.glb').scene;
+  const sacrificeNpc = useGLTF('models/avatars/olive.gltf').scene;
+  const entropyNpc = useGLTF('models/avatars/entropy-npc.glb').scene;
+  const computer = useGLTF("/models/computer.glb").scene;
+
+  let model;
+  switch(worldTo) {
+    case 'time':  model = timeNpc; break;
+    case 'sacrifice': model = sacrificeNpc; break;
+    case 'entropy': model = entropyNpc; break;
+    default: model = entropyNpc;
+  }
+  
   return (
     <Scene>
       <color attach="background" args={["lightgray"]} />
-      <EffectComposer>
-        <Noise opacity={0.02} />
-        <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={1} height={480} />
-        <Vignette eskil={false} offset={0.1} darkness={1} />
-      </EffectComposer>
 
       <directionalLight
         intensity={1}
-        position={[0.5,10,2]}
+        position={[50,30,20]}
         castShadow
       />
       <FlickeringPointLight
-        position={[-2.5,0,-1]}
-        intensity={1}
+        position={[-1.5,1,0]}
+        intensity={3}
         color={'blue'}
       />
       <Label
@@ -61,14 +111,9 @@ export default function InterviewScene() {
         position={[-3,2,-3]}
         rotation={[0, MathUtils.degToRad(30), 0]}
       />
+      <Npc model={model} />
       <Model
-        src="/models/avatars/default.glb"
-        scale={3}
-        position={[-2.5, -1, -1.5]}
-        rotation={[0, MathUtils.degToRad(30), 0]}
-      />
-      <Model
-        src="/models/computer.glb"
+        scene={computer}
         scale={2}
         position={[-1.5,-1,0]}
         rotation={[0, MathUtils.degToRad(210), 0]}

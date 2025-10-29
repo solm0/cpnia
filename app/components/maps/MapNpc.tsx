@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
-import { AnimationMixer, Mesh, MeshStandardMaterial } from "three";
+import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D } from "three";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
-import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 
 export default function MapNpc({
@@ -17,15 +16,13 @@ export default function MapNpc({
   setHoveredNpc: (name: string | null) => void;
   activeNpc: string | null;
   setActiveNpc: (name: string) => void;
-  model?: string;
+  model: Object3D;
   closeIsChatOpen: (isChatOpen: boolean) => void;
 }) {
   const mixer = useRef<AnimationMixer | null>(null);
-  const charSrc = model ? model : '/models/avatars/map-npc.glb';
 
-  const charGltf = useGLTF(charSrc);
   const animGltf = useAnimGltf()[0];
-  const clonedScene = useMemo(() => clone(charGltf.scene), [charGltf.scene]);
+  const clonedScene = useMemo(() => clone(model), [model]);
   
   // inject shader only once
   useMemo(() => {

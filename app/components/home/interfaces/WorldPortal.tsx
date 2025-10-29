@@ -1,6 +1,6 @@
 'use client'
 
-import { Billboard } from "@react-three/drei";
+import { Billboard, useGLTF } from "@react-three/drei";
 import Model from "../../util/Model";
 import { Group, Vector3 } from "three";
 import { useRef } from "react";
@@ -21,6 +21,7 @@ export default function WorldPortal({
   setFocusedWorld: (focusedWorld: string) => void;
 }) {
   const ref = useRef<Group | null>(null);
+  const icon = useGLTF(src).scene
 
   useFrame((_, delta) => {
     if (!ref.current) return;
@@ -44,7 +45,10 @@ export default function WorldPortal({
       <Billboard>
        
       </Billboard>
-      <Model src={src} scale={scale}/>
+      <Model
+        scene={icon}
+        scale={scale}
+      />
     </group>
   )
 }

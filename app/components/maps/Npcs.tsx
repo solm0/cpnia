@@ -4,23 +4,27 @@ import ChatNpc from "./ChatNpc";
 import { RigidBody } from "@react-three/rapier";
 import { useState } from "react";
 import { chatNpcProp } from "@/app/lib/data/positions/chatNpcs";
-import { Billboard, Image } from "@react-three/drei";
+import { Billboard, Image, useGLTF } from "@react-three/drei";
+import { Object3D } from "three";
 
 export default function Npcs({
-  worldKey, activeNpc, setActiveNpc, setIsChatOpen, chatNpc
+  worldKey, activeNpc, setActiveNpc, setIsChatOpen, chatNpc,
+  models,
 }: {
   worldKey: string;
   activeNpc: string | null;
   setActiveNpc: (activeNpc: string | null) => void;
   setIsChatOpen: (isChatOpen: boolean) => void;
   chatNpc: chatNpcProp;
+  models: Object3D[];
 }) {
   const [hoveredNpc, setHoveredNpc] = useState<string | null>(null);
+  const cutter = useGLTF('/models/avatars/cutter.gltf').scene;
 
   return (
     <>
       {/* 맵 npc */}
-      {mapNpcs[worldKey].map(npc => 
+      {mapNpcs[worldKey].map((npc, i) => 
         <group
           key={npc.name}
         >
@@ -56,7 +60,10 @@ export default function Npcs({
               setHoveredNpc={setHoveredNpc}
               activeNpc={activeNpc}
               setActiveNpc={setActiveNpc}
-              model={npc.model}
+              model={npc.name != '피자커팅기'
+                ? models[i]
+                : cutter
+              }
               closeIsChatOpen={setIsChatOpen}
             />
           </RigidBody>
@@ -70,6 +77,7 @@ export default function Npcs({
         setHoveredNpc={setHoveredNpc}
         setIsChatOpen={setIsChatOpen}
         closeActiveNpc={setActiveNpc}
+        model={models[3]}
       />
     </>
   )

@@ -74,7 +74,6 @@ export default function BattleField({
   const pointer = new Vector2(0,0);
   const { camera } = useThree();
 
-
   const gltfMap: Record<string, Object3D> = {
     lime: useGLTF('/models/avatars/lime.gltf').scene,
     cherry: useGLTF('/models/avatars/cherry.gltf').scene,
@@ -87,6 +86,8 @@ export default function BattleField({
     onion: useGLTF('/models/avatars/onion.gltf').scene,
     olive: useGLTF('/models/avatars/olive.gltf').scene,
   };
+  const kitchen = useGLTF("/models/shop-kitchen.gltf").scene;
+  const pizza = useGLTF("/models/shop-kitchen.gltf").scene;
 
   useEffect(() => {
     const config = W2G1roundConfig[round];
@@ -244,7 +245,7 @@ export default function BattleField({
 
       {/* 지형 */}
       <Model
-        src="/models/shop-kitchen.gltf"
+        scene={kitchen}
         scale={0.5}
         position={[60,-15.3,-17]}
         rotation={[0,0,0]}
@@ -252,7 +253,7 @@ export default function BattleField({
 
       {/* 피자, 피자 위 주민 */}
       <Model
-        src="/models/pizza.gltf"
+        scene={pizza}
         scale={0.55}
         position={[center.x, center.y+2, center.z]}
       />

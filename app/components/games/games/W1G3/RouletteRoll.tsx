@@ -4,7 +4,7 @@ import { Mesh, Vector3 } from "three";
 import RouletteNumbers from "./RouletteNumbers";
 import { RefObject, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Html } from "@react-three/drei";
+import { Html, useGLTF } from "@react-three/drei";
 import Button from "@/app/components/util/Button";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 
@@ -65,6 +65,8 @@ export default function RouletteRoll({
   onGameEnd: (success: boolean) => void;
   moneyRef: RefObject<number>;
 }) {
+  const roulette = useGLTF("/models/roulette.gltf").scene;
+
   const [isRolling, setIsRolling] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
   const [uiState, setUiState] = useState<"idle" | "rolling" | "dropping" | "done">("idle");
@@ -191,7 +193,7 @@ export default function RouletteRoll({
     <>
       {/* 룰렛 */}
       <Model
-        src="/models/roulette.gltf"
+        scene={roulette}
         scale={rouletteScale}
         position={roulettePos}
       />
