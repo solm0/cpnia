@@ -14,6 +14,7 @@ import { Object3D, Vector3 } from "three";
 import { chatNpcProp } from "@/app/lib/data/positions/chatNpcs";
 import { useGameStore } from "@/app/lib/state/gameState";
 import { DebugBoundaries } from "../player/debogBoundaries";
+import RouletteNumbers from "./RouletteNumbers";
 
 useGLTF.preload("/models/card.glb");
 useGLTF.preload("/models/pachinko-stage.glb");
@@ -41,7 +42,7 @@ export const stagePositions: Record<string, {
     x: scale * center[0] + scale * 1,
     y: scale * center[1] - scale * 1.4,
     z: scale * center[2] - scale * 37,
-    scale: scale * 4.25
+    scale: scale * 5
   },
 }
 
@@ -69,9 +70,9 @@ export const coinStairs: coinStairProp[] = [
   // 2-3
   {
     top: [
-      stagePositions.roulette.x,
-      stagePositions.roulette.y + scale * 1.4,
-      stagePositions.roulette.z + scale * 37
+      stagePositions.roulette.x * stagePositions.roulette.scale * 0.2,
+      stagePositions.roulette.y + stagePositions.roulette.scale * 0.7,
+      stagePositions.roulette.z + stagePositions.roulette.scale * 12
     ],
     bottom: [
       stagePositions.pachinko.x - stagePositions.pachinko.scale * 1,
@@ -271,6 +272,17 @@ export default function TimeMap({
           waitTime={idx}
         />
       )}
+
+      <RouletteNumbers
+        center={[
+          stagePositions.roulette.x,
+          stagePositions.roulette.y,
+          stagePositions.roulette.z,
+        ]}
+        distance={stagePositions.roulette.scale * 12}
+        scale={10}
+        initialRotation= {[0, degToRad(25), 0]}
+      />
 
       {/* 계단 */}
       {coinStairs.map((coinStair, idx) => (

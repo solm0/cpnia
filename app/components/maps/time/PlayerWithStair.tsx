@@ -54,8 +54,8 @@ export default function PlayerWithStair({
     {
       type: "circle",
       center: [stagePositions.roulette.x,stagePositions.roulette.z],
-      radius: 45,
-      y: stagePositions.roulette.y+5.5,
+      radius: stagePositions.roulette.scale * 10.5,
+      y: stagePositions.roulette.y * stagePositions.roulette.scale * -0.5,
     },
   ];
   
