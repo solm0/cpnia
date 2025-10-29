@@ -20,7 +20,7 @@ const rectArea: Boundary[] = [
 
 export default function Player({
   worldKey,
-  groundY = 0,
+  groundY = 0, 
   avatar,
 }: {
   worldKey: string;
@@ -64,45 +64,24 @@ export default function Player({
     const moveSpeed = 40;
     let nextAction = 0; // idle
 
-    // console.log(Object.entries(gamepad.current.buttons).find((button) => button[1] === true))
-
     // Input
     let horizontal = 0;
     let vertical = 0;
-    if (pressedKeys.current.has("KeyD")) {
+    if (pressedKeys.current.has("KeyD") || gamepad.current.axes[0] > deadzone) {
       horizontal += speed;
       nextAction = 1
     }
-    if (pressedKeys.current.has("KeyA")) {
+    if (pressedKeys.current.has("KeyA") || gamepad.current.axes[0] < -deadzone) {
       horizontal -= speed;
       nextAction = 1
     }
-    if (pressedKeys.current.has("KeyS")) {
+    if (pressedKeys.current.has("KeyS") || gamepad.current.axes[1] > deadzone) {
       vertical += speed;
       nextAction = 1
     }
-    if (pressedKeys.current.has("KeyW")) {
+    if (pressedKeys.current.has("KeyW") || gamepad.current.axes[1] < -deadzone) {
       vertical -= speed;
       nextAction = 1
-    }
-
-    if (gamepad) {
-      if (gamepad.current.axes[0] > deadzone) {
-        horizontal += speed;
-        nextAction = 1
-      }
-      if (gamepad.current.axes[0] < -deadzone) {
-        horizontal -= speed;
-        nextAction = 1
-      }
-      if (gamepad.current.axes[1] > deadzone) {
-        vertical += speed;
-        nextAction = 1
-      }
-      if (gamepad.current.axes[1] < -deadzone) {
-        vertical -= speed;
-        nextAction = 1
-      }
     }
     
     const horizontalInput = new Vector3(horizontal, 0, vertical);

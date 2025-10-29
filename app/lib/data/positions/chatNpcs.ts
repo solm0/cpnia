@@ -4,6 +4,8 @@ export interface chatNpcProp {
   position: [number, number, number];
   rotation: [number, number, number];
   size?: [number, number, number];
+  type?: string;
+  radius?:number,
 }
 export const chatNpcs: Record<string, chatNpcProp> = {
   time: {

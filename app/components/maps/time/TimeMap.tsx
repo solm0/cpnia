@@ -13,6 +13,7 @@ import Portals from "../Portals";
 import { Object3D, Vector3 } from "three";
 import { chatNpcProp } from "@/app/lib/data/positions/chatNpcs";
 import { useGameStore } from "@/app/lib/state/gameState";
+import { DebugBoundaries } from "../player/debogBoundaries";
 
 useGLTF.preload("/models/card.glb");
 useGLTF.preload("/models/pachinko-stage.glb");
@@ -40,7 +41,7 @@ export const stagePositions: Record<string, {
     x: scale * center[0] + scale * 1,
     y: scale * center[1] - scale * 1.4,
     z: scale * center[2] - scale * 37,
-    scale: scale * 0.02
+    scale: scale * 4.25
   },
 }
 
@@ -86,7 +87,7 @@ export const rouletteIsland: {
   position: [number, number, number];
 }[] = [
   {
-    scale: scale * 0.008,
+    scale: scale * 1.8,
     position: [
       stagePositions.roulette.x + 49,
       stagePositions.roulette.y - 18.6,
@@ -94,7 +95,7 @@ export const rouletteIsland: {
     ],
   },
   {
-    scale: scale * 0.005,
+    scale: scale * 1.5,
     position: [
       stagePositions.roulette.x - 51,
       stagePositions.roulette.y - 18.6,
@@ -102,7 +103,7 @@ export const rouletteIsland: {
     ],
   },
   {
-    scale: scale * 0.007,
+    scale: scale * 1.7,
     position: [
       stagePositions.roulette.x - 1,
       stagePositions.roulette.y - 28.6,
@@ -110,6 +111,31 @@ export const rouletteIsland: {
     ],
   },
 ]
+
+export const subtractions: Record<string, {
+  position:[number,number,number],
+  rotation:[number,number,number],
+  radius?:number,
+  size?:[number,number,number],
+  type?: string;
+}[]> = {
+  time: [
+    {
+      position: [stagePositions.pachinko.x,stagePositions.pachinko.y,stagePositions.pachinko.z],
+      rotation: [0,0,0],
+      radius: 23,
+      type: 'circle'
+    },
+    {
+      position: [stagePositions.roulette.x,stagePositions.roulette.y,stagePositions.roulette.z],
+      rotation: [0,0,0],
+      radius: 10,
+      type: 'circle'
+    },
+  ],
+  sacrifice: [],
+  entropy: []
+}
 
 export default function TimeMap({
   stairClimbMode, avatar, chatNpc,
@@ -156,7 +182,6 @@ export default function TimeMap({
   const groundYs = [ 120, -97, 0 ]
   const groundY = groundYs[currentStage];
 
-
   const config: Record<number, {
     playerPos: Vector3, playerRot: Vector3
   }> = {
@@ -166,27 +191,25 @@ export default function TimeMap({
         stagePositions.card.y,
         stagePositions.card.z
       ),
-      playerRot: new Vector3(),
+      playerRot: new Vector3(0,Math.PI,0),
     },
     1: {
       playerPos: new Vector3(
         stagePositions.pachinko.x,
         stagePositions.pachinko.y,
-        stagePositions.pachinko.z
+        stagePositions.pachinko.z + 30
       ),
-      playerRot: new Vector3(),
+      playerRot: new Vector3(0,Math.PI,0),
     },
     2: {
       playerPos: new Vector3(
-        stagePositions.roulette.x,
+        stagePositions.roulette.x - 33,
         stagePositions.roulette.y,
         stagePositions.roulette.z
       ),
-      playerRot: new Vector3(),
+      playerRot: new Vector3(0,Math.PI,0),
     }
   }
-
-  console.log(config[stage])
 
   return (
     <>
@@ -214,11 +237,18 @@ export default function TimeMap({
         distance={14}
         center={[
           stagePositions.pachinko.x - scale * 2,
-          stagePositions.pachinko.y + scale * 39.3,
+          stagePositions.pachinko.y + scale * 43,
           stagePositions.pachinko.z + scale * 3.5
         ]}
         scale={scale * 1.6}
       />
+
+      <RigidBody type="fixed" colliders={'ball'}>
+        <mesh position={[0,0,-37]}>
+          <sphereGeometry args={[12, 10]} />
+          <meshStandardMaterial transparent opacity={0} />
+        </mesh>
+      </RigidBody>
 
       {/* Stage 3. 룰렛 */}
       <Model
@@ -241,13 +271,6 @@ export default function TimeMap({
           waitTime={idx}
         />
       )}
-      
-      <RigidBody type="fixed" colliders={'ball'}>
-        <mesh position={[0,0,-37]}>
-          <sphereGeometry args={[12, 10]} />
-          <meshStandardMaterial transparent opacity={0} />
-        </mesh>
-      </RigidBody>
 
       {/* 계단 */}
       {coinStairs.map((coinStair, idx) => (
@@ -287,7 +310,7 @@ export default function TimeMap({
         clickedStair={clickedStair}
         avatar={avatar}
         stairPosData={coinStairs}
-        config={config[stage]}
+        config={config[currentStage]}
       />
     </>
   )

@@ -157,18 +157,6 @@ export default function ChatNpc({
       prevPos.current = { ...currentPos.current };
     }
   }, []);
-  
-  useEffect(() => {
-    if (!isMoving && body.current) {
-      const playerPos = usePlayerStore.getState().position;
-      const target = {
-        x: playerPos.x + 8,
-        y: playerPos.y,
-        z: playerPos.z -5,
-      };
-      body.current.setNextKinematicTranslation(target);
-    }
-  }, [isMoving])
 
   useFrame((_, delta) => {
     if (!body.current) return;

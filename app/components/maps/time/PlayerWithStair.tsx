@@ -15,6 +15,7 @@ import { CuboidCollider } from "@react-three/rapier";
 import { DebugBoundaries } from "../player/debogBoundaries";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { coinStairProp, stagePositions } from "./TimeMap";
+import { usePlayerStore } from "@/app/lib/state/playerStore";
 
 export default function PlayerWithStair({
   worldKey,
@@ -48,19 +49,21 @@ export default function PlayerWithStair({
       type: "circle",
       center: [stagePositions.pachinko.x-5, stagePositions.pachinko.z],
       radius: 43,
-      y: stagePositions.pachinko.y+43
+      y: stagePositions.pachinko.y+43,
     },
     {
       type: "circle",
       center: [stagePositions.roulette.x,stagePositions.roulette.z],
-      radius: 40,
-      y: stagePositions.roulette.y+1.4
+      radius: 45,
+      y: stagePositions.roulette.y+5.5,
     },
   ];
   
   const playerGrounded = useRef(false);
   const inJumpAction = useRef(false);
   const body = useRef<any>(null);
+  const [activeAction, setActiveAction] = useState(0);
+
   let isAutomated = stairClimbMode?.current || false;
 
   const pressedKeys = useKeyboardControls();
@@ -73,6 +76,11 @@ export default function PlayerWithStair({
     gamepad.current
   );
 
+  // chatnpc를 위한 player position 저장
+  const setIsMoving = usePlayerStore((state) => state.setIsMoving);
+  const setPosition = usePlayerStore((state) => state.setPosition);
+  const wasMoving = useRef(false);
+
   const inputVelocity = useMemo(() => new Vector3(), []);
 
   useEffect(() => {
@@ -82,29 +90,40 @@ export default function PlayerWithStair({
         y: config?.playerPos.y,
         z: config?.playerPos.z
       }, true);
-      console.log(body.current.y)
+
+      const quat = new Quaternion().setFromEuler(
+        new Euler(config?.playerRot.x, config?.playerRot.y, config?.playerRot.z)
+      );
+      body.current.setRotation(quat, true);
     }
-  }, []);
+  }, [config]);
 
   useFrame((_, delta) => {
     if (!body.current) return;
 
     const deadzone = 0.5;
     const speed = 1;
+    const moveSpeed = 40;
+    let nextAction = 0; // idle
 
     // Input
     let horizontal = 0;
     let vertical = 0;
-    if (pressedKeys.current.has("KeyD")) horizontal += speed;
-    if (pressedKeys.current.has("KeyA")) horizontal -= speed;
-    if (pressedKeys.current.has("KeyS")) vertical += speed;
-    if (pressedKeys.current.has("KeyW")) vertical -= speed;
-
-    if (gamepad) {
-      if (gamepad.current.axes[0] > deadzone) horizontal += speed;
-      if (gamepad.current.axes[0] < -deadzone) horizontal -= speed;
-      if (gamepad.current.axes[1] > deadzone) vertical += speed;
-      if (gamepad.current.axes[1] < -deadzone) vertical -= speed;
+    if (pressedKeys.current.has("KeyD") || gamepad.current.axes[0] > deadzone) {
+      horizontal += speed;
+      nextAction = 1
+    }
+    if (pressedKeys.current.has("KeyA") || gamepad.current.axes[0] < -deadzone) {
+      horizontal -= speed;
+      nextAction = 1
+    }
+    if (pressedKeys.current.has("KeyS") || gamepad.current.axes[1] > deadzone) {
+      vertical += speed;
+      nextAction = 1
+    }
+    if (pressedKeys.current.has("KeyW") || gamepad.current.axes[1] < -deadzone) {
+      vertical -= speed;
+      nextAction = 1
     }
 
     const horizontalInput = new Vector3(horizontal, 0, vertical);
@@ -126,19 +145,41 @@ export default function PlayerWithStair({
     } else {
       inputVelocity.y -= 3 * delta;
     }
+
+    if (inJumpAction.current) {
+      nextAction = 2;
+    } else if (horizontalInput.lengthSq() > 0) {
+      nextAction = 1;
+    } else {
+      nextAction = 0;
+    }
     
     const t = body.current.translation();
+
+    // --- chatnpc를 위한 player position 저장
+    const isInputting = horizontal !== 0 || vertical !== 0;
+    
+    if (isInputting && !wasMoving.current) {
+      setIsMoving(true);
+      wasMoving.current = true;
+    } else if (!isInputting && wasMoving.current) {
+      setIsMoving(false);
+      wasMoving.current = false;
+      
+      // player가 멈추면 final position 저장
+      setPosition({ x: t.x, y: t.y, z: t.z });
+    }
 
     // Move rigidbody
     const move = horizontalInput.clone();
     move.y = inputVelocity.y;
 
     const newPos = {
-      x: t.x + move.x * delta * 40,
+      x: t.x + move.x * delta * moveSpeed,
       y: isAutomated
         ? t.y + move.y * delta * 40 // let stair animation control Y
-        : Math.max(groundY, t.y + move.y * delta * 40),
-      z: t.z + move.z * delta * 40,
+        : Math.max(groundY, t.y + move.y * delta * moveSpeed),
+      z: t.z + move.z * delta * moveSpeed,
     };
 
     // Reset jump state on ground
@@ -148,13 +189,12 @@ export default function PlayerWithStair({
       inJumpAction.current = false;
     }
 
-    let nextPos = newPos;
-    
-    if (!isAutomated) {
-      if (worldKey === "time") {
-        nextPos = clampToBoundary(newPos, timeClampArea);
-      }
+    if (activeAction !== nextAction) {
+      console.log(nextAction)
+      setActiveAction(nextAction);
     }
+
+    const nextPos = isAutomated ? newPos : clampToBoundary(newPos, timeClampArea);
 
     if (!checkCollision(nextPos, worldKey)) {
       body.current.setNextKinematicTranslation(nextPos);
@@ -227,7 +267,7 @@ export default function PlayerWithStair({
     () => {
       if (stairData && setCurrentStage) {
         setCurrentStage(stairData.nextStage);
-        console.log(groundY)
+        console.log('currentstage', currentStage, 'nextstage', stairData.nextStage)
       }
       isAutomated = false;
     }
@@ -244,7 +284,7 @@ export default function PlayerWithStair({
         <mesh visible={false} castShadow receiveShadow>
           <CuboidCollider args={[0.5, 1, 0.5]} /> 
         </mesh>
-        <Avatar avatar={avatar} />
+        <Avatar animIndex={activeAction} avatar={avatar} />
       </RigidBody>
       {/* <DebugBoundaries boundaries={timeClampArea} /> */}
     </>

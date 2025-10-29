@@ -7,7 +7,10 @@ export interface gamePortalProp {
   model?: string;
   scale?: number;
   rule?: string;
+  type?: string;
+  radius?:number,
 }
+
 export const gamePortals: Record<string, gamePortalProp[]> = {
   time: [
     {
