@@ -13,7 +13,6 @@ import NpcLineModalMain from "../NpcLineModalMain";
 import { SacrificeEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
 import Fire from "../Fire";
-import { stagePositions } from "@/app/lib/data/positions/stagePositions";
 import { useGLTF } from "@react-three/drei";
 import { Object3D } from "three";
 
@@ -29,6 +28,7 @@ export default function SacrificeScreen({
 }) {
   const worldKey = 'sacrifice';
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
+  const stagePosition ={ x:-200, y: -137.5, z: 350 }
 
   const chatNpc = chatNpcs[worldKey];
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -56,9 +56,9 @@ export default function SacrificeScreen({
             scene={kitchen}
             scale={4.5}
             position={[
-              stagePositions.shop.x,
-              stagePositions.shop.y,
-              stagePositions.shop.z
+              stagePosition.x,
+              stagePosition.y,
+              stagePosition.z
             ]}
             rotation={[0,0,0]}
           />
@@ -66,9 +66,9 @@ export default function SacrificeScreen({
             scene={shop}
             scale={4.5}
             position={[
-              stagePositions.shop.x,
-              stagePositions.shop.y,
-              stagePositions.shop.z
+              stagePosition.x,
+              stagePosition.y,
+              stagePosition.z
             ]}
             rotation={[0,0,0]}
           />

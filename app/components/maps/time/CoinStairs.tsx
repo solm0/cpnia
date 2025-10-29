@@ -8,7 +8,7 @@ useGLTF.preload('/models/coin.gltf');
 
 function SpinningCoin({
   position,
-  scale = 3,
+  scale,
   index,
   waveDelay = 0.2, // delay per coin
   rotationSpeed = Math.PI * 8, // 1 rotation per second
@@ -16,7 +16,7 @@ function SpinningCoin({
   coin,
 }: {
   position: [number, number, number];
-  scale?: number;
+  scale: number;
   index: number;
   waveDelay?: number;
   rotationSpeed?: number;
@@ -47,11 +47,13 @@ function SpinningCoin({
 export default function CoinStairs({
   startPosition,
   endPosition,
-  count = 10
+  count = 10,
+  coinScale = 3
 }: {
   startPosition: [number, number, number];
   endPosition: [number, number, number];
   count?: number;
+  coinScale: number;
 }) {
   const xLength = endPosition[0] - startPosition[0];
   const yLength = endPosition[1] - startPosition[1];
@@ -81,6 +83,7 @@ export default function CoinStairs({
             waveDelay={0.2} // stagger each coin
             breakTime={10}  // pause between sets
             coin={coin}
+            scale={coinScale}
           />
         );
       })}

@@ -5,12 +5,11 @@ import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import Model from "../../util/Model";
 
 export function FloatingIsland({
-  scene, scale, position, rotation, waitTime
+  scene, scale, position, waitTime
 }: {
   scene: Object3D;
   scale: number;
   position: [number, number, number];
-  rotation: [number, number, number];
   waitTime: number;
 }) {
   const ref = useRef<Object3D>(null);
@@ -29,7 +28,6 @@ export function FloatingIsland({
         scene={clonedScene}
         scale={scale}
         position={position}
-        rotation={rotation}
       />
     </group>
   )

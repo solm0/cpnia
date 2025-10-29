@@ -7,12 +7,14 @@ export function DebugBoundaries({ boundaries }: { boundaries: Boundary[] }) {
       {boundaries.map((b, i) => {
         if (b.type === "rect") {
           const [cx, cz] = b.center;
+          const cy = b.y ?? 0.05;
           const [w, d] = b.size ?? [0, 0];
           return (
             <Box
               key={i}
               args={[w, 0.1, d]} // width, height, depth
-              position={[cx, 0.05, cz]}
+              position={[cx, cy, cz]}
+              rotation={b.rotation}
             >
               <meshBasicMaterial color="red" wireframe transparent opacity={0.5} />
             </Box>

@@ -1,55 +1,207 @@
-import { timeIsland } from "@/app/lib/data/positions/timeIslands"
 import CoinStairs from "./CoinStairs";
 import PachinkoCircle from "./PachinkoCircle";
 import { RigidBody } from "@react-three/rapier";
-import { coinStairs } from "@/app/lib/data/positions/coinStairs";
 import Model from "../../util/Model";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { FloatingIsland } from "./FloatingIsland";
-import { stagePositions } from "@/app/lib/data/positions/stagePositions";
 import { useGLTF } from "@react-three/drei";
-import { useMemo } from "react";
+import { RefObject, useMemo, useState } from "react";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
+import Npcs from "../Npcs";
+import PlayerWithStair from "./PlayerWithStair";
+import Portals from "../Portals";
+import { Object3D, Vector3 } from "three";
+import { chatNpcProp } from "@/app/lib/data/positions/chatNpcs";
+import { useGameStore } from "@/app/lib/state/gameState";
 
 useGLTF.preload("/models/card.glb");
 useGLTF.preload("/models/pachinko-stage.glb");
 useGLTF.preload("/models/roulette.gltf");
 
+const scale = 1;
+const center = [0,0,0];
+
+export const stagePositions: Record<string, {
+  x:number, y:number, z:number, scale: number;
+}> = {
+  card: {
+    x: scale * center[0] - scale * 50,
+    y: scale * center[1] - scale * 230,
+    z: scale * center[2] + scale * 100,
+    scale: scale * 4.5
+  },
+  pachinko: {
+    x: scale * center[0] + scale * 120,
+    y: scale * center[1] - scale * 134.5,
+    z: scale * center[2] + scale * 160,
+    scale: scale * 2.4
+  },
+  roulette: {
+    x: scale * center[0] + scale * 1,
+    y: scale * center[1] - scale * 1.4,
+    z: scale * center[2] - scale * 37,
+    scale: scale * 0.02
+  },
+}
+
+export interface coinStairProp {
+  top: [number,number,number];
+  bottom: [number, number, number];
+  count: number;
+}
+
+export const coinStairs: coinStairProp[] = [
+  {
+    // 1-2
+    top: [
+      stagePositions.pachinko.x - scale * 50,
+      stagePositions.pachinko.y + scale * 40,
+      stagePositions.pachinko.z - scale * 10
+    ],
+    bottom: [
+      stagePositions.card.x + stagePositions.card.scale * 1,
+      stagePositions.card.y + stagePositions.card.scale * 20,
+      stagePositions.card.z + stagePositions.card.scale,
+    ],
+    count: 5,
+  },
+  // 2-3
+  {
+    top: [
+      stagePositions.roulette.x,
+      stagePositions.roulette.y + scale * 1.4,
+      stagePositions.roulette.z + scale * 37
+    ],
+    bottom: [
+      stagePositions.pachinko.x - stagePositions.pachinko.scale * 1,
+      stagePositions.pachinko.y + stagePositions.pachinko.scale * 10,
+      stagePositions.pachinko.z - stagePositions.pachinko.scale * 10
+    ],
+    count: 10,
+  },
+]
+
+export const rouletteIsland: {
+  scale: number;
+  position: [number, number, number];
+}[] = [
+  {
+    scale: scale * 0.008,
+    position: [
+      stagePositions.roulette.x + 49,
+      stagePositions.roulette.y - 18.6,
+      stagePositions.roulette.z - 13
+    ],
+  },
+  {
+    scale: scale * 0.005,
+    position: [
+      stagePositions.roulette.x - 51,
+      stagePositions.roulette.y - 18.6,
+      stagePositions.roulette.z - 13
+    ],
+  },
+  {
+    scale: scale * 0.007,
+    position: [
+      stagePositions.roulette.x - 1,
+      stagePositions.roulette.y - 28.6,
+      stagePositions.roulette.z + 37,
+    ],
+  },
+]
+
 export default function TimeMap({
-  stairClimbMode,
-  setClickedStair,
+  stairClimbMode, avatar, chatNpc,
+  activeNpc, setActiveNpc, setIsChatOpen,
 }: {
-  stairClimbMode?: React.RefObject<boolean>;
-  setClickedStair: (clickedStair: number | null) => void;
+  stairClimbMode?: RefObject<boolean>;
+  avatar: Object3D;
+  chatNpc: chatNpcProp;
+  activeNpc: string | null;
+  setActiveNpc: (activeNpc: string | null) => void;
+  setIsChatOpen: (isChatOpen: boolean) => void;
 }) {
-  const rouletteIslands1 = timeIsland['roulette1'];
+  const worldKey = 'time';
+
   const card = useGLTF("/models/card.glb").scene;
   const pachinko = useGLTF("/models/pachinko-stage.glb").scene;
   const roulette = useGLTF("/models/roulette.gltf").scene;
   const rouletteIslands = useMemo(() => {
-    return Array.from({ length: rouletteIslands1.length }, () => clone(roulette))
-  }, [roulette])
+    return Array.from({ length: rouletteIsland.length }, () => clone(roulette));
+  }, [roulette]);
+  const npcModelScene = useGLTF('/models/avatars/time-npc.glb').scene;
+  const gandalf = useGLTF('/models/avatars/gandalf.gltf').scene;
+  const npcModel = useMemo(() => {
+    return [
+      ...Array.from({ length: 3 }, () => clone(npcModelScene)),
+      gandalf
+    ];
+  }, [npcModelScene, gandalf]);
 
   function handleClickStair(clickedStair: number) {
     setClickedStair(clickedStair);
     if (stairClimbMode) stairClimbMode.current = true;
-    console.log('start stairclimb', stairClimbMode, clickedStair)
+    // console.log('start stairclimb', stairClimbMode, clickedStair)
   }
+
+  const gameState = useGameStore(state => state.worlds[worldKey].games);
+  let stage = 0;
+  if (gameState['game1'] === false) { stage = 0 }
+  else if (gameState['game2'] === false) { stage = 1 }
+  else if (gameState['game3'] === false) { stage = 2 }
+
+  const [currentStage, setCurrentStage] = useState(stage);
+  const [clickedStair, setClickedStair] = useState<number | null>(null);
+  const groundYs = [ 120, -97, 0 ]
+  const groundY = groundYs[currentStage];
+
+
+  const config: Record<number, {
+    playerPos: Vector3, playerRot: Vector3
+  }> = {
+    0: {
+      playerPos: new Vector3(
+        stagePositions.card.x,
+        stagePositions.card.y,
+        stagePositions.card.z
+      ),
+      playerRot: new Vector3(),
+    },
+    1: {
+      playerPos: new Vector3(
+        stagePositions.pachinko.x,
+        stagePositions.pachinko.y,
+        stagePositions.pachinko.z
+      ),
+      playerRot: new Vector3(),
+    },
+    2: {
+      playerPos: new Vector3(
+        stagePositions.roulette.x,
+        stagePositions.roulette.y,
+        stagePositions.roulette.z
+      ),
+      playerRot: new Vector3(),
+    }
+  }
+
+  console.log(config[stage])
 
   return (
     <>
       {/* Stage 1. 카드 */}
       <Model
         scene={card}
-        scale={2}
+        scale={stagePositions.card.scale}
         position={[stagePositions.card.x, stagePositions.card.y, stagePositions.card.z]}
-        rotation={[0,degToRad(90),0]}
+        rotation={[0,degToRad(-90),0]}
       />
 
       {/* Stage 2. 파친코 */}
       <Model
         scene={pachinko}
-        scale={2.2}
+        scale={stagePositions.pachinko.scale}
         position={[
           stagePositions.pachinko.x,
           stagePositions.pachinko.y,
@@ -61,17 +213,17 @@ export default function TimeMap({
         count={8}
         distance={14}
         center={[
-          stagePositions.pachinko.x-2,
-          stagePositions.pachinko.y+39.3,
-          stagePositions.pachinko.z+3.5
+          stagePositions.pachinko.x - scale * 2,
+          stagePositions.pachinko.y + scale * 39.3,
+          stagePositions.pachinko.z + scale * 3.5
         ]}
-        scale={1.6}
+        scale={scale * 1.6}
       />
 
       {/* Stage 3. 룰렛 */}
       <Model
         scene={roulette}
-        scale={0.02}
+        scale={stagePositions.roulette.scale}
         position={[
           stagePositions.roulette.x,
           stagePositions.roulette.y,
@@ -80,13 +232,12 @@ export default function TimeMap({
         rotation={[0,0,0]}
       />
 
-      {rouletteIslands1.map((island, idx) => 
+      {rouletteIsland.map((island, idx) => 
         <FloatingIsland
           key={idx}
           scene={rouletteIslands[idx]}
           scale={island.scale}
           position={island.position}
-          rotation={island.rotation}
           waitTime={idx}
         />
       )}
@@ -108,9 +259,36 @@ export default function TimeMap({
             endPosition={coinStair.bottom}
             startPosition={coinStair.top}
             count={coinStair.count}
+            coinScale={scale * 3}
           />
         </group>
       ))}
+
+      {/* 포탈들 */}
+      <Portals worldKey={worldKey} />
+
+      {/* npc들 */}
+      <Npcs
+        worldKey={worldKey}
+        activeNpc={activeNpc}
+        setActiveNpc={setActiveNpc}
+        setIsChatOpen={setIsChatOpen}
+        chatNpc={chatNpc}
+        models={npcModel}
+      />
+
+      {/* 플레이어 */}
+      <PlayerWithStair
+        worldKey={worldKey}
+        groundY={groundY}
+        stairClimbMode={stairClimbMode}
+        currentStage={currentStage}
+        setCurrentStage={setCurrentStage}
+        clickedStair={clickedStair}
+        avatar={avatar}
+        stairPosData={coinStairs}
+        config={config[stage]}
+      />
     </>
   )
 }

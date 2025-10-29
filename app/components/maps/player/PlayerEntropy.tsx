@@ -7,7 +7,6 @@ import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { RigidBody } from "@react-three/rapier";
 import { Boundary, clampToBoundary } from "@/app/components/maps/player/clampToBoundary";
-import { checkCollision } from "./checkCollision";
 import { Avatar } from "./Avatar";
 import { useFollowCam } from "./useFollowCam";
 import { CuboidCollider } from "@react-three/rapier";
