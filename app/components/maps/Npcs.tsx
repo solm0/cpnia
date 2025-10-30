@@ -11,6 +11,40 @@ import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 useGLTF.preload('/models/avatars/cutter.gltf');
 useGLTF.preload('/models/avatars/time-npc.glb');
 
+function NpcLabel({
+  npc,
+}: {
+  npc: mapNpcProp;
+}) {
+  function chooseConfig(npc: mapNpcProp) {
+    let pos = [0, 12, 0] as [number, number, number];
+    let scale = [2, 2] as [number, number];
+    
+    if (npc.name === '피자커팅기') {
+      pos = [npc.position[0]-32, npc.position[1]+14, npc.position[2]+1];
+      scale = [4,4];
+    } else if (npc.name === '카드게임장에서 발견한 주민' || '파친코 앞에서 발견한 주민') {
+      pos = [0, 1.5, 0];
+      scale = [0.5, 0.5];
+    }
+
+    return {pos, scale};
+  }
+
+  return (
+    <Billboard position={chooseConfig(npc).pos}>
+      <Image
+        url={npc.type != 'special'
+          ? "/images/threedots.png"
+          : "/images/exclaim.png"
+        }
+        scale={chooseConfig(npc).scale}
+        transparent
+      />
+    </Billboard>
+  )
+}
+
 export default function Npcs({
   worldKey, activeNpc, setActiveNpc, setIsChatOpen, chatNpc,
   models,
@@ -43,46 +77,26 @@ export default function Npcs({
     <>
       {/* 맵 npc */}
       {mapNpcs[worldKey].map((npc, i) => 
-        <group
+        <RigidBody
           key={npc.name}
+          position={npc.position}
+          rotation={npc.rotation}
+          scale={npc.scale ?? 8}
+          colliders={'cuboid'}
+          type="fixed"
         >
-          <Billboard position={
-            npc.name != '피자커팅기'
-              ? [npc.position[0],npc.position[1]+7,npc.position[2]]
-              : [npc.position[0]-4,npc.position[1]+25,npc.position[2]+1]
-          }>
-            <Image
-              url={npc.type != 'special'
-                ? "/images/threedots.png"
-                : "/images/exclaim.png"
-              }
-              scale={
-                npc.scale
-                  ? [2 * npc.scale, 2 * npc.scale]
-                  : [2,2]
-              }
-              transparent
-            />
-          </Billboard>
-          <RigidBody
-            position={npc.position}
-            rotation={npc.rotation}
-            scale={npc.scale ?? 8}
-            colliders={'cuboid'}
-            type="fixed"
-          >
-            <MapNpc
-              key={npc.name}
-              name={npc.name}
-              hoveredNpc={hoveredNpc}
-              setHoveredNpc={setHoveredNpc}
-              activeNpc={activeNpc}
-              setActiveNpc={setActiveNpc}
-              model={chooseModel(npc, i)}
-              closeIsChatOpen={setIsChatOpen}
-            />
-          </RigidBody>
-        </group>
+          <MapNpc
+            key={npc.name}
+            name={npc.name}
+            hoveredNpc={hoveredNpc}
+            setHoveredNpc={setHoveredNpc}
+            activeNpc={activeNpc}
+            setActiveNpc={setActiveNpc}
+            model={chooseModel(npc, i)}
+            closeIsChatOpen={setIsChatOpen}
+          />
+          <NpcLabel npc={npc} />
+        </RigidBody>
       )}
 
       {/* 챗 npc */}
