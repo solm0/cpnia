@@ -1,4 +1,4 @@
-import { stagePositions } from "./time/TimeMap"
+import { stagePositions } from "@/app/lib/data/positions/stagePositions"
 
 export function HomeLights() {
   return (

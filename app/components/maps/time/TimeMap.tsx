@@ -15,42 +15,20 @@ import { chatNpcProp } from "@/app/lib/data/positions/chatNpcs";
 import { useGameStore } from "@/app/lib/state/gameState";
 import { DebugBoundaries } from "../player/debogBoundaries";
 import RouletteNumbers from "./RouletteNumbers";
+import { stagePositions } from "@/app/lib/data/positions/stagePositions";
 
 useGLTF.preload("/models/card.glb");
 useGLTF.preload("/models/pachinko-stage.glb");
 useGLTF.preload("/models/roulette.gltf");
-
-const scale = 1;
-const center = [0,0,0];
-
-export const stagePositions: Record<string, {
-  x:number, y:number, z:number, scale: number;
-}> = {
-  card: {
-    x: scale * center[0] - scale * 50,
-    y: scale * center[1] - scale * 230,
-    z: scale * center[2] + scale * 100,
-    scale: scale * 4.5
-  },
-  pachinko: {
-    x: scale * center[0] + scale * 120,
-    y: scale * center[1] - scale * 134.5,
-    z: scale * center[2] + scale * 160,
-    scale: scale * 2.4
-  },
-  roulette: {
-    x: scale * center[0] + scale * 1,
-    y: scale * center[1] - scale * 1.4,
-    z: scale * center[2] - scale * 37,
-    scale: scale * 5
-  },
-}
+useGLTF.preload("/models/floor.gltf");
 
 export interface coinStairProp {
   top: [number,number,number];
   bottom: [number, number, number];
   count: number;
 }
+
+const scale = 1; // stagePosition의 복제
 
 export const coinStairs: coinStairProp[] = [
   {
@@ -88,27 +66,27 @@ export const rouletteIsland: {
   position: [number, number, number];
 }[] = [
   {
-    scale: scale * 1.8,
+    scale: stagePositions.roulette.scale * 0.4,
     position: [
-      stagePositions.roulette.x + 49,
-      stagePositions.roulette.y - 18.6,
-      stagePositions.roulette.z - 13
+      stagePositions.roulette.x + 49*2,
+      stagePositions.roulette.y - 18.6*2,
+      stagePositions.roulette.z - 13*2
     ],
   },
   {
-    scale: scale * 1.5,
+    scale: stagePositions.roulette.scale * 0.2,
     position: [
-      stagePositions.roulette.x - 51,
-      stagePositions.roulette.y - 18.6,
-      stagePositions.roulette.z - 13
+      stagePositions.roulette.x - 51*2,
+      stagePositions.roulette.y - 18.6*2,
+      stagePositions.roulette.z - 13*2
     ],
   },
   {
-    scale: scale * 1.7,
+    scale: stagePositions.roulette.scale * 0.3,
     position: [
-      stagePositions.roulette.x - 1,
-      stagePositions.roulette.y - 28.6,
-      stagePositions.roulette.z + 37,
+      stagePositions.roulette.x - 1*2,
+      stagePositions.roulette.y - 28.6*2,
+      stagePositions.roulette.z + 37*2,
     ],
   },
 ]
@@ -130,7 +108,7 @@ export const subtractions: Record<string, {
     {
       position: [stagePositions.roulette.x,stagePositions.roulette.y,stagePositions.roulette.z],
       rotation: [0,0,0],
-      radius: 10,
+      radius: 18,
       type: 'circle'
     },
   ],
@@ -165,6 +143,7 @@ export default function TimeMap({
       gandalf
     ];
   }, [npcModelScene, gandalf]);
+  const floor = useGLTF('/models/floor.gltf').scene;
 
   function handleClickStair(clickedStair: number) {
     setClickedStair(clickedStair);
@@ -323,6 +302,12 @@ export default function TimeMap({
         avatar={avatar}
         stairPosData={coinStairs}
         config={config[currentStage]}
+      />
+
+      <Model
+        scene={floor}
+        scale={10}
+        position={[0,-250,0]}
       />
     </>
   )

@@ -1,13 +1,15 @@
 import MapNpc from "./MapNpc";
-import { mapNpcs } from "@/app/lib/data/positions/mapNpcs";
+import { mapNpcProp, mapNpcs } from "@/app/lib/data/positions/mapNpcs";
 import ChatNpc from "./ChatNpc";
 import { RigidBody } from "@react-three/rapier";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { chatNpcProp } from "@/app/lib/data/positions/chatNpcs";
 import { Billboard, Image, useGLTF } from "@react-three/drei";
 import { Object3D } from "three";
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
 useGLTF.preload('/models/avatars/cutter.gltf');
+useGLTF.preload('/models/avatars/time-npc.glb');
 
 export default function Npcs({
   worldKey, activeNpc, setActiveNpc, setIsChatOpen, chatNpc,
@@ -22,6 +24,20 @@ export default function Npcs({
 }) {
   const [hoveredNpc, setHoveredNpc] = useState<string | null>(null);
   const cutter = useGLTF('/models/avatars/cutter.gltf').scene;
+  const timeNpc = useGLTF('/models/avatars/time-npc.glb').scene;
+  const clonedTimeNpc = useMemo(() => clone(timeNpc), [timeNpc]);
+
+  function chooseModel(npc:mapNpcProp, i: number) {
+    let model = models[i];
+    if (npc.type === 'special') {
+      if (npc.name === '피자커팅기') model = cutter;
+      else if (npc.name === '카드게임장에서 발견한 주민') model = timeNpc;
+      else if (npc.name === '파친코 앞에서 발견한 주민') model = clonedTimeNpc;
+    }
+    return model;
+  }
+
+  console.log(mapNpcs[worldKey])
 
   return (
     <>
@@ -36,14 +52,14 @@ export default function Npcs({
               : [npc.position[0]-4,npc.position[1]+25,npc.position[2]+1]
           }>
             <Image
-              url={npc.name != '피자커팅기'
+              url={npc.type != 'special'
                 ? "/images/threedots.png"
                 : "/images/exclaim.png"
               }
               scale={
-                npc.name != '피자커팅기'
-                  ? [2,2]
-                  : [4,4]
+                npc.scale
+                  ? [2 * npc.scale, 2 * npc.scale]
+                  : [2,2]
               }
               transparent
             />
@@ -62,10 +78,7 @@ export default function Npcs({
               setHoveredNpc={setHoveredNpc}
               activeNpc={activeNpc}
               setActiveNpc={setActiveNpc}
-              model={npc.name != '피자커팅기'
-                ? models[i]
-                : cutter
-              }
+              model={chooseModel(npc, i)}
               closeIsChatOpen={setIsChatOpen}
             />
           </RigidBody>

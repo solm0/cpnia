@@ -14,8 +14,9 @@ import { useStairClimb } from "./useStairClimb";
 import { CuboidCollider } from "@react-three/rapier";
 import { DebugBoundaries } from "../player/debogBoundaries";
 import { degToRad } from "three/src/math/MathUtils.js";
-import { coinStairProp, stagePositions } from "./TimeMap";
+import { coinStairProp } from "./TimeMap";
 import { usePlayerStore } from "@/app/lib/state/playerStore";
+import { stagePositions } from "@/app/lib/data/positions/stagePositions";
 
 export default function PlayerWithStair({
   worldKey,

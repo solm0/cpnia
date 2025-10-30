@@ -1,6 +1,6 @@
 'use client'
 
-import { RefObject, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import Button from "./Button";
 import FullScreenModal from "./FullScreenModal";
 
@@ -13,41 +13,22 @@ export default function AudioPlayer({
   worldKey?: string;
   audioRef: RefObject<HTMLAudioElement | null>;
 }) {
-  const [started, setStarted] = useState(false);
-
-  const handleStart = () => {
+  useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+    console.log(audio);
 
-    audio.play().then(() => {
-      setStarted(true);
-    }).catch(err => {
-      console.error("Audio play failed:", err);
-    });
-  };
+    audio.play()
+      .catch(err => console.error("Audio play failed:", err));
+  }, [audioRef]);
+
 
   return (
-    <>
-      {!started && (
-        <FullScreenModal>
-          <div className="relative w-auto h-full flex flex-col items-center justify-center gap-2 text-white">
-            <div>조작법, 캐릭터 성격설명</div>
-            <Button
-              label="시작하기"
-              onClick={handleStart}
-              worldKey={worldKey}
-              autoFocus={true}
-            />
-          </div>
-        </FullScreenModal>
-      )}
-
-      <audio
-        src={src}
-        ref={audioRef}
-        preload="auto"
-        loop
-      />
-    </>
+    <audio
+      src={src}
+      ref={audioRef}
+      preload="auto"
+      loop
+    />
   );
 }

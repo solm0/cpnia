@@ -16,10 +16,10 @@ export default function RouletteNumbers({
     ...Array.from({ length: 20 }).map((_, i) => {
       const angle = (i / 20) * Math.PI * 2;
       const x = Math.cos(angle) * distance;
-      const y = 15 + Math.sin((i / 20) * Math.PI * 8) * 5; 
+      
       const z = Math.sin(angle) * distance;
       return {
-        position: [x, y, z] as [number, number, number],
+        position: [x, 15, z] as [number, number, number],
         rotation: [0, -angle - 1.5, 0] as [number, number, number],
       };
     }),

@@ -1,3 +1,5 @@
+import { stagePositions } from "./stagePositions";
+
 export interface gamePortalProp {
   label: string;
   gameKey: string;
@@ -11,28 +13,33 @@ export interface gamePortalProp {
   radius?:number,
 }
 
+// collision계산하려면 rotation, position,size있어야됨.
+// 맵에 렌더하려면 model있어야됨.
+
 export const gamePortals: Record<string, gamePortalProp[]> = {
   time: [
     {
       label: 'game 1',
       gameKey: 'game1',
       rule: '알아서 잘 해보세요',
-      position: [-10, 3, 0],
-      rotation: [0, 0, 0]
     },
     {
       label: 'game 2',
       gameKey: 'game2',
       rule: '알아서 잘 해보세요',
-      position: [10, 3, -3],
-      rotation: [0, 0, 0]
     },
     {
       label: 'game 3',
       gameKey: 'game3',
       rule: '알아서 잘 해보세요',
-      position: [10, 3, 0],
-      rotation: [0, 0, 0]
+      position: [
+        stagePositions.roulette.x + 20,
+        stagePositions.roulette.y,
+        stagePositions.roulette.z
+      ],
+      rotation: [0, 0, 0],
+      scale: 1,
+      model: '/models/ball.gltf',
     },
   ],
   sacrifice: [
