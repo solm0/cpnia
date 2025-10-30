@@ -273,7 +273,7 @@ export const mapNpcLines: mapNpcLineProp = {
             ]
           }
         }
-    }
+    },
   },
   "sacrifice": {
     "로미": {

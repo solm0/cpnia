@@ -1,5 +1,5 @@
 import Button from "../../util/Button";
-import { FindFugitiveLine, FindNpcLine, FindPizzaCutterLine } from "./FindNpcLine";
+import { FindFugitiveLine, FindNpcLine, FindPizzaCutterLine, FindTimeSpecialLine } from "./FindNpcLine";
 import { TypingText } from "./TypingText";
 import { TimeOptionButton, SacrificeOptionButton, EntropyOptionButton } from "./OptionButtons";
 import { useEffect, useState } from "react";
@@ -7,15 +7,26 @@ import { useRouter } from "next/navigation";
 import { nanumGothicCodingBold } from "@/app/lib/fonts";
 
 export function TimeNpcLineModal({
-  worldKey, name, setActiveNpc, options,
+  worldKey, name, setActiveNpc,
 }: {
   worldKey: string;
   name: string;
   setActiveNpc: (name: string | null) => void;
-  options?: {label: string, function: () => void}[];
 }) {
-  const lines = FindNpcLine(name, worldKey);
+  const lines = FindTimeSpecialLine(name);
   const [lineIndex, setLineIndex] = useState(0);
+  const {line, options} = lines[lineIndex];
+
+  const router = useRouter();
+
+  const actions: Record<string, () => void> = {
+    "goToGame": () => router.push(`
+      /${worldKey}?game=${
+        name === "카드게임장에서 발견한 주민" ? 'game1' : 'game2'
+      }
+    `),
+    "closeModal": () => setActiveNpc(null)
+  }
 
   return (
     <div className={`
@@ -36,18 +47,23 @@ export function TimeNpcLineModal({
       {/* 본문 */}
       <div className="w-full h-full border-1 border-[#ffffff70] py-4 px-5">
         <p className="max-w-[45rem] break-keep leading-7 overflow-y-scroll">
-          <TypingText text={lines[lineIndex] ?? 'npc line이 없음'} />
+          <TypingText text={line ?? 'npc line이 없음'} />
         </p>
 
         {options ? (
           // 선택 버튼
-          options.map((option, idx) => 
-            <TimeOptionButton
-              key={idx}
-              onClick={option.function}
-              label={option.label}
-            />
-          )
+          <div className="fixed right-8 bottom-16 h-auto w-72 flex flex-col gap-2">
+            {options.map((option, idx) => 
+              <div key={idx} className="flex gap-2 text-lime-400 hover:opacity-50 transition-opacity">
+                <p>{`>`}</p>
+                <TimeOptionButton
+                  key={idx}
+                  onClick={actions[option.action]}
+                  label={option.answer}
+                />
+              </div>
+            )}
+          </div>
         ): (
           // 다음 또는 종료 버튼
           <div
