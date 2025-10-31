@@ -14,7 +14,7 @@ export function FindNpcLine(name: string, worldKey: string ){
   if (!npcLines) return ['npc 데이터를 찾을 수 없습니다 npcLine없음'];
 
   // TODO
-  if (name === "카드게임장에서 발견한 주민" || name ===  "파친코 앞에서 발견한 주민") {
+  if (name === "카드게임장에서 발견한 주민" || name ===  "파친코 위에서 발견한 주민") {
     return npcLines?.['해체']?.['평범']?.['친근한']
     ?? [{ line: 'npc 대사를 찾을 수 없습니다' }]
   } else {

@@ -16,7 +16,7 @@ export default function SmallScene({
         {children}
 
         {/* Controls */}
-        <OrbitControls target={[0, 0, 0]} />
+        <OrbitControls target={[0, 0, 0]} enableZoom={false} />
       </Suspense>
     </Canvas>
   )

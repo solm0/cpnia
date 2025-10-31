@@ -3,6 +3,7 @@ import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D } from "three";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
 import { useFrame } from "@react-three/fiber";
+import { FlickeringPointLight } from "./interview/InterviewScene";
 
 export default function MapNpc({
   name,
@@ -21,7 +22,12 @@ export default function MapNpc({
 }) {
   const mixer = useRef<AnimationMixer | null>(null);
 
-  const animGltf = useAnimGltf()[0];
+  let actionIdx;
+  if (name === '파친코 위에서 발견한 주민') actionIdx = 2
+  else if (name === '마야' || name === '니코') actionIdx = 3
+  else actionIdx = 0
+
+  const animGltf = useAnimGltf()[actionIdx];
   const clonedScene = useMemo(() => clone(model), [model]);
   
   // inject shader only once
@@ -73,7 +79,6 @@ export default function MapNpc({
   useEffect(() => {
     if (clonedScene) {
       mixer.current = new AnimationMixer(clonedScene);
-      
       const action = mixer.current!.clipAction(animGltf.animations[0]);
       action.play();
     }
@@ -99,6 +104,14 @@ export default function MapNpc({
         closeIsChatOpen(false);
       }}
     >
+      {(name === '마야' || name === '니코') &&
+        <FlickeringPointLight
+          pos={[0.2, 0.6, 0.2]}
+          intensity={100}
+          dur={0.5}
+          color="yellow"
+        />
+      }
       <primitive
         object={clonedScene}
         scale={1}

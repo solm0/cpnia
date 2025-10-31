@@ -29,8 +29,8 @@ export default function PachinkoCircle({
 
   const items = [
     {
-      position: [0, 13, 0] as [number, number, number],
-      rotation: [0, degToRad(100), 0] as [number, number, number],
+      position: [0, 12, 0] as [number, number, number],
+      rotation: [0, degToRad(120), 0] as [number, number, number],
       scale: scale * 1.5,
     },
     ...Array.from({ length: count }).map((_, i) => {

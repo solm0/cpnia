@@ -32,7 +32,7 @@ export const timeSpecialLines: timeSpecialLineProp = {
       },
     }
   },
-  "파친코 앞에서 발견한 주민": {
+  "파친코 위에서 발견한 주민": {
     "해체": {
       "평범": {
         "친근한": [

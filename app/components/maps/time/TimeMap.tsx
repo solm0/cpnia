@@ -2,7 +2,7 @@ import CoinStairs from "./CoinStairs";
 import PachinkoCircle from "./PachinkoCircle";
 import { RigidBody } from "@react-three/rapier";
 import Model from "../../util/Model";
-import { degToRad } from "three/src/math/MathUtils.js";
+import { degToRad, radToDeg } from "three/src/math/MathUtils.js";
 import { FloatingIsland } from "./FloatingIsland";
 import { useGLTF } from "@react-three/drei";
 import { RefObject, useMemo, useState } from "react";
@@ -145,6 +145,7 @@ export default function TimeMap({
     ];
   }, [npcModelScene, gandalf]);
   const floor = useGLTF('/models/floor.gltf').scene;
+  const stair = useGLTF('/models/stair.gltf').scene;
 
   function handleClickStair(clickedStair: number) {
     setClickedStair(clickedStair);
@@ -157,11 +158,14 @@ export default function TimeMap({
   if (gameState['game1'] === false) { stage = 0 }
   else if (gameState['game2'] === false) { stage = 1 }
   else if (gameState['game3'] === false) { stage = 2 }
+  else { stage = 3 } // 물체 언락용
 
-  const [currentStage, setCurrentStage] = useState(stage);
+  const [currentStage, setCurrentStage] = useState(stage < 3 ? stage : 2); // 계단오르기용
   const [clickedStair, setClickedStair] = useState<number | null>(null);
   const groundYs = [ 120, -97, 0 ]
   const groundY = groundYs[currentStage];
+
+  console.log(stage, currentStage)
 
   // Portals의 isLocked의 짭
   // 게임 1을 하기 전 stage는 0, 1층으로 올라가는 계단의 idx는 0
@@ -220,10 +224,20 @@ export default function TimeMap({
           stagePositions.pachinko.z
         ]}
       />
+      <primitive
+        object={stair}
+        position={[
+          stagePositions.pachinko.x - 5,
+          stagePositions.pachinko.y + stagePositions.pachinko.scale * 21.4,
+          stagePositions.pachinko.z + 8
+        ]}
+        rotation={[0,degToRad(144),0]}
+        scale={2}
+      />
 
       <PachinkoCircle
         count={8}
-        distance={14}
+        distance={16}
         center={[
           stagePositions.pachinko.x - scale * 2,
           stagePositions.pachinko.y + scale * 43,
@@ -231,13 +245,6 @@ export default function TimeMap({
         ]}
         scale={scale * 1.6}
       />
-
-      <RigidBody type="fixed" colliders={'ball'}>
-        <mesh position={[0,0,-37]}>
-          <sphereGeometry args={[12, 10]} />
-          <meshStandardMaterial transparent opacity={0} />
-        </mesh>
-      </RigidBody>
 
       {/* Stage 3. 룰렛 */}
       <Model
@@ -323,7 +330,7 @@ export default function TimeMap({
         clickedStair={clickedStair}
         avatar={avatar}
         stairPosData={coinStairs}
-        config={config[currentStage]}
+        config={config[currentStage < 3 ? currentStage : 2]}
       />
 
       <Model

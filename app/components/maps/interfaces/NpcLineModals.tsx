@@ -13,9 +13,21 @@ export function TimeNpcLineModal({
   name: string;
   setActiveNpc: (name: string | null) => void;
 }) {
-  const lines = FindTimeSpecialLine(name);
   const [lineIndex, setLineIndex] = useState(0);
-  const {line, options} = lines[lineIndex];
+  let line;
+  let options;
+  let length;
+  if (name === '카드게임장에서 발견한 주민' || name === '파친코 위에서 발견한 주민') {
+    const lines = FindTimeSpecialLine(name);
+    length = lines.length;
+    line = lines[lineIndex].line;
+    options = lines[lineIndex].options
+  } else {
+    console.log(name)
+    const lines = FindNpcLine(name, worldKey);
+    length = lines.length;
+    line = lines[lineIndex];
+  }
 
   const router = useRouter();
 
@@ -69,7 +81,7 @@ export function TimeNpcLineModal({
           <div
             className="fixed bottom-13 right-20 h-auto w-10 text-6xl animate-pulse"
             onClick={() => {
-              if (lines.length > lineIndex+1) {
+              if (length > lineIndex+1) {
                 setLineIndex(lineIndex+1)
               } else {
                 setActiveNpc(null)

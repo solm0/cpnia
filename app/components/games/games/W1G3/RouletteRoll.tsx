@@ -119,7 +119,7 @@ export default function RouletteRoll({
   const totalRotation = useRef(0);
 
   const startRoll = () => {
-    const win = Math.floor(Math.random() * n) + 1;
+    const win = moneyRef.current <= 10 ? betNum : Math.floor(Math.random() * n) + 1 ;
     setWinningNum(win);
     setSuccess(win === betNum);
     console.log('win', win, 'bet', betNum) // do not remove

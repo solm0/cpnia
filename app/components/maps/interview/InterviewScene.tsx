@@ -58,7 +58,17 @@ function Npc({
   )
 }
 
-export function FlickeringPointLight() {
+export function FlickeringPointLight({
+  pos = [-1.5,0.5,0],
+  intensity = 30,
+  dur = 2,
+  color = 'blue',
+}: {
+  pos?: [number, number, number];
+  intensity?: number;
+  dur?: number;
+  color?: string
+}) {
   const lightRef = useRef<PointLight>(null);
   const [nextToggle, setNextToggle] = useState(0);
 
@@ -66,18 +76,18 @@ export function FlickeringPointLight() {
     const t = clock.getElapsedTime();
 
     if (t > nextToggle) {
-      const newIntensity = Math.floor(Math.random() * 30);
+      const newIntensity = Math.floor(Math.random() * intensity);
 
       if (lightRef.current) {
         lightRef.current.intensity = newIntensity;
       }
 
-      const duration = Math.random() * 2;
+      const duration = Math.random() * dur;
       setNextToggle(t + duration);
     }
   });
 
-  return <pointLight ref={lightRef} position={[-1.5,0.5,0]} color={'blue'} />;
+  return <pointLight ref={lightRef} position={pos} color={color} />;
 }
 
 export default function InterviewScene() {
