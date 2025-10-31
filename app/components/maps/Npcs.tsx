@@ -23,12 +23,12 @@ function NpcLabel({
     let scale = [0.5, 0.5] as [number, number];
     
     if (npc.name === '피자커팅기') {
-      pos = [npc.position[0]-32, npc.position[1]+14, npc.position[2]+1];
-      scale = [4,4];
+      scale = [2,2];
     } else if (npc.name === '카드게임장에서 발견한 주민' || npc.name === '파친코 위에서 발견한 주민') {
       pos = [0, 1.5, 0];
       scale = [0.5, 0.5];
     }
+    console.log(npc.name, npc.position, pos, scale)
 
     return {pos, scale};
   }

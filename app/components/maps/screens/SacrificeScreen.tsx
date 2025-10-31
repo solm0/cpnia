@@ -1,14 +1,14 @@
 import Model from "../../util/Model";
 import Scene from "@/app/components/util/Scene"
 import Portals from "../Portals";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { SacrificeNpcLineModal } from "../interfaces/NpcLineModals";
 import Npcs from "../Npcs";
 import { chatNpcs } from "@/app/lib/data/positions/chatNpcs";
 import ChatNpcScreen from "../interfaces/chatnpc/ChatNpcScreen";
 import Player from "../sacrifice/Player";
 import { SacrificeLights } from "../Lights";
-import { Physics, RigidBody } from '@react-three/rapier'
+import { Physics } from '@react-three/rapier'
 import NpcLineModalMain from "../NpcLineModalMain";
 import { SacrificeEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
@@ -16,11 +16,21 @@ import Fire from "../sacrifice/Fire";
 import { useGLTF } from "@react-three/drei";
 import { Object3D, Vector3 } from "three";
 import Glass from "../sacrifice/Glass";
+import PizzaLine from "../sacrifice/PizzaLine";
 
 useGLTF.preload("/models/animations/idle.glb");
 useGLTF.preload("/models/animations/walk.glb");
 useGLTF.preload("/models/animations/jump.glb");
 useGLTF.preload("/models/animations/arm.glb");
+useGLTF.preload("/models/avatars/pepperoni.gltf")
+useGLTF.preload("/models/avatars/mushroom.gltf")
+useGLTF.preload("/models/avatars/cheese.gltf")
+useGLTF.preload("/models/avatars/yellowpap.gltf")
+useGLTF.preload("/models/avatars/onion.gltf")
+useGLTF.preload("/models/avatars/redpap.gltf")
+useGLTF.preload("/models/avatars/olive.gltf")
+
+useGLTF.preload("/models/avatars/gandalf.gltf")
 
 export default function SacrificeScreen({
   avatar,
@@ -29,7 +39,7 @@ export default function SacrificeScreen({
 }) {
   const worldKey = 'sacrifice';
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
-  const stagePosition ={ x:-200, y: -137.5, z: 350 }
+  const stagePosition ={ x:-200, y: -137.5, z: 350, scale: 1 }
 
   const chatNpc = chatNpcs[worldKey];
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -39,19 +49,39 @@ export default function SacrificeScreen({
     useGLTF("/models/avatars/mushroom.gltf").scene,
     useGLTF("/models/avatars/cheese.gltf").scene,
     useGLTF("/models/avatars/yellowpap.gltf").scene,
+    useGLTF("/models/avatars/onion.gltf").scene,
+    useGLTF("/models/avatars/redpap.gltf").scene,
+    useGLTF("/models/avatars/olive.gltf").scene,
   ];
+
+  const clonedGltfMap = useMemo(() => {
+    return gltfMap.map((model: Object3D) => model.clone(true));
+  }, [gltfMap]);
 
   const kitchen = useGLTF("/models/kitchen.glb").scene;
   const shop = useGLTF("/models/shop.gltf").scene
 
   const config: {playerPos: Vector3, playerRot: Vector3} = {
     playerPos: new Vector3(
-      80,
-      -97,
-      85
+      stagePosition.x + 400 * stagePosition.scale,
+      stagePosition.y + 39.5 * stagePosition.scale,
+      stagePosition.z - 380 * stagePosition.scale
     ),
-    playerRot: new Vector3(0, Math.PI, 0),
+    playerRot: new Vector3(0, -Math.PI, 0),
   }
+
+  const center = new Vector3(0,0,0)
+
+  const doorPos = new Vector3(
+    center.x + 125 * stagePosition.scale,
+    0,
+    center.z + 19 * stagePosition.scale
+  );
+  const pizzaPos = new Vector3(
+    center.x + 220 * stagePosition.scale,
+    0,
+    center.z - 110 * stagePosition.scale
+  );
 
   return (
     <main className="w-full h-full">
@@ -70,9 +100,9 @@ export default function SacrificeScreen({
             scene={kitchen}
             scale={4.5}
             position={[
-              stagePosition.x,
-              stagePosition.y,
-              stagePosition.z
+              stagePosition.x * stagePosition.scale,
+              stagePosition.y * stagePosition.scale,
+              stagePosition.z * stagePosition.scale
             ]}
             rotation={[0,0,0]}
           />
@@ -80,26 +110,24 @@ export default function SacrificeScreen({
             scene={shop}
             scale={4.5}
             position={[
-              stagePosition.x,
-              stagePosition.y,
-              stagePosition.z
+              stagePosition.x * stagePosition.scale,
+              stagePosition.y * stagePosition.scale,
+              stagePosition.z * stagePosition.scale
             ]}
             rotation={[0,0,0]}
           />
-          <Glass />
 
-          <RigidBody type="fixed">
-            <mesh receiveShadow castShadow position={[120, -6.5, -6]} >
-              <boxGeometry args={[233, 2, 85]} /> {/* give it a thin height */}
-              <meshStandardMaterial transparent opacity={0} />
-            </mesh>
-          </RigidBody>
+          {/* 불, 진열대 */}
+          <Fire />
+          <Glass />
+          <PizzaLine
+            doorPos={doorPos}
+            pizzaPos={pizzaPos}
+            gltfMap={clonedGltfMap}
+          />
 
           {/* 포탈들 */}
           <Portals worldKey={worldKey} />
-
-          {/* 기타 모델들 */}
-          <Fire />
 
           {/* npc들 */}
           <Npcs
@@ -108,7 +136,7 @@ export default function SacrificeScreen({
             setActiveNpc={setActiveNpc}
             setIsChatOpen={setIsChatOpen}
             chatNpc={chatNpc}
-            models={gltfMap}
+            models={gltfMap.slice(0,4)}
           />
 
           {/* 플레이어 */}

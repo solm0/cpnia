@@ -63,31 +63,33 @@ export const mapNpcs: Record<string, mapNpcProp[]> = {
       ],
       rotation: [0, 0 ,0],
       type: 'special',
-
     },
   ],
   sacrifice: [
     {
       name: '로미',
-      position: [-8,0,5],
+      position: [180,0,-10],
       rotation: [0, Math.PI ,0],
     },
     {
       name: '아리',
-      position: [-3,0,5],
-      rotation: [0, Math.PI ,0],
+      position: [60, 27, -10],
+      rotation: [-Math.PI/2, 0, degToRad(160)],
+      labelPos: [0, 0.5, 0.8],
     },
     {
       name: '노아',
-      position: [2,0,5],
-      rotation: [0, Math.PI ,0],
+      position: [100, 27, 5],
+      rotation: [-Math.PI/2, 0, degToRad(-20)],
+      labelPos: [0, 0.5, 0.8],
     },
     {
       name: '피자커팅기',
-      position: [30,0,0],
-      rotation: [0,0, 0],
-      scale: 2,
+      position: [150, 0, -45],
+      rotation: [0, degToRad(200), 0],
+      scale: 2.4,
       type: 'special',
+      labelPos: [-1.8, 13, 1],
     },
   ],
   entropy: [

@@ -71,7 +71,7 @@ export default function PlayerWithStair({
   const gamepad = useGamepadControls();
   const { yaw } = useFollowCam(
     body,
-    [0, 1, 40],
+    [0, 5, 40],
     [degToRad(20),0,0],
     pressedKeys.current,
     gamepad.current

@@ -38,8 +38,8 @@ export default function Player({
   const gamepad = useGamepadControls();
   const { yaw } = useFollowCam(
     body,
-    [0, 5, 20],
-    [degToRad(20), Math.PI, 0],
+    [0, 10, 30],
+    [degToRad(5), Math.PI /2, 0],
     pressedKeys.current,
     gamepad.current
   );
@@ -184,8 +184,6 @@ export default function Player({
       body.current.setNextKinematicRotation(slerped);
     }
   });
-
-  console.log(activeAction)
 
   return (
     <>
