@@ -38,7 +38,10 @@ export default function DefaultFail() {
             autoFocus={true}
           />
           <Button
-            onClick={() => router.push(`/${worldKey}`)}
+            onClick={() => {
+              router.push(`/${worldKey}`);
+              setGameEnded(false);
+            }}
             label="월드로 돌아가기"
           />
         </div>

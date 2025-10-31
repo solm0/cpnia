@@ -34,7 +34,7 @@ export default function W1G3({
   // 돈 다 잃으면 게임종료(실패)
   useEffect(() => {
     if (leftMoney.current <= 0) {
-      onGameEnd(false);
+      onGameEnd(true);  // 걍.이기게 해주자...
     }
   }, [leftMoney.current]);
   

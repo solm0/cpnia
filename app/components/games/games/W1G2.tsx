@@ -46,7 +46,7 @@ function Ui({
       if (successCount > 0) {
         onGameEnd(true);
       } else {
-        onGameEnd(false);
+        onGameEnd(true);  // 걍.이기게 해주자...
       }
     } else {
       setTrial(prev => prev + 1);

@@ -11,6 +11,7 @@ export default function GameEndScreen({
   showCitizenship: boolean;
 }) {
   const router = useRouter();
+  console.log('gameEndScreen called', success);
   
   useEffect(() => {
     router.push(`/${success ? 'success' : 'fail'}?from=${worldKey}-${gameKey}${success ? `&citizenship=${showCitizenship}` : ''}`);

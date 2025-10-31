@@ -17,7 +17,8 @@ export default function Game({
 
   useEffect(() => {
     setGameEnded(false);
-  }, []);
+    console.log('set Game Ended')
+  }, [gameKey]);
   
   const [success, setSuccess] = useState(false);
   const [endScreenData, setEndScreenData] = useState(false); // 시민권화면을 보여줄것인지
