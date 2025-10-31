@@ -44,7 +44,7 @@ export default function Portals({
             worldKey={worldKey}
             gameKey={game.gameKey}
             locked={isLocked(game.gameKey, stage)}
-            y={45}
+            y={game.labelYPos}
           />
 
           {game.model ? (

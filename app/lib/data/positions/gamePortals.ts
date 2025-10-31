@@ -11,6 +11,7 @@ export interface gamePortalProp {
   rule?: string;
   type?: string;
   radius?:number,
+  labelYPos?: number; // gamePortalLabel 높이
 }
 
 // collision계산하려면 rotation, position,size있어야됨.
@@ -33,13 +34,14 @@ export const gamePortals: Record<string, gamePortalProp[]> = {
       gameKey: 'game3',
       rule: '알아서 잘 해보세요',
       position: [
-        stagePositions.roulette.x + 20,
-        stagePositions.roulette.y,
-        stagePositions.roulette.z
+        stagePositions.roulette.x - 42,
+        stagePositions.roulette.y + 1.5,
+        stagePositions.roulette.z + 20
       ],
       rotation: [0, 0, 0],
-      scale: 1,
+      scale: 10,
       model: '/models/ball.gltf',
+      labelYPos: 10,
     },
   ],
   sacrifice: [
@@ -60,7 +62,8 @@ export const gamePortals: Record<string, gamePortalProp[]> = {
       position: [241, -8.5,-78.8], // 104, -71, -254.3
       rotation: [0, 0, 0],
       scale: 0.35,
-      model: '/models/door.glb'
+      model: '/models/door.glb',
+      labelYPos: 45,
     },
   ],
   entropy: [

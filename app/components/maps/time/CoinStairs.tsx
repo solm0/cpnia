@@ -39,7 +39,7 @@ function SpinningCoin({
 
   return (
     <group ref={ref} position={position} scale={scale}>
-      <primitive object={coin} />
+      <primitive object={coin} scale={1} />
     </group>
   );
 }

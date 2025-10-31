@@ -295,7 +295,7 @@ export default function TimeMap({
             endPosition={coinStair.bottom}
             startPosition={coinStair.top}
             count={coinStair.count}
-            coinScale={scale * 3}
+            coinScale={scale * 3.5}
           />
         </group>
       ))}

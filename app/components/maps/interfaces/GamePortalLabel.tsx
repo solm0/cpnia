@@ -14,7 +14,7 @@ export default function GamePortalLabel({
   y?: number;
   position?: [number, number, number]; // CoinStair 전용
 }) {
-  const complete = useGameStore((state) => state.worlds[worldKey ?? ''].games[gameKey ?? '']);
+  const complete = useGameStore((state) => state.worlds[worldKey ?? '']?.games[gameKey ?? '']);
   const completed = worldKey && gameKey ? complete : null;
 
   const pos = position
