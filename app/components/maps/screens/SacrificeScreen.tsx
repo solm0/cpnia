@@ -6,15 +6,16 @@ import { SacrificeNpcLineModal } from "../interfaces/NpcLineModals";
 import Npcs from "../Npcs";
 import { chatNpcs } from "@/app/lib/data/positions/chatNpcs";
 import ChatNpcScreen from "../interfaces/chatnpc/ChatNpcScreen";
-import Player from "../player/Player";
+import Player from "../sacrifice/Player";
 import { SacrificeLights } from "../Lights";
 import { Physics, RigidBody } from '@react-three/rapier'
 import NpcLineModalMain from "../NpcLineModalMain";
 import { SacrificeEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
-import Fire from "../Fire";
+import Fire from "../sacrifice/Fire";
 import { useGLTF } from "@react-three/drei";
-import { Object3D } from "three";
+import { Object3D, Vector3 } from "three";
+import Glass from "../sacrifice/Glass";
 
 useGLTF.preload("/models/animations/idle.glb");
 useGLTF.preload("/models/animations/walk.glb");
@@ -40,12 +41,25 @@ export default function SacrificeScreen({
     useGLTF("/models/avatars/yellowpap.gltf").scene,
   ];
 
-  const kitchen = useGLTF("/models/kitchen.gltf").scene;
+  const kitchen = useGLTF("/models/kitchen.glb").scene;
   const shop = useGLTF("/models/shop.gltf").scene
+
+  const config: {playerPos: Vector3, playerRot: Vector3} = {
+    playerPos: new Vector3(
+      80,
+      -97,
+      85
+    ),
+    playerRot: new Vector3(0, Math.PI, 0),
+  }
 
   return (
     <main className="w-full h-full">
-      <Scene>
+      <Scene
+        near={0.1}
+        far={7000}
+        fov={50}
+      >
         <Physics gravity={[0,-9,0]}>
           
           {/* 빛 */}
@@ -72,6 +86,7 @@ export default function SacrificeScreen({
             ]}
             rotation={[0,0,0]}
           />
+          <Glass />
 
           <RigidBody type="fixed">
             <mesh receiveShadow castShadow position={[120, -6.5, -6]} >
@@ -97,7 +112,11 @@ export default function SacrificeScreen({
           />
 
           {/* 플레이어 */}
-          <Player worldKey={worldKey} avatar={avatar} />
+          <Player
+            worldKey={worldKey}
+            avatar={avatar}
+            config={config}
+          />
         </Physics>
         
         {/* 효과 */}

@@ -21,7 +21,7 @@ export default function EntropyScreen({
   avatar: Object3D;
 }) {
   const worldKey = 'entropy'
-  const npcModelScene = useGLTF('/models/avatars/entropy-npc.glb').scene;
+  const npcModelScene = useGLTF('/models/avatars/entropy-npc.gltf').scene;
   const npcModel = useMemo(() => {
     return Array.from({ length: 4 }, () => clone(npcModelScene));
   }, [npcModelScene]);

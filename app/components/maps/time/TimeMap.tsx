@@ -136,7 +136,7 @@ export default function TimeMap({
   const rouletteIslands = useMemo(() => {
     return Array.from({ length: rouletteIsland.length }, () => clone(roulette));
   }, [roulette]);
-  const npcModelScene = useGLTF('/models/avatars/time-npc.glb').scene;
+  const npcModelScene = useGLTF('/models/avatars/time-npc.gltf').scene;
   const gandalf = useGLTF('/models/avatars/gandalf.gltf').scene;
   const npcModel = useMemo(() => {
     return [

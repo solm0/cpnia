@@ -13,9 +13,9 @@ useGLTF.preload("/models/animations/idle.glb");
 useGLTF.preload("/models/animations/walk.glb");
 useGLTF.preload("/models/animations/jump.glb");
 useGLTF.preload("/models/animations/arm.glb");
-useGLTF.preload("/models/avatars/time-npc.glb");
+useGLTF.preload("/models/avatars/time-npc.gltf");
 useGLTF.preload("/models/avatars/olive.gltf");
-useGLTF.preload("/models/avatars/entropy-npc.glb");
+useGLTF.preload("/models/avatars/entropy-npc.gltf");
 useGLTF.preload("/models/computer.glb");
 
 function Npc({
@@ -94,9 +94,9 @@ export default function InterviewScene() {
   const searchParam = useSearchParams();
   const worldTo = searchParam.get('to');
 
-  const timeNpc = useGLTF('/models/avatars/time-npc.glb').scene;
+  const timeNpc = useGLTF('/models/avatars/time-npc.gltf').scene;
   const sacrificeNpc = useGLTF('/models/avatars/olive.gltf').scene;
-  const entropyNpc = useGLTF('/models/avatars/entropy-npc.glb').scene;
+  const entropyNpc = useGLTF('/models/avatars/entropy-npc.gltf').scene;
   const computer = useGLTF("/models/computer.glb").scene;
 
   let model;

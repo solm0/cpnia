@@ -9,7 +9,7 @@ import { Object3D } from "three";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
 useGLTF.preload('/models/avatars/cutter.gltf');
-useGLTF.preload('/models/avatars/time-npc.glb');
+useGLTF.preload('/models/avatars/time-npc.gltf');
 
 function NpcLabel({
   npc,
@@ -60,7 +60,7 @@ export default function Npcs({
 }) {
   const [hoveredNpc, setHoveredNpc] = useState<string | null>(null);
   const cutter = useGLTF('/models/avatars/cutter.gltf').scene;
-  const timeNpc = useGLTF('/models/avatars/time-npc.glb').scene;
+  const timeNpc = useGLTF('/models/avatars/time-npc.gltf').scene;
   const clonedTimeNpc = useMemo(() => clone(timeNpc), [timeNpc]);
 
   function chooseModel(npc:mapNpcProp, i: number) {

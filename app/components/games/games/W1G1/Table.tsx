@@ -16,7 +16,7 @@ function Npc({
   avatarScale: number;
   motionPhase: RefObject<'idle' | 'pick' | 'bet' | 'npcFail' | 'npcWin'>
 }) {
-  const avatar = useGLTF('/models/avatars/time-npc.glb').scene;
+  const avatar = useGLTF('/models/avatars/time-npc.gltf').scene;
   const mixer = useRef<AnimationMixer | null>(null);
   const actionsRef = useRef<AnimationAction | null>(null);
   const animGltf = useAnimGltf();
