@@ -16,6 +16,7 @@ import { useGameStore } from "@/app/lib/state/gameState";
 import { DebugBoundaries } from "../player/debogBoundaries";
 import RouletteNumbers from "./RouletteNumbers";
 import { stagePositions } from "@/app/lib/data/positions/stagePositions";
+import GamePortalLabel from "../interfaces/GamePortalLabel";
 
 useGLTF.preload("/models/card.glb");
 useGLTF.preload("/models/pachinko-stage.glb");
@@ -33,29 +34,29 @@ const scale = 1; // stagePosition의 복제
 export const coinStairs: coinStairProp[] = [
   {
     // 1-2
-    top: [
-      stagePositions.pachinko.x - scale * 50,
-      stagePositions.pachinko.y + scale * 40,
-      stagePositions.pachinko.z - scale * 10
-    ],
     bottom: [
-      stagePositions.card.x + stagePositions.card.scale * 1,
-      stagePositions.card.y + stagePositions.card.scale * 20,
+      stagePositions.card.x + stagePositions.card.scale * 5,
+      stagePositions.card.y + stagePositions.card.scale * 23,
       stagePositions.card.z + stagePositions.card.scale,
+    ],
+    top: [
+      stagePositions.pachinko.x - stagePositions.pachinko.scale * 25,
+      stagePositions.pachinko.y + stagePositions.pachinko.scale * 18,
+      stagePositions.pachinko.z - stagePositions.pachinko.scale * 5
     ],
     count: 5,
   },
   // 2-3
   {
+    bottom: [
+      stagePositions.pachinko.x - stagePositions.pachinko.scale * 10,
+      stagePositions.pachinko.y + stagePositions.pachinko.scale * 20,
+      stagePositions.pachinko.z - stagePositions.pachinko.scale * 23
+    ],
     top: [
       stagePositions.roulette.x * stagePositions.roulette.scale * 0.2,
       stagePositions.roulette.y + stagePositions.roulette.scale * 0.7,
       stagePositions.roulette.z + stagePositions.roulette.scale * 12
-    ],
-    bottom: [
-      stagePositions.pachinko.x - stagePositions.pachinko.scale * 1,
-      stagePositions.pachinko.y + stagePositions.pachinko.scale * 10,
-      stagePositions.pachinko.z - stagePositions.pachinko.scale * 10
     ],
     count: 10,
   },
@@ -162,6 +163,14 @@ export default function TimeMap({
   const groundYs = [ 120, -97, 0 ]
   const groundY = groundYs[currentStage];
 
+  // Portals의 isLocked의 짭
+  // 게임 1을 하기 전 stage는 0, 1층으로 올라가는 계단의 idx는 0
+  // 게임 2를 하기 전 stage는 1, 2층으로 올라가는 계단의 idx는 1
+  // stage가 idx보다 작거나 같으면 isLocked = true
+  function isLocked(stairIdx: number, stage:number) {
+    return Number(stage) <= Number(stairIdx)
+  }
+
   const config: Record<number, {
     playerPos: Vector3, playerRot: Vector3
   }> = {
@@ -267,8 +276,21 @@ export default function TimeMap({
       {coinStairs.map((coinStair, idx) => (
         <group
           key={idx}
-          onClick={() => handleClickStair(idx)}
+          onClick={() => {
+            if (!isLocked(idx, stage)) {
+              handleClickStair(idx);
+            }
+          }}
         >
+          <GamePortalLabel
+            locked={isLocked(idx, stage)}
+            position={[
+              coinStair.bottom[0],
+              coinStair.bottom[1] + scale * 10,
+              coinStair.bottom[2]
+            ]}
+            label={isLocked(idx, stage) ? `${stage+1}번째 게임 성공 후에 계단이 열립니다.` : undefined}
+          />
           <CoinStairs
             endPosition={coinStair.bottom}
             startPosition={coinStair.top}

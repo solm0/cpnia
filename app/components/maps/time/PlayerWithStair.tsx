@@ -235,18 +235,18 @@ export default function PlayerWithStair({
         endPos = stairPosData[clickedStair].top;
         nextStage = currentStage + 1;
         if (clickedStair === 1) {
-          count = 11;
+          count = 10;
         } else {
-          count= 6;
+          count= 5;
         }
       } else if (currentStage > clickedStair) {
         startPos = stairPosData[clickedStair].top;
         endPos = stairPosData[clickedStair].bottom;
         nextStage = currentStage - 1;
         if (clickedStair === 1) {
-          count = 11;
+          count = 10;
         } else {
-          count= 6;
+          count= 5;
         }
       } else {
         startPos = [0, 0, 0];

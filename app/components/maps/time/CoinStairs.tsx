@@ -58,9 +58,9 @@ export default function CoinStairs({
   const xLength = endPosition[0] - startPosition[0];
   const yLength = endPosition[1] - startPosition[1];
   const zLength = endPosition[2] - startPosition[2];
-  const xDistance = xLength / count;
-  const yDistance = yLength / count;
-  const zDistance = zLength / count;
+  const xDistance = xLength / (count - 1);
+  const yDistance = yLength / (count - 1);
+  const zDistance = zLength / (count - 1);
   const coin = useGLTF('/models/coin.gltf').scene;
 
   const clonedCoins = useMemo(() => {

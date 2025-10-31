@@ -2,100 +2,8 @@ import { RigidBody } from "@react-three/rapier";
 import { gamePortals } from "@/app/lib/data/positions/gamePortals";
 import PlaceHolder from "../util/PlaceHolder";
 import { useGameStore } from "@/app/lib/state/gameState";
-import { useGLTF } from "@react-three/drei";
-import { useEffect, useState } from "react";
-import { Mesh, MeshStandardMaterial } from "three";
-import { useFrame } from "@react-three/fiber";
-import { useRouter } from "next/navigation";
 import GamePortalLabel from "./interfaces/GamePortalLabel";
-
-export function GamePortal({
-  modelSrc, locked, worldKey, gameKey, scale = 1
-}: {
-  modelSrc: string;
-  locked: boolean;
-  worldKey: string;
-  gameKey: string;
-  scale?: number;
-}) {
-  const gltf = useGLTF(modelSrc).scene;
-  const [hovered, setHovered] = useState(false);
-  const router = useRouter();
-  console.log(locked, modelSrc)
-
-  useEffect(() => {
-    if (gltf) {
-
-      gltf.traverse((child) => {
-        if ((child as Mesh).isMesh) {
-          child.castShadow = true;
-          child.receiveShadow = true;
-
-          const mesh = child as Mesh
-
-          // clone the material so each NPC is independent
-          mesh.material = (mesh.material as MeshStandardMaterial).clone();
-
-          const mat = mesh.material as MeshStandardMaterial;
-          mat.onBeforeCompile = (shader) => {
-            shader.uniforms.uHighlight = { value: 0 };
-
-            shader.fragmentShader = `
-              uniform float uHighlight;
-            ` + shader.fragmentShader;
-
-            shader.fragmentShader = shader.fragmentShader.replace(
-              `#include <dithering_fragment>`,
-              `
-                #include <dithering_fragment>
-                if (uHighlight > 0.5) {
-                  gl_FragColor.rgb += vec3(0.2, 0.2, 0.2);
-                }
-              `
-            );
-
-            mesh.userData.shader = shader;
-          };
-        }
-      })
-    }
-  }, [gltf]);
-
-  useFrame(() => {
-    if (!gltf) return;
-    gltf.traverse((child) => {
-      if ((child as Mesh).isMesh) {
-        const shader = child.userData.shader;
-        if (shader?.uniforms?.uHighlight) {
-          shader.uniforms.uHighlight.value = hovered ? 1 : 0;
-        }
-      }
-    });
-  });
-
-  return (
-    <group
-      onPointerEnter={(e: MouseEvent) => {
-        e.stopPropagation();
-        setHovered(true);
-      }}
-      onPointerLeave={(e: MouseEvent) => {
-        e.stopPropagation();
-        setHovered(false);
-      }}
-      onClick={(e: MouseEvent) => {
-        e.stopPropagation();
-        if (!locked) {
-          router.push(`/${worldKey}?game=${gameKey}`)
-        }
-      }}
-      scale={scale}
-    >
-      <primitive object={gltf} />
-    </group>
-  )
-}
-
+import GamePortal from "./interfaces/GamePortal";
 
 export default function Portals({
   worldKey,
@@ -135,7 +43,7 @@ export default function Portals({
             label={game.label}
             worldKey={worldKey}
             gameKey={game.gameKey}
-            locked={Number(game.gameKey.slice(-1)) > Number(stage.slice(-1))}
+            locked={isLocked(game.gameKey, stage)}
             y={45}
           />
 
