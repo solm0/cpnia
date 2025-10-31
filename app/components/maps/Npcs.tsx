@@ -71,8 +71,6 @@ export default function Npcs({
     return model;
   }
 
-  console.log(mapNpcs[worldKey])
-
   return (
     <>
       {/* 맵 npc */}

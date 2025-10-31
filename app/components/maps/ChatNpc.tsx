@@ -121,7 +121,11 @@ export function ChatNpcAvatar({
         closeActiveNpc(null);
       }}
     >
-      <primitive object={model} />
+      <primitive
+        object={model}
+        scale={1}
+        position={[0,0,0]}
+      />
     </group>
   )
 }

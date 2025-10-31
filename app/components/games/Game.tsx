@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGameStore } from "@/app/lib/state/gameState";
 import GameEndScreen from "./screens/GameEndScreen";
 import GameScreen from "./screens/GameScreen";
@@ -15,6 +15,10 @@ export default function Game({
   const gameEnded = useGameEndStore(state => state.gameEnded);
   const setGameEnded = useGameEndStore(state => state.setGameEnded);
 
+  useEffect(() => {
+    setGameEnded(false);
+  }, []);
+  
   const [success, setSuccess] = useState(false);
   const [endScreenData, setEndScreenData] = useState(false); // 시민권화면을 보여줄것인지
 

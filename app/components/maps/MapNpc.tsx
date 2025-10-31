@@ -99,7 +99,11 @@ export default function MapNpc({
         closeIsChatOpen(false);
       }}
     >
-      <primitive object={clonedScene} />
+      <primitive
+        object={clonedScene}
+        scale={1}
+        position={[0,0,0]}
+      />
     </group>
   )
 }
