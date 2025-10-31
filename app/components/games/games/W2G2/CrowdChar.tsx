@@ -2,6 +2,7 @@ import { AnimationAction, AnimationMixer, LoopOnce, LoopRepeat, Object3D } from 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
+import Model from "@/app/components/util/Model";
 
 export default function CrowdChar({
   model,
@@ -70,6 +71,6 @@ export default function CrowdChar({
   });
 
   return (
-    <primitive object={char} position={position} scale={scale} />
+    <Model scene={char} position={position} scale={scale} />
   );
 }

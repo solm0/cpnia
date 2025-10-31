@@ -18,7 +18,7 @@ export const stagePositions: Record<string, {
   },
   roulette: {
     x: scale * center[0] + scale * 1,
-    y: scale * center[1] - scale * 1.4,
+    y: scale * center[1] - scale * 1.9,
     z: scale * center[2] - scale * 180,
     scale: scale * 8
   },

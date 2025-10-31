@@ -1,6 +1,7 @@
 import { Object3D, Vector3, CatmullRomCurve3 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { useMemo } from "react";
+import Model from "../../util/Model";
 
 export default function PizzaLine({
   doorPos,
@@ -40,7 +41,7 @@ export default function PizzaLine({
             rotation={[0, rotY, 0]}
             scale={8}
           >
-            <primitive object={avatar.clone(true)} />
+            <Model scene={avatar.clone(true)} position={[0,0,0]} scale={1} />
           </group>
         );
       })}

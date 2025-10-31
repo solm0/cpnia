@@ -42,7 +42,7 @@ function Ui({
     }
 
     // 마지막이면 성공횟수 검사 후 게임종료, 아니면 다음단계
-    if (trial === 3) {
+    if (trial === 6) {
       if (successCount > 0) {
         onGameEnd(true);
       } else {
@@ -50,7 +50,6 @@ function Ui({
       }
     } else {
       setTrial(prev => prev + 1);
-      console.log(trial)
     }
   }
 
@@ -121,6 +120,7 @@ export default function W1G2({
 }) {
   const motionPhase = useRef<'idle' | 'toSide' | 'handle' | 'toFront' | 'cylinder' | 'done'>('idle');
   const successRef = useRef<boolean>(null);
+  const trialRef = useRef(0); // ui와 관련없음, 마지막에 이기게 해주기 위한 것
 
   const cylinderRotProg = useRef(0);
   const groupRotProg = useRef(0);
@@ -160,12 +160,23 @@ export default function W1G2({
       ],
     ]
 
-    randomAnglesRef.current = angleObjMap.map(
-      reel => reel[Math.floor(Math.random() * reel.length)]
-    );
+    trialRef.current += 1;
+    console.log(trialRef.current)
+
+    if (trialRef.current < 6) {
+      // 일반 라운드: 랜덤 선택
+      randomAnglesRef.current = angleObjMap.map(
+        (reel) => reel[Math.floor(Math.random() * reel.length)]
+      );
+    } else {
+      // 마지막 라운드: 무조건 성공 (모두 같은 obj)
+      const winningObj = "seven";
+      randomAnglesRef.current = angleObjMap.map((reel) => {
+        return reel.find((item) => item.obj === winningObj) || reel[0];
+      });
+    }
 
     finalRotRef.current = randomAnglesRef.current.map(item => item.angle + 360 * spins);
-  
     successRef.current = randomAnglesRef.current.every(a => a.obj === randomAnglesRef.current[0].obj);
 
     // reset progress

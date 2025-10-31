@@ -176,15 +176,19 @@ export default function TimeMap({
   }
 
   const config: Record<number, {
-    playerPos: Vector3, playerRot: Vector3
+    playerPos: Vector3, playerRot: Vector3,
+    camXRot: number, camYRot: number, zoom: number
   }> = {
     0: {
       playerPos: new Vector3(
-        stagePositions.card.x,
+        stagePositions.card.x - 37,
         stagePositions.card.y,
-        stagePositions.card.z
+        stagePositions.card.z + 24
       ),
       playerRot: new Vector3(0,Math.PI,0),
+      camXRot: 13,
+      camYRot: -90,
+      zoom: 50,
     },
     1: {
       playerPos: new Vector3(
@@ -193,14 +197,20 @@ export default function TimeMap({
         stagePositions.pachinko.z + 30
       ),
       playerRot: new Vector3(0,Math.PI,0),
+      camXRot: 15,
+      camYRot: 0,
+      zoom: 60,
     },
     2: {
       playerPos: new Vector3(
-        stagePositions.roulette.x - 33,
+        stagePositions.roulette.x - 10,
         stagePositions.roulette.y,
-        stagePositions.roulette.z
+        stagePositions.roulette.z + 82
       ),
-      playerRot: new Vector3(0,Math.PI,0),
+      playerRot: new Vector3(0, Math.PI, 0),
+      camXRot: 20,
+      camYRot: 20,
+      zoom: 50,
     }
   }
 

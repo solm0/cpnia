@@ -28,7 +28,7 @@ function NpcLabel({
       pos = [0, 1.5, 0];
       scale = [0.5, 0.5];
     }
-    console.log(npc.name, npc.position, pos, scale)
+    // console.log(npc.name, npc.position, pos, scale)
 
     return {pos, scale};
   }

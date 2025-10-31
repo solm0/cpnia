@@ -27,7 +27,7 @@ export default function Player({
   worldKey: string;
   groundY?: number;
   avatar: Object3D;
-  config?: { playerPos: Vector3, playerRot: Vector3 };
+  config?: { playerPos: Vector3, playerRot: Vector3, camYRot: number };
 }) {
   const playerGrounded = useRef(false);
   const inJumpAction = useRef(false);
@@ -39,7 +39,7 @@ export default function Player({
   const { yaw } = useFollowCam(
     body,
     [0, 10, 30],
-    [degToRad(5), Math.PI /2, 0],
+    [degToRad(5), degToRad(config?.camYRot ?? 90), 0],
     pressedKeys.current,
     gamepad.current
   );

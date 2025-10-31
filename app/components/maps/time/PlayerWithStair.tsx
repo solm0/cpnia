@@ -36,7 +36,7 @@ export default function PlayerWithStair({
   clickedStair?: number | null;
   avatar: Object3D;
   stairPosData: coinStairProp[];
-  config?: { playerPos: Vector3, playerRot: Vector3 }
+  config?: { playerPos: Vector3, playerRot: Vector3, camXRot: number, camYRot: number, zoom: number, }
 }) {
   const timeClampArea: Boundary[] = [
     { 
@@ -71,8 +71,8 @@ export default function PlayerWithStair({
   const gamepad = useGamepadControls();
   const { yaw } = useFollowCam(
     body,
-    [0, 5, 40],
-    [degToRad(20),0,0],
+    [0, 10, config?.zoom ?? 50],
+    [degToRad(config?.camXRot ?? 20), degToRad(config?.camYRot ?? 0), 0],
     pressedKeys.current,
     gamepad.current
   );

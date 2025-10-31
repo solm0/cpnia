@@ -103,7 +103,7 @@ export default function SlotGame({
       if (groupRotProg.current === 1) {
         groupRotProg.current = 0;
       }
-      console.log(groupRotProg)
+      // console.log(groupRotProg)
       const startRot = Math.PI/1.5;
       const endRot = Math.PI;
     
