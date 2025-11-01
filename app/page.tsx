@@ -35,39 +35,38 @@ export default function Home() {
   }, []);
 
   const sceneRef = useRef<{ focusOn: (target: [number, number, number], rotation: [number, number, number], zoomIn?: number) => void }>(null);
-  const focusPortal = (
-    position?: [number, number, number],
-    rotation?: [number, number, number],
-  ) => {
-    if (position && rotation) {
-      sceneRef.current?.focusOn(position, rotation, 20);
+  
+  function focusPortal(num: number, isMove: boolean) {
+    setIsFocused(true);
+    const currentIndex = worldPortals.findIndex(world => world.worldKey === focusedWorld);
+    const index = isMove ? (currentIndex + num + worldPortals.length) % worldPortals.length : num
+    const pos = worldPortals[index].position;
+    const rot = worldPortals[index].rotation
+
+    if (pos && rot) {
+      sceneRef.current?.focusOn(pos, rot, 20);
     }
+
+    const prevWorldKey = worldPortals[index].worldKey;
+    setFocusedWorld(prevWorldKey);
   }
 
-  const unFocusPortal = () => {
+  function unFocusPortal() {
     sceneRef.current?.focusOn([-5,0,0], [0,0,0], 30);
+    setIsFocused(false);
   }
 
   const [isFocused, setIsFocused] = useState(false);
   const [focusedWorld, setFocusedWorld] = useState<string | null>(null);
-
   const worldData = worldPortals.find(world => world.worldKey === focusedWorld);
 
   useEffect(() => {
-    function checkPause() {
-      if (gamepad?.current?.buttons[12]) {
-        setIsFocused(true);
-        focusPortal(worldPortals[0].position, worldPortals[0].rotation);
-        setFocusedWorld(worldPortals[0].worldKey)
-      } else if (gamepad?.current?.buttons[13]) {
-        unFocusPortal();
-        setIsFocused(false);
-      }
-    }
-  
-    const interval = setInterval(checkPause, 50); // check every 50ms
+    const interval = setInterval(() => {
+      if (gamepad?.current?.buttons[3]) unFocusPortal()
+      else if (gamepad?.current?.buttons[2]) focusPortal(1, false);
+    }, 60);
     return () => clearInterval(interval);
-  }, [gamepad]);
+  }, [gamepad, isFocused]);
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -79,12 +78,11 @@ export default function Home() {
           ref={sceneRef}
           isFocused={isFocused}
           setIsFocused={setIsFocused}
-          >
-          {worldPortals.map(world => 
+        >
+          {worldPortals.map((world, i) => 
             <WorldPortal
               key={world.worldKey}
               src={world.src}
-              label={world.worldName}
               worldKey={world.worldKey}
               position={world.position}
               rotation={world.rotation}
@@ -93,6 +91,7 @@ export default function Home() {
               rotationSpeed={world.rotationSpeed}
               onFocus={focusPortal}
               setFocusedWorld={setFocusedWorld}
+              id={i}
             />
           )}
 
@@ -105,7 +104,7 @@ export default function Home() {
       </div>
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         <p className="absolute top-20 text-sm left-1/2 -translate-x-1/2 text-white animate-pulse">
-          {`게임패드: ${isFocused ? '▽ 눌러 뒤로가기' : '△ 눌러 월드 선택'}`}
+          {`게임패드: ${isFocused ? 'Y 눌러 뒤로가기' : 'X 눌러 월드 선택'}`}
         </p>
         {!isFocused && <HomeMenu />}
         {isFocused &&
@@ -113,15 +112,9 @@ export default function Home() {
             <div className="absolute top-1/2 -translate-y-1/2 left-4 scale-200">
               <Button
                 label="<"
-                onClick={() => {
-                  const currentIndex = worldPortals.findIndex(world => world.worldKey === focusedWorld);
-                  const prevIndex = (currentIndex - 1 + worldPortals.length) % worldPortals.length;
-                  
-                  focusPortal(worldPortals[prevIndex].position, worldPortals[prevIndex].rotation);
-                  const prevWorldKey = worldPortals[prevIndex].worldKey;
-                  setFocusedWorld(prevWorldKey);
-                }}
+                onClick={() => focusPortal(-1, true)}
                 small={true}
+                id={`1-2-1`}
               />
             </div>
 
@@ -134,13 +127,12 @@ export default function Home() {
                 <Button
                     label="ENTER WORLD"
                     onClick={() => router.push(`/interview?to=${focusedWorld}`)}
+                    id={`1-2-2`}
                   />
                 <Button
                   label="BACK"
-                  onClick={() => {
-                    unFocusPortal();
-                    setIsFocused(false);
-                  }}
+                  onClick={() => unFocusPortal()}
+                  id={`1-2-3`}
                 />
               </div>
             </div>
@@ -148,15 +140,9 @@ export default function Home() {
             <div className="absolute top-1/2 -translate-y-1/2 right-4 scale-200">
               <Button
                 label=">"
-                onClick={() => {
-                  const currentIndex = worldPortals.findIndex(world => world.worldKey === focusedWorld);
-                  const nextIndex = (currentIndex + 1) % worldPortals.length;
-                  
-                  focusPortal(worldPortals[nextIndex].position, worldPortals[nextIndex].rotation);
-                  const nextWorldKey = worldPortals[nextIndex].worldKey;
-                  setFocusedWorld(nextWorldKey);
-                }}
+                onClick={() => focusPortal(1, true)}
                 small={true}
+                id={`1-2-4`}
               />
             </div>
           </>

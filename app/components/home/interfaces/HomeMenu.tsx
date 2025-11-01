@@ -30,14 +30,16 @@ export default function HomeMenu() {
           <img src={'/images/cpnia-logo.png'} />
         </h1>
 
-        <div className="flex flex-col gap-2 pointer-events-auto">
+        <div className="flex flex-col gap-2 pointer-events-auto items-center">
           <Button
             onClick={() => setIsPurseOpen(true)}
             label="WALLET"
+            id='1-1-1'
           />
           <Button
             onClick={() => setIsAboutOpen(true)}
             label="ABOUT"
+            id='1-1-2'
           />
           <UserNameForm />
         </div>

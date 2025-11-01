@@ -66,11 +66,11 @@ function Ui({
             <Button
               worldKey="time"
               label="시작"
-              autoFocus={true}
               onClick={() => {
                 motionPhase.current = 'toSide'
                 resetRound();
               }}
+              id={'tempId'}
             />
           )
           : motionPhase.current === 'done' && successRef.current === true
@@ -84,7 +84,7 @@ function Ui({
                   }}
                   label="한 번 더 시도"
                   worldKey="time"
-                  autoFocus={true}
+                  id={'tempId'}
                 />
               </div>
             )
@@ -99,7 +99,7 @@ function Ui({
                   }}
                   label="다시 시도"
                   worldKey="time"
-                  autoFocus={true}
+                  id={'tempId'}
                 />
               </div>
             )

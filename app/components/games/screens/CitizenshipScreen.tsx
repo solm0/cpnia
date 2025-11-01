@@ -22,6 +22,7 @@ export default function CitizenshipScreen() {
         <Button
           onClick={() => router.push(`/`)}
           label="홈으로"
+          id={'tempId'}
         />
       </div>
     </main>

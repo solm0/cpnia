@@ -35,7 +35,7 @@ export default function InterviewUi() {
       <Button
         onClick={() => router.push(`/${worldTo}`)}
         label="성격 형성 스킵하고 바로 입장하기"
-        gpTabIndex={1}
+        id={'tempId'}
       />
     </div>
   )

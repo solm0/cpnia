@@ -199,7 +199,7 @@ function StartScreen({worldKey, handleStart}: {worldKey: string; handleStart:() 
             }}
             label="시작하기"
             worldKey={worldKey}
-            autoFocus={true}
+            id={'tempId'}
           />
         </FullScreenModal>
       }

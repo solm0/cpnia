@@ -97,7 +97,7 @@ export default function Ui({
           label="카드 뽑기"
           onClick={pickCard}
           worldKey={worldKey}
-          autoFocus={true}
+          id={'tempId'}
         />
         <UiCoinPile
           coin={coin}
@@ -121,7 +121,7 @@ export default function Ui({
                 motionPhase.current = 'bet';
               }}
               label="확인"
-              autoFocus={true}
+              id={'tempId'}
             />
             <UiCoinPile
               coin={coin}
@@ -172,7 +172,7 @@ export default function Ui({
             <Button
               label="월드로 돌아가기"
               onClick={() => router.push(`/${worldKey}`)}
-              autoFocus={true}
+              id={'tempId'}
               worldKey={worldKey}
             />
           </div>
@@ -192,7 +192,7 @@ export default function Ui({
                 currentNum.current = null;
               }}
               worldKey={worldKey}
-              autoFocus={true}
+              id={'tempId'}
             />
             <UiCoinPile
               coin={coin}
@@ -215,6 +215,7 @@ export default function Ui({
                     onGameEnd(false);
                     motionPhase.current = 'npcWin'
                   }}
+                  id={'tempId'}
                 />
                 <UiCoinPile
                   coin={coin}
@@ -234,6 +235,7 @@ export default function Ui({
                     onGameEnd(true);
                     motionPhase.current = 'npcFail'
                   }}
+                  id={'tempId'}
                 />
                 <UiCoinPile
                   coin={coin}
@@ -276,7 +278,7 @@ export default function Ui({
                       label="확인"
                       onClick={() => onGameEnd(success)}
                       worldKey={worldKey}
-                      autoFocus={true}
+                      id={'tempId'}
                     />
                   </div>
                 }
@@ -316,7 +318,7 @@ export default function Ui({
                       label="확인"
                       onClick={() => onGameEnd(success)}
                       worldKey={worldKey}
-                      autoFocus={true}
+                      id={'tempId'}
                     />
                   </div>
                 }
@@ -336,7 +338,7 @@ export default function Ui({
               <div>
                 <p>당신은 {currentNum.current}를 베팅했습니다.</p>
                 <Button
-                  autoFocus={true}
+                  id={'tempId'}
                   worldKey={worldKey}
                   label="확인"
                   onClick={() => {
@@ -360,7 +362,7 @@ export default function Ui({
               <div>
                 <p>상대가 {currentNum.current}를 베팅했습니다.</p>
                 <Button
-                  autoFocus={true}
+                  id={'tempId'}
                   worldKey={worldKey}
                   label="확인"
                   onClick={() => {
@@ -402,7 +404,7 @@ export default function Ui({
                   label="확인"
                   onClick={() => onGameEnd(success)}
                   worldKey={worldKey}
-                  autoFocus={true}
+                  id={'tempId'}
                 />
                 <UiCoinPile
                   coin={coin}
@@ -430,7 +432,7 @@ export default function Ui({
                   label="확인"
                   onClick={() => onGameEnd(success)}
                   worldKey={worldKey}
-                  autoFocus={true}
+                  id={'tempId'}
                 />
                 <UiCoinPile
                   coin={coin}

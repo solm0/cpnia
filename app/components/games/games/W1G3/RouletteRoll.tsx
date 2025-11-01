@@ -29,6 +29,7 @@ export function Ui({
           worldKey="sacrifice"
           label="확인"
           onClick={() => onRoundEnd(true)}
+          id={'tempId'}
         />
       </Html>
     )
@@ -45,11 +46,13 @@ export function Ui({
             setSuccess(null);
             setUiState("idle");
           }}
+          id={'tempId'}
         />
         <Button
           worldKey="sacrifice"
           label="아니오"
           onClick={() => onGameEnd(false)}
+          id={'tempId'}
         />
       </Html>
     )

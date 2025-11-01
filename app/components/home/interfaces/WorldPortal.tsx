@@ -7,18 +7,18 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 
 export default function WorldPortal({
-  src, label, worldKey, position, rotation, scale, rotationAxis, rotationSpeed, onFocus, setFocusedWorld,
+  src, worldKey, position, rotation, scale, rotationAxis, rotationSpeed, onFocus, setFocusedWorld, id
 }: {
   src: string;
-  label: string;
   worldKey: string;
   position: [number, number, number];
   rotation: [number, number, number];
   scale: number;
   rotationAxis: [number, number, number];
   rotationSpeed: number;
-  onFocus: (position?: [number, number, number], rotation?:[number, number, number], worldKey?: string) => void;
+  onFocus: (num: number, isMove: boolean) => void;
   setFocusedWorld: (focusedWorld: string) => void;
+  id: number;
 }) {
   const ref = useRef<Group | null>(null);
   const icon = useGLTF(src).scene
@@ -38,7 +38,7 @@ export default function WorldPortal({
       position={position}
       rotation={rotation}
       onClick={() => {
-        onFocus?.(position, rotation);
+        onFocus?.(id, false);
         setFocusedWorld(worldKey);
       }}
     >

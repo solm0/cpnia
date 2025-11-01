@@ -109,7 +109,7 @@ export default function InterviewForms() {
               onClick={handleClick}
               label={loading ? "답변을 분석중입니다...": "다음"}
               disabled={loading || !input.trim()}
-              gpTabIndex={0}
+              id={'tempId'}
             />
           </form>
         </>
@@ -121,6 +121,7 @@ export default function InterviewForms() {
               <Button
                 onClick={() => router.push(`/${worldTo}`)}
                 label="입장하기"
+                id={'tempId'}
               />
             </div>
           )
@@ -130,6 +131,7 @@ export default function InterviewForms() {
               <Button
                 onClick={() => router.push('/')}
                 label="홈으로"
+                id={'tempId'}
               />
             </div>
           )}

@@ -73,6 +73,7 @@ export function BetInput({
                   }}
                   disabled={num >= gameRef.current[0].leftChips ? true : false}
                   worldKey={worldKey}
+                  id={'tempId'}
                 />
                 <Button
                   label="-"
@@ -83,11 +84,13 @@ export function BetInput({
                   }}
                   disabled={num <= minNum ? true : false}
                   worldKey={worldKey}
+                  id={'tempId'}
                 />
                 <Button
                   label="올인"
                   onClick={() => setNum(gameRef.current[0].leftChips)}
                   worldKey={worldKey}
+                  id={'tempId'}
                 />
               </div>
   
@@ -95,13 +98,14 @@ export function BetInput({
                 <Button
                   label="베팅"
                   worldKey={worldKey}
-                  autoFocus={true}
+                  id={'tempId'}
                   onClick={() => setModal('bet')}
                 />
                 <Button
                   label="폴드"
                   worldKey={worldKey}
                   onClick={() => setModal('fold')}
+                  id={'tempId'}
                 />
               </div>
             </div>

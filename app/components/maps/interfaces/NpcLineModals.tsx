@@ -213,6 +213,7 @@ export function FugitiveLineModal({
             worldKey="sacrifice"
             label="닫기"
             onClick={() => setIsOpen(false)}
+            id={'tempId'}
           />
         </div>
       </div>
@@ -328,6 +329,7 @@ export function EntropyNpcLineModal({
         onClick={() => setActiveNpc(null)}
         label="닫기"
         worldKey={worldKey}
+        id={'tempId'}
       />
     </div>
   )

@@ -147,7 +147,7 @@ export default function W3G2({
             onClick={() => setHasStarted(true)}
             label="시작하기"
             worldKey={worldKey}
-            autoFocus={true}
+            id={'tempId'}
           />
         </FullScreenModal>
       }

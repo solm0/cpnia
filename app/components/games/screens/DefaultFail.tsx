@@ -35,7 +35,7 @@ export default function DefaultFail() {
               setGameEnded(false);
             }}
             label='다시 하기'
-            autoFocus={true}
+            id={'tempId'}
           />
           <Button
             onClick={() => {
@@ -43,6 +43,7 @@ export default function DefaultFail() {
               setGameEnded(false);
             }}
             label="월드로 돌아가기"
+            id={'tempId'}
           />
         </div>
       </main>

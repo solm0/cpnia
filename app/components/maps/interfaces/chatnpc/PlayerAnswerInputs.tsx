@@ -24,6 +24,7 @@ export function TimePlayerAnswerInput({
         label="전송"
         worldKey="time"
         disabled={!input.trim()}
+        id={'tempId'}
       />
     </div>
   )
@@ -53,6 +54,7 @@ export function SacrificePlayerAnswerInput({
         label="전송"
         worldKey="sacrifice"
         disabled={!input.trim()}
+        id={'tempId'}
       />
     </div>
   )

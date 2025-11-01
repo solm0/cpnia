@@ -210,7 +210,7 @@ export default function W3G3({
             }}
             label="시작하기"
             worldKey={worldKey}
-            autoFocus={true}
+            id={'tempId'}
           />
         </FullScreenModal>
       }

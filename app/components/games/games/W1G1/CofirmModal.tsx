@@ -34,7 +34,7 @@ export function ConfirmModal({
         <Button
           worldKey={worldKey}
           label="예"
-          autoFocus={true}
+          id={'tempId'}
           onClick={() => {
             if (behavior === 'bet') {
               motionPhase.current = 'bet';
@@ -60,6 +60,7 @@ export function ConfirmModal({
           onClick={() => {
             setModal(null);
           }}
+          id={'tempId'}
         />
       </div>
     </div>

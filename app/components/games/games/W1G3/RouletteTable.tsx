@@ -162,11 +162,13 @@ export default function RouletteTable({
                 worldKey={worldKey}
                 label="예"
                 onClick={() => setBetNum(coinIsOn.current)}
+                id={'tempId'}
               />
               <Button
                 worldKey={worldKey}
                 label="다시고를래요"
                 onClick={() => setSelected(false)}
+                id={'tempId'}
               />
             </div>
           </div>

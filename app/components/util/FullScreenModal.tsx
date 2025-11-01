@@ -1,5 +1,7 @@
 import { jersey15 } from "@/app/lib/fonts";
 import Button from "./Button";
+import { useEffect } from "react";
+import { use2dFocusStore } from "@/app/lib/gamepad/inputManager";
 
 export default function FullScreenModal({
   children, title, handleClose
@@ -8,6 +10,15 @@ export default function FullScreenModal({
   title?: string;
   handleClose?: (open: boolean) => void;
 }) {
+  const { focusables, setFocusIndex } = use2dFocusStore.getState();
+
+  useEffect(() => {
+    setFocusIndex(focusables.length)
+    return () => {
+      setFocusIndex(0)
+    }
+  }, [])
+
   return (
     <div className={`${jersey15.className} absolute top-0 left-0 w-screen h-screen flex flex-col items-center p-20 justify-between pointer-events-auto backdrop-blur-xl z-80`}>
       
@@ -23,7 +34,7 @@ export default function FullScreenModal({
         <Button
           onClick={() => handleClose(false)}
           label="닫기"
-          autoFocus={true}
+          id='1-3-1'
         />
       }
     </div>

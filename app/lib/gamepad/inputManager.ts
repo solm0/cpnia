@@ -9,26 +9,29 @@ export const InputManager = {
   // onOpenChat: () => {},
   // onJump: () => {},
   onNavigate: (dir: Dir) => {
+    console.log(use2dFocusStore.getState().focusables, use2dFocusStore.getState().focusIndex)
     moveFocus(dir);
   },
   onConfirm: () => {
     const focusedObj = use3dFocusStore.getState().focusedObj;
     if (focusedObj) {
-      focusedObj.onInteract?.();
+      focusedObj.onClick?.();
     } else {
       const uiFocus = use2dFocusStore.getState().focusables[
         use2dFocusStore.getState().focusIndex
       ];
-      uiFocus?.onSelect?.();
+      console.log(uiFocus)
+      console.log(use2dFocusStore.getState().focusables)
+      uiFocus?.onClick?.();
     }
   },
 };
 
 interface Focusable2d {
-  id: number;
-  onSelect: () => void;
+  id: string;
   x: number;
   y: number;
+  onClick: (param?: number | string | boolean | null) => void;
 }
 
 interface Focus2d {
@@ -36,11 +39,10 @@ interface Focus2d {
   focusables: Focusable2d[];
   setFocusIndex: (i: number) => void;
   registerFocusable: (f: Focusable2d) => void;
-  unregisterFocusable: (id: number) => void;
+  unregisterFocusable: (id: string) => void;
 }
 
-// 현재 “UI 포커스 가능한 요소 목록”과 “현재 인덱스”를 관리
-const use2dFocusStore = create<Focus2d>((set) => ({
+export const use2dFocusStore = create<Focus2d>((set) => ({
   focusIndex: 0,
   focusables: [],
   setFocusIndex: (i: number) => set({ focusIndex: i }),
@@ -53,9 +55,9 @@ const use2dFocusStore = create<Focus2d>((set) => ({
 }));
 
 interface Focusable3d {
-  id: number;
+  id: string;
   object: Object3D;
-  onInteract?: () => void;
+  onClick?: () => void;
 }
 
 interface Focus3d {
@@ -63,59 +65,45 @@ interface Focus3d {
   setFocusedObj: (obj: Focusable3d | null) => void;
 }
 
-const use3dFocusStore = create<Focus3d>((set) => ({
+export const use3dFocusStore = create<Focus3d>((set) => ({
   focusedObj: null as Focusable3d | null,
   setFocusedObj: (obj: Focusable3d | null) => set({ focusedObj: obj }),
 }));
 
 function moveFocus(dir: Dir) {
   const { focusables, focusIndex, setFocusIndex } = use2dFocusStore.getState();
-
   const current = focusables[focusIndex];
   if (!current) return;
 
-  // 간단히: 방향에 맞는 가장 가까운 요소 선택
-  const candidates = focusables.filter((f) => f.id !== current.id);
   let next = null;
-  const minDist = Infinity;
-  for (const f of candidates) {
+  let minScore = Infinity;
+
+  for (const f of focusables) {
+    if (f.id === current.id) continue;
+
     const dx = f.x - current.x;
     const dy = f.y - current.y;
-    if (dir === "up" && dy < 0 && Math.abs(dx) < 100 && Math.abs(dy) < minDist) next = f;
-    if (dir === "down" && dy > 0 && Math.abs(dx) < 100 && dy < minDist) next = f;
-    if (dir === "left" && dx < 0 && Math.abs(dy) < 100 && Math.abs(dx) < minDist) next = f;
-    if (dir === "right" && dx > 0 && Math.abs(dy) < 100 && dx < minDist) next = f;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    // 방향 필터링
+    if (dir === "up" && dy >= 0) continue;
+    if (dir === "down" && dy <= 0) continue;
+    if (dir === "left" && dx >= 0) continue;
+    if (dir === "right" && dx <= 0) continue;
+
+    // 방향에 따른 “가중 거리” 계산
+    let score = dist;
+    if (dir === "up" || dir === "down") score += Math.abs(dx) * 0.4; // 수직 이동 시 x 오차는 살짝 허용
+    else score += Math.abs(dy) * 0.4; // 수평 이동 시 y 오차는 살짝 허용
+
+    if (score < minScore) {
+      minScore = score;
+      next = f;
+    }
   }
 
   if (next) setFocusIndex(focusables.indexOf(next));
 }
-
-// --- Button.tsx
-// 기존 버튼에다가 id 넣고 onClick을 onConfirm으로 바꾸면 됨.
-// export function UIButton({ id, children, onConfirm, x, y }) {
-//   const ref = useRef();
-//   const { focusIndex, focusables } = useFocusStore();
-//   const index = focusables.findIndex((f) => f.id === id);
-//   const isFocused = focusIndex === index;
-
-//   useEffect(() => {
-//     useFocusStore.getState().registerFocusable({ id, ref, x, y, onConfirm });
-
-        // return () => {
-        //   useFocusStore.getState().unregisterFocusable(id);
-        // };
-//   }, []);
-
-//   return (
-//     <div
-//       ref={ref}
-//       className={`p-4 rounded-xl cursor-pointer transition
-//         ${isFocused ? "ring-4 ring-cyan-400 scale-105" : "opacity-80"}`}
-//     >
-//       {children}
-//     </div>
-//   );
-// }
 
 // --- 3D 오브젝트 생성 시 사용자 정의 속성으로 id나 meta 정보를 부여
 // const mesh = new THREE.Mesh(geometry, material);

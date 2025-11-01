@@ -81,6 +81,7 @@ export default function ChatNpcScreen({
               label="닫기"
               worldKey="time"
               small={true}
+              id={'tempId'}
             />
           </div>
     
@@ -130,6 +131,7 @@ export default function ChatNpcScreen({
               onClick={() => setIsChatOpen(false)}
               label="닫기"
               worldKey="sacrifice"
+              id={'tempId'}
             />
           </div>
 
@@ -181,6 +183,7 @@ export default function ChatNpcScreen({
               onClick={() => setIsChatOpen(false)}
               label="닫기"
               worldKey="time"
+              id={'tempId'}
             />
           </div>
     

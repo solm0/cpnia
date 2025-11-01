@@ -102,6 +102,7 @@ export function W2G1Interface({
             worldKey={worldKey}
             label="클릭"
             onClick={() => setScore(score+1)}
+            id={'tempId'}
           />
         </div>
         
