@@ -1,6 +1,6 @@
 import Scene from "../../util/Scene";
-import { RefObject, useEffect, useRef, useState } from "react";
-import { Billboard, OrbitControls, Text, useGLTF } from "@react-three/drei";
+import { useEffect, useRef, useState } from "react";
+import { Billboard, OrbitControls, Text } from "@react-three/drei";
 import FullScreenModal from "../../util/FullScreenModal";
 import Button from "../../util/Button";
 import { useFrame, useThree } from "@react-three/fiber";

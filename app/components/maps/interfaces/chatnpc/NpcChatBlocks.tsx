@@ -9,7 +9,7 @@ export function TimeNpcChatBlock({
   return (
     <div className="w-full h-auto flex gap-3 max-w-6/7 self-start p-4">
       <div className="w-14 h-14 shrink-0 border-1 border-[#ffffff70] rounded-full overflow-hidden">
-        
+        <img src={`/images/profile_time.png`}/>
       </div>
       <div className='text-white grow'>
         {isLatest ? <TypingText text={text} /> : <span>{text}</span>}
@@ -27,7 +27,7 @@ export function SacrificeNpcChatBlock({
   return (
     <div className="w-full h-auto flex gap-3 max-w-6/7 self-start p-4">
       <div className="w-14 h-14 shrink-0 border-2 border-yellow-300 rounded-full overflow-hidden">
-        <img src={`/images/profile.png`}/>
+        <img src={`/images/profile_sacrifice.png`}/>
       </div>
       <div className='text-white grow'>
         {isLatest ? <TypingText text={text} /> : <span>{text}</span>}
@@ -45,7 +45,7 @@ export function EntropyNpcChatBlock({
   return (
     <div className="w-full h-auto flex gap-3 max-w-6/7 self-start p-4">
       <div className="w-14 h-14 shrink-0 border-1 border-[#ffffff70] rounded-full overflow-hidden">
-        <img src={`/images/profile.png`}/>
+        <img src={`/images/profile_entropy.png`}/>
       </div>
       <div className='text-white grow'>
         {isLatest ? <TypingText text={text} /> : <span>{text}</span>}

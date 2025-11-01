@@ -65,7 +65,7 @@ export default function ChatNpcScreen({
       content = (
         <div
           className={`
-            text-white break-keep absolute top-8 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-auto items-center backdrop-blur-sm border-3 border-[#ffffff70] w-[30rem] h-2/3 overflow-visible
+            text-white break-keep absolute top-24 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-auto items-center backdrop-blur-sm border-3 border-[#ffffff70] w-[30rem] h-2/3 overflow-visible
             z-80
             ${nanumGothicCodingBold.className}
           `}
@@ -114,7 +114,7 @@ export default function ChatNpcScreen({
       content = (
         <div
           className={`
-            text-white font-bold break-keep absolute top-8 right-8 transition-[width,height] p-4 flex flex-col pointer-events-none items-center backdrop-blur-sm rounded-4xl w-[30rem] h-2/3 overflow-visible
+            text-white font-bold break-keep absolute top-24 right-8 transition-[width,height] p-4 flex flex-col pointer-events-none items-center backdrop-blur-sm rounded-4xl w-[30rem] h-2/3 overflow-visible
             ${nanumGothicCodingBold.className}
           `}
           onWheel={(e) => {
@@ -165,7 +165,7 @@ export default function ChatNpcScreen({
       content = (
         <div
           className={`
-            text-white break-keep absolute top-8 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-[#ffffff70] w-[30rem] h-2/3 overflow-visible
+            text-white break-keep absolute top-24 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-[#ffffff70] w-[30rem] h-2/3 overflow-visible
             ${nanumGothicCodingBold.className}
           `}
           onWheel={(e) => {

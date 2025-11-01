@@ -9,7 +9,7 @@ import { OrbitControls, useGLTF } from "@react-three/drei";
 import PausedScreen from "../../util/PausedScreen";
 import AudioPlayer from "../../util/AudioPlayer";
 import { useRef } from "react";
-import { House } from "lucide-react";
+import { House} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function GlobalMenu({worldKey}: {worldKey: string}) {
@@ -122,22 +122,18 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
       </div>
 
       {/* 오른쪽 */}
-      <div className="absolute w-auto h-auto top-8 right-8 text-white flex gap-4">
-        <div className="flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity">
+      <div className="absolute w-auto h-auto top-8 right-8 text-white">
+        {/* 홈버튼 */}
+        <div className="flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity -translate-x-14">
           <button
             onClick={() => router.push('/')}
             className="pointer-events-auto"
             tabIndex={0}
           >
             <House className="w-7 h-7 text-white" />
-            <p>home</p>
           </button>
         </div>
-
-        <div className="flex gap-2 items-center">
-          <div className="w-6 h-6 rounded-full border flex items-center justify-center">q</div>
-          <p>menu</p>
-        </div>
+        {/* 일시정지 버튼 (아래에있음) */}
       </div>
 
       {/* 아래쪽 */}

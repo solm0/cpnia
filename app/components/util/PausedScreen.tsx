@@ -1,12 +1,10 @@
 import FullScreenModal from "./FullScreenModal";
 import Button from "./Button";
 import { useGameStore } from "@/app/lib/state/gameState";
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { worldPortals } from "@/app/lib/data/positions/worldPortals";
-import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
-import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { useRouter } from "next/navigation";
+import { Pause } from "lucide-react";
 
 export default function PausedScreen({
   worldKey, isInMap = false,
@@ -19,24 +17,8 @@ export default function PausedScreen({
   const router= useRouter();
   const reset = useGameStore(state => state.reset);
 
-  const pressedKeys = useKeyboardControls();
-  const gamepad = useGamepadControls();
-
-  // 일시정지
-  useEffect(() => {
-    function checkPause() {
-      if (pressedKeys.current.has("KeyQ") || (gamepad?.current?.buttons[17])) {
-        console.log('quit')
-        setIsPaused(true);
-      }
-    }
-  
-    const interval = setInterval(checkPause, 50); // check every 50ms
-    return () => clearInterval(interval);
-  }, [pressedKeys, gamepad]);
-
   return (
-    isPaused ?
+    isPaused ? (
       <FullScreenModal>
         <div className="relative w-auto h-full flex flex-col items-center justify-center gap-2">
           {isInMap &&
@@ -68,6 +50,15 @@ export default function PausedScreen({
           />
         </div>
       </FullScreenModal>
-    : null
+    ) : (
+      <div className="fixed right-8 top-8 flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity">
+        <button
+          onClick={() => setIsPaused(true)}
+          className="pointer-events-auto"
+        >
+          <Pause className="w-7 h-7 text-white" />
+        </button>
+      </div>
+    )
   )
 }

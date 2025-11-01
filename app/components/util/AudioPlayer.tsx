@@ -1,8 +1,6 @@
 'use client'
 
-import { RefObject, useEffect, useState } from "react";
-import Button from "./Button";
-import FullScreenModal from "./FullScreenModal";
+import { RefObject, useEffect } from "react";
 
 export default function AudioPlayer({
   src,
@@ -16,7 +14,6 @@ export default function AudioPlayer({
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    console.log(audio);
 
     audio.play()
       .catch(err => console.error("Audio play failed:", err));
