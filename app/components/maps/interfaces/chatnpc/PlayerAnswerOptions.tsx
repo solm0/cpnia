@@ -24,6 +24,7 @@ export function TimePlayerAnswerOptions({
         return (
           <TimeOptionButton
             key={index}
+            id='tempId'
             onClick={() => handleClick(line, index)}
             label={`> ${line}`}
           />
@@ -56,6 +57,7 @@ export function SacrificePlayerAnswerOptions({
         return (
           <SacrificeOptionButton
             key={index}
+            id='tempId'
             onClick={() => handleClick(line, index)}
             label={`> ${line}`}
           />

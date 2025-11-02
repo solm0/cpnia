@@ -2,6 +2,7 @@ import { Object3D, Vector3, CatmullRomCurve3 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { useMemo } from "react";
 import Model from "../../util/Model";
+import CrowdChar from "../../games/games/W2G2/CrowdChar";
 
 export default function PizzaLine({
   doorPos,
@@ -37,11 +38,16 @@ export default function PizzaLine({
         return (
           <group
             key={i}
-            position={[pos.x, 0, pos.z]} // y=0 유지
+            position={[pos.x, 0, pos.z]}
             rotation={[0, rotY, 0]}
             scale={8}
           >
-            <Model scene={avatar.clone(true)} position={[0,0,0]} scale={1} />
+            <CrowdChar
+              model={avatar.clone(true)}
+              animTerm={(i + 1) * 1000}
+              position={[0,0,0]}
+              scale={1}
+            />
           </group>
         );
       })}

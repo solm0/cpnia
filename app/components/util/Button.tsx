@@ -1,13 +1,13 @@
 import { jersey15 } from "@/app/lib/fonts";
 import { use2dFocusStore } from "@/app/lib/gamepad/inputManager";
-import { useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 
 export default function Button({
   id, onClick, label, worldKey, small, disabled = false,
 }: {
   id: string; // 게임패드 focusable에 register하기 위함.
   onClick: (param?: number | string | boolean | null) => void;
-  label: string;
+  label: string | ReactNode;
   worldKey?: string;
   small?: boolean;
   disabled?: boolean;

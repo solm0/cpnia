@@ -32,6 +32,7 @@ interface Focusable2d {
   x: number;
   y: number;
   onClick: (param?: number | string | boolean | null) => void;
+  important?: boolean;
 }
 
 interface Focus2d {
@@ -47,7 +48,14 @@ export const use2dFocusStore = create<Focus2d>((set, get) => ({
   focusables: [],
   setFocusIndex: (i: number) => set({ focusIndex: i }),
   registerFocusable: (f) => {
-    set((state) => ({ focusables: [...state.focusables, f] }))
+    const focusable = { ...f, important: f.important ?? false };  // 기본값 false
+
+    if (focusable.important) {
+      console.log('important focusable added')
+      set((state) => ({ focusables: [f, ...state.focusables] }))
+    } else {
+      set((state) => ({ focusables: [...state.focusables, f] }))
+    }
   },
   unregisterFocusable: (id) => {
     const newList = get().focusables.filter((f: Focusable2d) => f.id !== id);

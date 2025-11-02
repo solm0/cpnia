@@ -11,6 +11,7 @@ import AudioPlayer from "../../util/AudioPlayer";
 import { useRef } from "react";
 import { House} from "lucide-react";
 import { useRouter } from "next/navigation";
+import Button from "../../util/Button";
 
 export default function GlobalMenu({worldKey}: {worldKey: string}) {
   const npcConfig = useNpcConfigStore(state => state.npcConfig)
@@ -125,13 +126,12 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
       <div className="absolute w-auto h-auto top-8 right-8 text-white">
         {/* 홈버튼 */}
         <div className="flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity -translate-x-14">
-          <button
+          <Button
+            id='3-1-1'
             onClick={() => router.push('/')}
-            className="pointer-events-auto"
-            tabIndex={0}
-          >
-            <House className="w-7 h-7 text-white" />
-          </button>
+            label={<House className="w-7 h-7 -mx-2 text-white" />}
+            worldKey={worldKey}
+          />
         </div>
         {/* 일시정지 버튼 (아래에있음) */}
       </div>

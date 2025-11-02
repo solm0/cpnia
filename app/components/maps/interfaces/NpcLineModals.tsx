@@ -70,6 +70,7 @@ export function TimeNpcLineModal({
                 <p>{`>`}</p>
                 <TimeOptionButton
                   key={idx}
+                  id={`3-2-${idx}`}
                   onClick={actions[option.action]}
                   label={option.answer}
                 />
@@ -145,6 +146,7 @@ export function PizzaCutterLineModal({
             {options.map((option, idx) => 
               <SacrificeOptionButton
                 key={idx}
+                id={`tempId`}
                 onClick={actions[option.action]}
                 label={option.answer}
               />
@@ -230,6 +232,7 @@ export function FugitiveLineModal({
           {options.map((option, idx) => 
             <SacrificeOptionButton
               key={idx}
+              id={`tempId`}
               onClick={() => handleAnswerClick(option.score, round)}
               label={option.answer}
               gainedScore={option.score}
@@ -282,8 +285,9 @@ export function SacrificeNpcLineModal({
         {options ? (
           // 선택 버튼
           options.map((option, idx) => 
-            <TimeOptionButton
+            <SacrificeOptionButton
               key={idx}
+              id={`3-2-${idx}`}
               onClick={option.function}
               label={option.label}
             />

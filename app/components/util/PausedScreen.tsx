@@ -56,13 +56,12 @@ export default function PausedScreen({
       </FullScreenModal>
     ) : (
       <div className="fixed right-8 top-8 flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity">
-        <button
+        <Button
+          id='3-1-2'
           onClick={() => setIsPaused(true)}
-          className="pointer-events-auto"
-          id={'tempId'}
-        >
-          <Pause className="w-7 h-7 text-white" />
-        </button>
+          label={<Pause className="w-7 h-7 -mx-2 text-white" />}
+          worldKey={worldKey}
+        />
       </div>
     )
   )
