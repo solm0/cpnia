@@ -30,20 +30,19 @@ function SpinningCoin({
 }) {
   const ref = useRef<Object3D>(null);
 
+  coin.userData = {
+    id: `time-stair-${idx}`,
+    onClick: () => {
+      if (!locked) {
+        handleClickStair(idx)
+      }
+    },
+  }
   useMemo(() => {
     coin.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
         mesh.castShadow = mesh.receiveShadow = true;
-        mesh.userData = {
-          id: `time-stair-${idx}`,
-          onInteract: () => {
-            if (!locked) {
-              handleClickStair(idx)
-            }
-          },
-        }
-        console.log(mesh.userData)
       }
     });
   }, [coin])

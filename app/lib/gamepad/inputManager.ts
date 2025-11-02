@@ -1,4 +1,3 @@
-import { Object3D } from "three";
 import { create } from "zustand";
 
 type Dir = 'left' | 'right' | 'up' | 'down';
@@ -65,9 +64,8 @@ export const use2dFocusStore = create<Focus2d>((set, get) => ({
   },
 }));
 
-interface Focusable3d {
+export interface Focusable3d {
   id: string;
-  object: Object3D;
   onClick?: () => void;
 }
 
@@ -126,9 +124,9 @@ function moveFocus(dir: Dir) {
 }
 
 // --- 위의 것을 레이캐스팅에서 접근
-// const intersects = raycaster.intersectObjects(scene.children);
-// if (intersects.length > 0) {
-//   const obj = intersects[0].object.userData;
+// const intersect = raycaster.intersectObjects(scene.children, true)[0];
+// if (intersect) {
+//   const obj = intersect.object.userData;
 //   use3dFocusStore.getState().setFocusedObj(obj);
 // } else {
 //   use3dFocusStore.getState().setFocusedObj(null);

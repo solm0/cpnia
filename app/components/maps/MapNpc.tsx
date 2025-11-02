@@ -4,6 +4,7 @@ import { AnimationMixer, Mesh, MeshStandardMaterial, Object3D } from "three";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
 import { useFrame } from "@react-three/fiber";
 import { FlickeringPointLight } from "./interview/InterviewScene";
+import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
 
 export default function MapNpc({
   worldKey, name,
@@ -22,6 +23,8 @@ export default function MapNpc({
   closeIsChatOpen: (isChatOpen: boolean) => void;
 }) {
   const mixer = useRef<AnimationMixer | null>(null);
+  const id = `${worldKey}-npc-${name}`;
+  const focusedId = use3dFocusStore((s) => s.focusedObj?.id);
 
   let actionIdx;
   if (name === '파친코 위에서 발견한 주민') actionIdx = 2
@@ -30,6 +33,13 @@ export default function MapNpc({
 
   const animGltf = useAnimGltf()[actionIdx];
   const clonedScene = useMemo(() => clone(model), [model]);
+  clonedScene.userData = {
+    id: id,
+    onClick: () => {
+      setActiveNpc(name);
+      closeIsChatOpen(false);
+    },
+  }
   
   // inject shader only once
   useMemo(() => {
@@ -38,15 +48,6 @@ export default function MapNpc({
         const mesh = child as Mesh;
         mesh.castShadow = mesh.receiveShadow = true;
         mesh.material = (mesh.material as MeshStandardMaterial).clone();
-
-        // focusedObject 위한 userData
-        mesh.userData = {
-          id: `${worldKey}-npc-${name}`,
-          onInteract: () => {
-            setActiveNpc(name);
-            closeIsChatOpen(false);
-          },
-        }
   
         const mat = mesh.material as MeshStandardMaterial;
         mat.onBeforeCompile = (shader) => {
@@ -67,7 +68,7 @@ export default function MapNpc({
           );
   
           mesh.userData.shader = shader;
-          console.log(mesh.userData);
+          console.log(mesh.userData.id, mesh);
         };
       }
     });
@@ -79,11 +80,17 @@ export default function MapNpc({
       if ((child as Mesh).isMesh) {
         const shader = child.userData.shader;
         if (shader?.uniforms?.uHighlight) {
-          shader.uniforms.uHighlight.value = hoveredNpc === name ? 1 : activeNpc === name ? 1 : 0;
+          shader.uniforms.uHighlight.value = hoveredNpc === name
+            ? 1
+            : activeNpc === name 
+              ? 1
+              : focusedId === id
+                ? 1 : 0;
         }
       }
     });
-  }, [clonedScene, hoveredNpc, name]);
+    if (focusedId === id) console.log(focusedId, id)
+  }, [clonedScene, hoveredNpc, activeNpc, name, focusedId]);
 
   useEffect(() => {
     if (clonedScene) {

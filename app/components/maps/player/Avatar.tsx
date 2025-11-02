@@ -24,6 +24,9 @@ export function Avatar({
           child.receiveShadow = true;
         }
       });
+      avatar.userData = {
+        id: 'its me'
+      }
     }
 
     return () => {
