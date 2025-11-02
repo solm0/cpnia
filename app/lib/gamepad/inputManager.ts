@@ -125,34 +125,6 @@ function moveFocus(dir: Dir) {
   if (next) setFocusIndex(focusables.indexOf(next));
 }
 
-// --- 3D 오브젝트 생성 시 사용자 정의 속성으로 id나 meta 정보를 부여
-// const mesh = new THREE.Mesh(geometry, material);
-// mesh.userData = {
-//   id: 'portal_01',
-//   type: 'gamePortal',
-//   onInteract: () => console.log('Enter portal'),
-// };
-
-// --- glb 생성시에 userData 부여하기. gamePortal, mapNpc에서.
-// const loader = new GLTFLoader();
-// loader.load('/models/portal.glb', (gltf) => {
-//   const model = gltf.scene;
-//   model.traverse((child) => {
-//     if (child.isMesh) {
-//       // 예: 이름으로 구분하거나 tag로 판단
-//       if (child.name.includes('Portal')) {
-//         child.userData = {
-//           id: 'portal_01',
-//           type: 'gamePortal',
-//           onInteract: () => console.log('Portal entered!'),
-//         };
-//       }
-//     }
-//   });
-
-//   scene.add(model);
-// });
-
 // --- 위의 것을 레이캐스팅에서 접근
 // const intersects = raycaster.intersectObjects(scene.children);
 // if (intersects.length > 0) {

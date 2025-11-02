@@ -6,12 +6,13 @@ import { useFrame } from "@react-three/fiber";
 import { FlickeringPointLight } from "./interview/InterviewScene";
 
 export default function MapNpc({
-  name,
+  worldKey, name,
   hoveredNpc, setHoveredNpc,
   activeNpc, setActiveNpc,
   model,
   closeIsChatOpen,
 }: {
+  worldKey: string;
   name: string;
   hoveredNpc: string | null;
   setHoveredNpc: (name: string | null) => void;
@@ -36,9 +37,16 @@ export default function MapNpc({
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
         mesh.castShadow = mesh.receiveShadow = true;
-  
-        // clone the material so each NPC is independent
         mesh.material = (mesh.material as MeshStandardMaterial).clone();
+
+        // focusedObject 위한 userData
+        mesh.userData = {
+          id: `${worldKey}-npc-${name}`,
+          onInteract: () => {
+            setActiveNpc(name);
+            closeIsChatOpen(false);
+          },
+        }
   
         const mat = mesh.material as MeshStandardMaterial;
         mat.onBeforeCompile = (shader) => {
@@ -59,6 +67,7 @@ export default function MapNpc({
           );
   
           mesh.userData.shader = shader;
+          console.log(mesh.userData);
         };
       }
     });

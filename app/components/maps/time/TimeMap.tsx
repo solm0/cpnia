@@ -165,7 +165,7 @@ export default function TimeMap({
   const groundYs = [ 120, -97, 0 ]
   const groundY = groundYs[currentStage];
 
-  console.log(stage, currentStage)
+  // console.log(stage, currentStage)
 
   // Portals의 isLocked의 짭
   // 게임 1을 하기 전 stage는 0, 1층으로 올라가는 계단의 idx는 0
@@ -313,6 +313,9 @@ export default function TimeMap({
             startPosition={coinStair.top}
             count={coinStair.count}
             coinScale={scale * 3.5}
+            handleClickStair={handleClickStair}
+            locked={isLocked(idx, stage)}
+            idx={idx}
           />
         </group>
       ))}

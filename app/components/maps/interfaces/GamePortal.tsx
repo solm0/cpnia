@@ -19,16 +19,21 @@ export default function GamePortal({
 
   useEffect(() => {
     if (gltf) {
-
       gltf.traverse((child) => {
         if ((child as Mesh).isMesh) {
-          child.castShadow = true;
-          child.receiveShadow = true;
-
-          const mesh = child as Mesh
-
-          // clone the material so each NPC is independent
+          const mesh = child as Mesh;
+          mesh.castShadow = mesh.receiveShadow = true;
           mesh.material = (mesh.material as MeshStandardMaterial).clone();
+
+          // focusedObject 위한 userData
+          mesh.userData = {
+            id: `${worldKey}-gameportal-${gameKey}`,
+            onInteract: () => {
+              if (!locked) {
+                router.push(`/${worldKey}?game=${gameKey}`)
+              }
+            }
+          }
 
           const mat = mesh.material as MeshStandardMaterial;
           mat.onBeforeCompile = (shader) => {

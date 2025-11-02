@@ -87,6 +87,7 @@ export default function Npcs({
         >
           <MapNpc
             key={npc.name}
+            worldKey={worldKey}
             name={npc.name}
             hoveredNpc={hoveredNpc}
             setHoveredNpc={setHoveredNpc}
