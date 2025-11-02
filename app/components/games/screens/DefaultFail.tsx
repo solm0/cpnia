@@ -35,7 +35,7 @@ export default function DefaultFail() {
               setGameEnded(false);
             }}
             label='다시 하기'
-            id={'tempId'}
+            id='5-1'
           />
           <Button
             onClick={() => {
@@ -43,7 +43,7 @@ export default function DefaultFail() {
               setGameEnded(false);
             }}
             label="월드로 돌아가기"
-            id={'tempId'}
+            id='5-2'
           />
         </div>
       </main>

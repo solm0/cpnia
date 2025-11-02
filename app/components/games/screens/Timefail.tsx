@@ -29,7 +29,7 @@ export default function TimeFail({
           <div>시간을 다 잃었구만. 불쌍한 것. 내 시간을 좀 나눠주겠네. 다음번엔 조심하게.</div>
           <Button
             worldKey={worldKey}
-            id={'tempId'}
+            id='5-1'
             label="다시 하기"
             onClick={() => {
               router.push(`/${worldKey}?game=${gameKey}`);
@@ -40,7 +40,7 @@ export default function TimeFail({
             worldKey={worldKey}
             label="월드로 돌아가기"
             onClick={() => router.push(`/${worldKey}`)}
-            id={'tempId'}
+            id='5-2'
           />
         </Html>
 

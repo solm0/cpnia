@@ -33,7 +33,7 @@ export default function DefaultSuccess() {
               setGameEnded(false);
             }}
             label="새로운 시민권을 획득했습니다!"
-            id={'tempId'}
+            id='5-1'
           />
         ): (
           <Button
@@ -42,7 +42,7 @@ export default function DefaultSuccess() {
               setGameEnded(false);
             }}
             label="월드로 돌아가기"
-            id={'tempId'}
+            id='5-1'
           />
         )}
       </div>

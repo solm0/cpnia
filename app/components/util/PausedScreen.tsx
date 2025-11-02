@@ -21,6 +21,12 @@ export default function PausedScreen({
     isPaused ? (
       <FullScreenModal>
         <div className="relative w-auto h-full flex flex-col items-center justify-center gap-2">
+          <Button
+            label='계속하기'
+            onClick={() => setIsPaused(false)}
+            worldKey={worldKey}
+            id='4-1-1'
+          />
           {isInMap &&
             <Button
               label={`${worldName} 진행도 리셋하기`}
@@ -29,7 +35,7 @@ export default function PausedScreen({
                 setIsPaused(false);
               }}
               worldKey={worldKey}
-              id='4-1-1'
+              id='4-1-2'
             />
           }
           {isInMap ? (
@@ -38,7 +44,7 @@ export default function PausedScreen({
               label={`${worldName} 나가기`}
               onClick={() => router.push('/')}
               worldKey={worldKey}
-              id='4-1-2'
+              id='4-1-3'
             />
           ): (
             // 맵으로 가기
@@ -46,15 +52,9 @@ export default function PausedScreen({
               label={`게임 중단`}
               onClick={() => router.push(`/${worldKey}`)}
               worldKey={worldKey}
-              id='4-1-2'
+              id='4-1-3'
             />
           )}
-          <Button
-            label='계속하기'
-            onClick={() => setIsPaused(false)}
-            worldKey={worldKey}
-            id='4-1-3'
-          />
         </div>
       </FullScreenModal>
     ) : (
