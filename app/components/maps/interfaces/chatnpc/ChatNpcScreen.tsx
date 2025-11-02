@@ -66,7 +66,7 @@ export default function ChatNpcScreen({
       <div
         className={`
           text-white break-keep absolute top-24 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-auto items-center backdrop-blur-sm border-3 border-[#ffffff70] w-[30rem] h-2/3 overflow-visible
-          z-80
+          z-70
           ${nanumGothicCodingBold.className}
         `}
         onWheel={(e) => { e.stopPropagation() }}
