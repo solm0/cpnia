@@ -115,7 +115,7 @@ export default function InterviewScene() {
   
   return (
     <>
-      <color attach="background" args={["lightgray"]} />
+      <color attach="background" args={["gray"]} />
 
       <directionalLight
         intensity={5}

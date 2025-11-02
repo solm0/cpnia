@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 import Button from "../../util/Button";
 import { useNpcConfigStore } from "@/app/lib/state/npcConfigState";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUserNameStore } from "@/app/lib/state/userNameStore";
 import { worldPortals } from "@/app/lib/data/positions/worldPortals";
 import { nanumGothicCoding } from "@/app/lib/fonts";
+import Input from "../../util/Input";
 
 interface npcConfig {
   formality: string,
@@ -97,21 +98,28 @@ export default function InterviewForms() {
             onSubmit={(e) => e.preventDefault()}
             className="flex flex-col gap-12 items-center"
           >
-            <input
-              type="text"
+            <Input
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="w-96 h-10 text-center focus-within:outline-none border-b-1 border-white focus-within:border-b-4 text-gray-700 text-lg font-bold p-4 truncate"
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
+              id='2-1-1'
               disabled={loading}
               placeholder="답변을 적어주세요"
+              style="w-96 h-10 text-center border-gray-700 text-gray-700 text-lg font-bold p-4 truncate"
             />
             <Button
               onClick={handleClick}
               label={loading ? "답변을 분석중입니다...": "다음"}
               disabled={loading || !input.trim()}
-              id={'tempId'}
+              id={'2-1-2'}
             />
           </form>
+
+          <Button
+            onClick={() => router.push(`/${worldTo}`)}
+            label="성격 형성 스킵하고 바로 입장하기"
+            id='2-1-3'
+            disabled={loading}
+          />
         </>
       ): (
         <>
@@ -121,7 +129,7 @@ export default function InterviewForms() {
               <Button
                 onClick={() => router.push(`/${worldTo}`)}
                 label="입장하기"
-                id={'tempId'}
+                id='2-2-1'
               />
             </div>
           )
@@ -131,7 +139,7 @@ export default function InterviewForms() {
               <Button
                 onClick={() => router.push('/')}
                 label="홈으로"
-                id={'tempId'}
+                id='2-2-1'
               />
             </div>
           )}

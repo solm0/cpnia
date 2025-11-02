@@ -1,18 +1,8 @@
-'use client'
-
 import { Info } from 'lucide-react'
-import Button from "@/app/components/util/Button";
 import InterviewForms from "@/app/components/maps/interview/InterviewForms";
-import { useRouter, useSearchParams } from "next/navigation";
 import { nanumGothicCoding } from '@/app/lib/fonts';
-import { useGamepadControls } from '@/app/lib/hooks/useGamepadControls';
 
 export default function InterviewUi() {
-  const router = useRouter();
-  const searchParam = useSearchParams();
-  const worldTo = searchParam.get('to');
-  useGamepadControls();
-
   return (
     <div className="absolute left-1/2 top-0 h-screen w-1/2 flex flex-col items-center justify-center gap-30 pointer-events-none">
       <div className={`
@@ -31,12 +21,6 @@ export default function InterviewUi() {
       </div>
       
       <InterviewForms />
-
-      <Button
-        onClick={() => router.push(`/${worldTo}`)}
-        label="성격 형성 스킵하고 바로 입장하기"
-        id={'tempId'}
-      />
     </div>
   )
 }

@@ -62,8 +62,8 @@ export default function Home() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (gamepad?.current?.buttons[3]) unFocusPortal()
-      else if (gamepad?.current?.buttons[2]) focusPortal(1, false);
+      if (gamepad?.current?.buttons[2]) unFocusPortal()
+      else if (gamepad?.current?.buttons[3]) focusPortal(1, false);
     }, 60);
     return () => clearInterval(interval);
   }, [gamepad, isFocused]);

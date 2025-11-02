@@ -54,10 +54,10 @@ export function useFollowCam(
     const zoomSpeed = 2;
 
     if (gamepad) {
-      if (gamepad.buttons[12]) {
+      if (gamepad.buttons[6]) {
         zoomDistance.current -= zoomSpeed;
       }
-      if (gamepad.buttons[13]) {
+      if (gamepad.buttons[7]) {
         zoomDistance.current += zoomSpeed;
       }
     }

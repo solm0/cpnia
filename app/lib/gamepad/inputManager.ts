@@ -42,16 +42,19 @@ interface Focus2d {
   unregisterFocusable: (id: string) => void;
 }
 
-export const use2dFocusStore = create<Focus2d>((set) => ({
+export const use2dFocusStore = create<Focus2d>((set, get) => ({
   focusIndex: 0,
   focusables: [],
   setFocusIndex: (i: number) => set({ focusIndex: i }),
-  registerFocusable: (f) =>
-    set((state) => ({ focusables: [...state.focusables, f] })),
-  unregisterFocusable: (id) =>
-    set((s) => ({
-      focusables: s.focusables.filter((f) => f.id !== id),
-    })),
+  registerFocusable: (f) => {
+    set((state) => ({ focusables: [...state.focusables, f] }))
+  },
+  unregisterFocusable: (id) => {
+    const newList = get().focusables.filter((f: Focusable2d) => f.id !== id);
+    let newIndex = get().focusIndex;
+    if (newIndex >= newList.length) newIndex = 0; // ✅ 배열 짧아지면 0으로
+    set({ focusables: newList, focusIndex: newIndex });
+  },
 }));
 
 interface Focusable3d {

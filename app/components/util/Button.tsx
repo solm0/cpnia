@@ -13,32 +13,31 @@ export default function Button({
   disabled?: boolean;
 }) {
   const ref = useRef<HTMLButtonElement>(null);
-
-  // focusIndex는 focusable 내에서 현재 포커스를가리키는 인덱스
-  // 현재 렌더되는 버튼의 index가 focusIndex와 같으면
-  // 그 버튼이 현재 포커스되었다는 거겠지.
   const { focusIndex, focusables } = use2dFocusStore();
   const index = focusables.findIndex((f) => f.id === id);
   const isFocused = focusIndex === index;
 
-  // register
   useEffect(() => {
     if (!ref.current) return;
+    const store = use2dFocusStore.getState();
   
     const updatePosition = () => {
       const rect = ref.current!.getBoundingClientRect();
       const x = rect.left + rect.width / 2;
       const y = rect.top + rect.height / 2;
-      use2dFocusStore.getState().registerFocusable({ id, x, y, onClick });
+      store.registerFocusable({ id, x, y, onClick });
     };
   
-    const raf = requestAnimationFrame(updatePosition);
-  
-    return () => {
-      cancelAnimationFrame(raf);
-      use2dFocusStore.getState().unregisterFocusable(id);
-    };
-  }, [id, onClick]);
+    if (!disabled) {
+      const raf = requestAnimationFrame(updatePosition);
+      return () => {
+        cancelAnimationFrame(raf);
+        store.unregisterFocusable(id);
+      };
+    } else {
+      store.unregisterFocusable(id);
+    }
+  }, [id, onClick, disabled]);
 
   switch (worldKey) {
     case 'time':
@@ -97,7 +96,6 @@ export default function Button({
           className={`
             h-10
             ${small ? 'w-20' : 'w-auto min-w-40'}
-            ${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'}
             ${jersey15.className}
             relative flex gap-4 items-center justify-center pointer-events-auto
             group focus:outline-none
@@ -109,9 +107,9 @@ export default function Button({
             hidden bg-white h-3 w-3 rotate-45
             ${small ? '' : 'group-focus:block'}
           `}/>
-          <p className="text-white text-2xl h-10 flex items-center">{label}</p>
+          <p className={`text-white text-2xl h-10 flex items-center ${disabled ? 'opacity-30 cursor-not-allowed' : 'opacity-100'}`}>{label}</p>
           <div className={`
-            absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-50 active:opacity-40 transition-opacity duration-300 bg-gradient-to-r from-white to-transparent
+            absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-50 transition-opacity duration-300 bg-gradient-to-r from-white to-transparent
             ${small ? 'group-focus:opacity-50' : ''}
           `} />
         </button>
