@@ -5,6 +5,7 @@ import { TimeOptionButton, SacrificeOptionButton, EntropyOptionButton } from "./
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { nanumGothicCodingBold } from "@/app/lib/fonts";
+import OptionButton from "../../util/OptionButton";
 
 export function TimeNpcLineModal({
   worldKey, name, setActiveNpc,
@@ -79,19 +80,22 @@ export function TimeNpcLineModal({
           </div>
         ): (
           // 다음 또는 종료 버튼
-          <div
-            className="fixed bottom-13 right-20 h-auto w-10 text-6xl animate-pulse"
+          <OptionButton
+            id='3-2'
             onClick={() => {
               if (length > lineIndex+1) {
                 setLineIndex(lineIndex+1)
               } else {
                 setActiveNpc(null)
-              }}
+              }}}
+            label={
+              <>
+                <p className="absolute">&#9660;</p>
+                <p className="absolute translate-y-5 opacity-50">&#9660;</p>
+              </>
             }
-          >
-            <p className="absolute">&#9660;</p>
-            <p className="absolute translate-y-5 opacity-50">&#9660;</p>
-          </div>
+            style="fixed bottom-13 right-20 h-auto w-10 text-6xl animate-pulse"
+          />
         )}
       </div>
     </div>
@@ -146,7 +150,7 @@ export function PizzaCutterLineModal({
             {options.map((option, idx) => 
               <SacrificeOptionButton
                 key={idx}
-                id={`tempId`}
+                id={`3-2-${idx}`}
                 onClick={actions[option.action]}
                 label={option.answer}
               />
@@ -154,19 +158,22 @@ export function PizzaCutterLineModal({
           </div>
         ): (
           // 다음 또는 종료 버튼
-          <div
-            className="fixed bottom-13 right-20 h-auto w-10 text-6xl animate-pulse"
+          <OptionButton
+            id='3-2'
             onClick={() => {
               if (lines.length > lineIndex+1) {
                 setLineIndex(lineIndex+1)
               } else {
                 setActiveNpc(null)
-              }}
+              }}}
+            label={
+              <>
+                <p className="absolute text-yellow-300">&#9660;</p>
+                <p className="absolute text-yellow-300 translate-y-5 opacity-50">&#9660;</p>
+              </>
             }
-          >
-            <p className="absolute text-yellow-300">&#9660;</p>
-            <p className="absolute text-yellow-300 translate-y-5 opacity-50">&#9660;</p>
-          </div>
+            style="fixed bottom-13 right-20 h-auto w-10 text-6xl animate-pulse"
+          />
         )}
       </div>
     </div>
@@ -294,19 +301,22 @@ export function SacrificeNpcLineModal({
           )
         ): (
           // 다음 또는 종료 버튼
-          <div
-            className="fixed bottom-13 right-20 h-auto w-10 text-6xl animate-pulse"
+          <OptionButton
+            id='3-2'
             onClick={() => {
               if (lines.length > lineIndex+1) {
                 setLineIndex(lineIndex+1)
               } else {
                 setActiveNpc(null)
-              }}
+              }}}
+            label={
+              <>
+                <p className="absolute text-yellow-300">&#9660;</p>
+                <p className="absolute text-yellow-300 translate-y-5 opacity-50">&#9660;</p>
+              </>
             }
-          >
-            <p className="absolute text-yellow-300">&#9660;</p>
-            <p className="absolute text-yellow-300 translate-y-5 opacity-50">&#9660;</p>
-          </div>
+            style="fixed bottom-13 right-20 h-auto w-10 text-6xl animate-pulse"
+          />
         )}
       </div>
     </div>

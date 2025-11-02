@@ -3,7 +3,7 @@ import { use2dFocusStore } from "@/app/lib/gamepad/inputManager";
 import { ReactNode, useEffect, useRef } from "react";
 
 export default function Button({
-  id, onClick, label, worldKey, small, disabled = false,
+  id, onClick, label, worldKey, small, disabled = false, important = false,
 }: {
   id: string; // 게임패드 focusable에 register하기 위함.
   onClick: (param?: number | string | boolean | null) => void;
@@ -11,6 +11,7 @@ export default function Button({
   worldKey?: string;
   small?: boolean;
   disabled?: boolean;
+  important?: boolean;
 }) {
   const ref = useRef<HTMLButtonElement>(null);
   const { focusIndex, focusables } = use2dFocusStore();
@@ -25,7 +26,7 @@ export default function Button({
       const rect = ref.current!.getBoundingClientRect();
       const x = rect.left + rect.width / 2;
       const y = rect.top + rect.height / 2;
-      store.registerFocusable({ id, x, y, onClick });
+      store.registerFocusable({ id, x, y, onClick, important: important });
     };
   
     if (!disabled) {
