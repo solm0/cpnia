@@ -41,5 +41,5 @@ export function TypingText({
     };
   }, [text, speed]);
 
-  return <span>{displayed}{!done && "▊"}</span>;
+  return <span className="scale-x-50">{displayed}{!done && "▊"}</span>;
 }

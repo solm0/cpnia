@@ -32,7 +32,7 @@ export default function W2G2({
     pepperoni: useGLTF("/models/avatars/pepperoni.gltf").scene,
     mushroom: useGLTF("/models/avatars/mushroom.gltf").scene,
     cheese: useGLTF("/models/avatars/cheese.gltf").scene,
-    onion: useGLTF("/models/avatars/onion.gltf").scene,
+    onion: useGLTF("/models/avatars/onion.glb").scene,
     redpap: useGLTF("/models/avatars/redpap.gltf").scene,
     yellowpap: useGLTF("/models/avatars/yellowpap.gltf").scene,
     olive: useGLTF("/models/avatars/olive.gltf").scene,

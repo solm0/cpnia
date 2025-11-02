@@ -28,7 +28,7 @@ useGLTF.preload("/models/avatars/pepperoni.gltf")
 useGLTF.preload("/models/avatars/mushroom.gltf")
 useGLTF.preload("/models/avatars/cheese.gltf")
 useGLTF.preload("/models/avatars/yellowpap.gltf")
-useGLTF.preload("/models/avatars/onion.gltf")
+useGLTF.preload("/models/avatars/onion.glb")
 useGLTF.preload("/models/avatars/redpap.gltf")
 useGLTF.preload("/models/avatars/olive.gltf")
 
@@ -51,7 +51,7 @@ export default function SacrificeScreen({
     useGLTF("/models/avatars/mushroom.gltf").scene,
     useGLTF("/models/avatars/cheese.gltf").scene,
     useGLTF("/models/avatars/yellowpap.gltf").scene,
-    useGLTF("/models/avatars/onion.gltf").scene,
+    useGLTF("/models/avatars/onion.glb").scene,
     useGLTF("/models/avatars/redpap.gltf").scene,
     useGLTF("/models/avatars/olive.gltf").scene,
   ];
@@ -64,7 +64,7 @@ export default function SacrificeScreen({
     pepperoni: useGLTF("/models/avatars/pepperoni.gltf").scene,
     mushroom: useGLTF("/models/avatars/mushroom.gltf").scene,
     cheese: useGLTF("/models/avatars/cheese.gltf").scene,
-    onion: useGLTF("/models/avatars/onion.gltf").scene,
+    onion: useGLTF("/models/avatars/onion.glb").scene,
     redpap: useGLTF("/models/avatars/redpap.gltf").scene,
     yellowpap: useGLTF("/models/avatars/yellowpap.gltf").scene,
     olive: useGLTF("/models/avatars/olive.gltf").scene,

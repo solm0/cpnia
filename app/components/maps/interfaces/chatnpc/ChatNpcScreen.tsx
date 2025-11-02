@@ -137,7 +137,10 @@ export default function ChatNpcScreen({
         <div className="border-b-5 border-yellow-300 w-full border-double" ></div>
 
         <div className="h-[calc(100%-2.5rem)] w-full pointer-events-auto">
-          <div className="h-[calc(100%-9rem)] flex flex-col gap-2 overflow-y-scroll">
+          <div
+            ref={scrollRef}
+            className="h-[calc(100%-9rem)] flex flex-col gap-2 overflow-y-scroll"
+          >
             {/* 채팅 기록 */}
             {messages.map((msg, idx) => (
               msg.from === "npc"
@@ -183,7 +186,10 @@ export default function ChatNpcScreen({
         </div>
   
         <div className="border-1 border-[#ffffff70] h-[calc(100%-2.5rem)] w-full pointer-events-auto">
-          <div className="h-[calc(100%-9rem)] flex flex-col gap-2 overflow-y-scroll">
+          <div
+            ref={scrollRef}
+            className="h-[calc(100%-9rem)] flex flex-col gap-2 overflow-y-scroll"
+          >
             {/* 채팅 기록 */}
             {messages.map((msg, idx) => (
               msg.from === "npc"

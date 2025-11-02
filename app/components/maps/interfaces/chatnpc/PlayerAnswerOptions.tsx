@@ -57,7 +57,7 @@ export function SacrificePlayerAnswerOptions({
         return (
           <SacrificeOptionButton
             key={index}
-            id='tempId'
+            id={`3-3-4-${index}`}
             onClick={() => handleClick(line, index)}
             label={`> ${line}`}
           />

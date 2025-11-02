@@ -7,7 +7,9 @@ import FullScreenModal from "../../util/FullScreenModal";
 import UserNameForm from "./UserNameForm";
 import CardModel from "./CardModel";
 import { worldPortals } from "@/app/lib/data/positions/worldPortals";
-import { jersey15 } from "@/app/lib/fonts";
+import { jersey15, nanumGothicCoding, nanumGothicCodingBold } from "@/app/lib/fonts";
+import Logo from "./Logo";
+import LogoType from "./Logo";
 
 export default function HomeMenu() {
   const [isPurseOpen, setIsPurseOpen] = useState(false);
@@ -25,10 +27,7 @@ export default function HomeMenu() {
     <>
       {/* 버튼들 */}
       <div className={`${jersey15.className} relative top-3/5 flex flex-col items-center gap-8 h-auto w-auto`}>
-        <h1 className="text-center text-white w-50 break-keep select-none">
-          <span className="hidden">Cpnia</span>
-          <img src={'/images/cpnia-logo.png'} />
-        </h1>
+        <LogoType anim={true} />
 
         <div className="flex flex-col gap-2 pointer-events-auto items-center">
           <Button
@@ -76,22 +75,26 @@ export default function HomeMenu() {
 
       {isAboutOpen &&
         <FullScreenModal
-          title="ABOUT"
           handleClose={setIsAboutOpen}
         >
-          <div className="flex flex-col gap-4 w-96 text-center">
-            <h3 className="text-white font-bold">About</h3>
-            <p className="text-white break-keep w-max-[35rem]">
-              C.pnia에는 인간과 ai의 합작으로 만들어진 3개의 국가와 그 시민들이 있습니다. 오픈 월드를 탐험하고 퀘스트를 깨면서 각 국가에 대한 정보를 모으고, 시민권을 획득해 보세요.
-            </p>
-          </div>
-          <div className="flex flex-col gap-4 w-auto text-center">
-            <h3 className="text-white font-bold">Credit</h3>
-            <p className="text-white break-keep w-auto flex flex-col gap-2">
-              <span className="w-full">제18회 조형전 시각디자인학과 기획전 A팀</span>
-              <span className="w-full">백채민, 오서연, 정솔미, 남진영, 배경진, 안정원, 한예원</span>
-            </p>
-
+          <div className="flex flex-col gap-12 items-center h-full justify-center text-gray-800">
+            <LogoType anim={true} />
+            <div className="flex flex-col gap-4 w-96 text-center">
+              <h3 className="text-4xl">About</h3>
+              <p className={`${nanumGothicCodingBold.className} break-keep w-max-[35rem] leading-7`}>
+                C.pnia에는 인간과 AI의 합작으로 만들어진<br/>
+                3개의 국가와 그 시민들이 있습니다.<br/>
+                오픈 월드를 탐험하고 퀘스트를 깨면서 각 국가에<br/>
+                대한 정보를 모으고, 시민권을 획득해 보세요.
+              </p>
+            </div>
+            <div className="flex flex-col gap-4 w-auto text-center">
+              <h3 className="text-4xl">Credit</h3>
+              <p className={`${nanumGothicCodingBold.className} break-keep w-max-[35rem] leading-7`}>
+                제18회 조형전 시각디자인학과 기획전 A팀<br/>
+                백채민, 오서연, 정솔미, 남진영, 배경진, 안정원, 한예원
+              </p>
+            </div>
           </div>
         </FullScreenModal>
       }
