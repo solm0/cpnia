@@ -87,28 +87,37 @@ function moveFocus(dir: Dir) {
   if (!current) return;
 
   let next = null;
-  let minScore = Infinity;
+  let bestScore = -Infinity;
+
+  // 방향 벡터 설정
+  const dirVec = {
+    up: [0, -1],
+    down: [0, 1],
+    left: [-1, 0],
+    right: [1, 0],
+  }[dir];
 
   for (const f of focusables) {
     if (f.id === current.id) continue;
 
     const dx = f.x - current.x;
     const dy = f.y - current.y;
+
     const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist === 0) continue;
 
-    // 방향 필터링
-    if (dir === "up" && dy >= 0) continue;
-    if (dir === "down" && dy <= 0) continue;
-    if (dir === "left" && dx >= 0) continue;
-    if (dir === "right" && dx <= 0) continue;
+    const normX = dx / dist;
+    const normY = dy / dist;
 
-    // 방향에 따른 “가중 거리” 계산
-    let score = dist;
-    if (dir === "up" || dir === "down") score += Math.abs(dx) * 0.4; // 수직 이동 시 x 오차는 살짝 허용
-    else score += Math.abs(dy) * 0.4; // 수평 이동 시 y 오차는 살짝 허용
+    // 방향 일치도 (cosine similarity)
+    const dot = normX * dirVec[0] + normY * dirVec[1];
+    if (dot <= 0.2) continue; // 0보다 커야 대략 같은 방향임. (0.2는 약간의 관용)
 
-    if (score < minScore) {
-      minScore = score;
+    // 방향 일치도(가중치 높게) + 거리(보조 우선순위)
+    const score = dot * 2 - dist * 0.01;
+
+    if (score > bestScore) {
+      bestScore = score;
       next = f;
     }
   }

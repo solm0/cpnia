@@ -108,7 +108,6 @@ export default function ChatNpcForm({
             }}
             className="shrink-0 fixed flex flex-col gap-4 w-full h-28 px-5 bottom-8"
           >
-    
             <TimePlayerAnswerInput
               input={input}
               setInput={setInput}

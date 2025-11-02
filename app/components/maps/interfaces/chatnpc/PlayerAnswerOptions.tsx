@@ -24,7 +24,7 @@ export function TimePlayerAnswerOptions({
         return (
           <TimeOptionButton
             key={index}
-            id='tempId'
+            id={`3-3-4-${index}`}
             onClick={() => handleClick(line, index)}
             label={`> ${line}`}
           />
