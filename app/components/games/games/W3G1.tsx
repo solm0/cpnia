@@ -1,6 +1,6 @@
 import Scene from "../../util/Scene";
 import { useEffect, useRef, useState } from "react";
-import { Billboard, OrbitControls, Text } from "@react-three/drei";
+import { Billboard, Environment, OrbitControls, Text, useGLTF } from "@react-three/drei";
 import FullScreenModal from "../../util/FullScreenModal";
 import Button from "../../util/Button";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -8,6 +8,7 @@ import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { AnimationMixer, Group, LoopRepeat, Object3D, Vector3 } from "three";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
+import { DepthOfField, EffectComposer } from "@react-three/postprocessing";
 
 function Player({
   width, cubeMap, onGameEnd, timeRef, runningRef, avatar
@@ -34,7 +35,7 @@ function Player({
 
   useEffect(() => {
     const deadzone = 0.5;
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = () => {
       if (pressed.current.has("KeyD") || gamepad.current.axes[0] > deadzone) {
         setPos((p) => Math.min(3, p + 1));
       } else if (pressed.current.has("KeyA") || gamepad.current.axes[0] < -deadzone) {
@@ -121,6 +122,8 @@ function Player({
   )
 }
 
+useGLTF.preload('/models/gate.glb');
+
 function GameScene({
   width, timeRef, startTimeRef, runningRef, cubeMap,
 }: {
@@ -130,6 +133,9 @@ function GameScene({
   runningRef: React.RefObject<boolean>;
   cubeMap: number[];
 }) {
+  const gate = useGLTF('/models/gate.glb');
+  const mixer = useRef<AnimationMixer | null>(null);
+
   const { camera } = useThree();
   const gutter = 1.1;
 
@@ -139,6 +145,20 @@ function GameScene({
     camera.position.set(0,5,10);
     camera.lookAt(0, 0, 0);
   }, [camera]);
+
+  useEffect(() => {
+    mixer.current = new AnimationMixer(gate.scene);
+    const anim = gate?.animations?.[0];
+    console.log(gate?.animations)
+    if (!anim) return;
+    console.log(anim)
+    const action = mixer.current.clipAction(anim);
+    action.play();
+
+    return () => {
+      mixer.current?.stopAllAction();
+    };
+  }, [gate]);
 
   useFrame((_, delta) => {
     if (!runningRef.current) {
@@ -151,6 +171,12 @@ function GameScene({
     // compute elapsed seconds from startTimeRef (use same wall clock origin)
     const elapsed = (performance.now() - startTimeRef.current) / 1000;
     timeRef.current = elapsed; // float seconds
+
+    // console.log(timeRef.current)
+    if (timeRef.current >= 15) {
+      // console.log('f', timeRef.current)
+      mixer.current?.update(delta);
+    }
 
     // Visual: move group by exactly elapsed seconds -> 1 cell per second
     // assuming each step should visually move width * 5 * gutter units per second:
@@ -170,16 +196,33 @@ function GameScene({
                 key={`${rowIndex}-${i}`}
                 position={new Vector3(
                   i * width * gutter,
-                  row === i ? 0 : -width*0.5,
+                  0,
                   -rowIndex * width*5 * gutter
               )}>
                 <boxGeometry args={[width, width, width*5]} />
                 <meshBasicMaterial color={'blue'} transparent opacity={row === i ? 1 : 0.2} />
               </mesh>
             ))}
+
           </>
         ))}
+        <Environment files={'/hdri/bay.hdr'} background={false} environmentIntensity={1} />
+        
+        <primitive
+          object={gate.scene}
+          position={[width*1.87, 5, -cubeMap.length * width*5 * gutter]}
+          scale={35}
+        />
+        <directionalLight
+          intensity={10}
+          position={[width*1.87+10, -10, -cubeMap.length * width*5 * gutter]}
+        />
+        <directionalLight
+          intensity={10}
+          position={[width*1.87-10, -10, -cubeMap.length * width*5 * gutter]}
+        />
       </group>
+
     </>
   )
 }
@@ -259,6 +302,10 @@ export default function W3G1({
         <OrbitControls minDistance={30} maxDistance={100} />
         <directionalLight intensity={1} position={[0,10,10]} />
         
+        <color attach="background" args={["black"]} />
+        <EffectComposer>
+          <DepthOfField focusDistance={0} focalLength={0.3} bokehScale={8} height={480} />
+        </EffectComposer>
       </Scene>
 
       {/* 게임 인터페이스 */}

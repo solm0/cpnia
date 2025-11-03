@@ -47,17 +47,18 @@ export default function W3G2({
   const goal = 5;
   const coreCount = 10;
   const maxClicks = 20;
-  const coreGltf = useGLTF('/models/placeholder.glb').scene;
+  const coreGltf = useGLTF('/models/core.glb');
+  const coreScene = coreGltf.scene;
 
   useEffect(() => {
-    coreGltf.traverse((child) => {
+    coreScene.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
         mesh.castShadow = true;
         mesh.receiveShadow = true;
       }
     });
-  }, [coreGltf])
+  }, [coreScene])
 
   const scoreRef = useRef(0); // 실시간점수누적
   const [score, setScore] = useState(0); // UI 업데이트용
@@ -101,7 +102,7 @@ export default function W3G2({
     
       return {
         id: i,
-        object: coreGltf.clone(),
+        object: coreScene.clone(),
         position: new Vector3(
           Math.floor(Math.random() * (maxX - minX) + minX),
           Math.floor(Math.random() * (maxY - minY) + minY),
@@ -125,6 +126,7 @@ export default function W3G2({
           setScore={setScore}
           field={field}
           avatar={avatar}
+          coreAnim={coreGltf.animations}
         />
       </Scene>
 

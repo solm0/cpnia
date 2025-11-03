@@ -64,7 +64,10 @@ export function ChatNpcAvatar({
             mesh.userData.shader = shader;
           };
         }
-      })
+      });
+      model.userData = {
+        id: 'its me'
+      }
     }
 
     return () => {

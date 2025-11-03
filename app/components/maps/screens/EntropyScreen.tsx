@@ -25,7 +25,7 @@ export default function EntropyScreen({
   const npcModel = useMemo(() => {
     return Array.from({ length: 4 }, () => clone(npcModelScene));
   }, [npcModelScene]);
-  const map1 = useGLTF("/models/entropy.glb").scene;
+  const map1 = useGLTF("/models/entropy-2.glb").scene;
 
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
 
@@ -44,7 +44,7 @@ export default function EntropyScreen({
           {/* 지형 */}
           <Model
             scene={map1}
-            scale={8}
+            scale={100}
           />
 
           {/* 포탈들 */}

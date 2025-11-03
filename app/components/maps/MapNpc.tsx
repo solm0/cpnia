@@ -40,6 +40,7 @@ export default function MapNpc({
       closeIsChatOpen(false);
     },
   }
+  console.log(id, focusedId, clonedScene.userData);
   
   // inject shader only once
   useMemo(() => {
@@ -68,7 +69,6 @@ export default function MapNpc({
           );
   
           mesh.userData.shader = shader;
-          console.log(mesh.userData.id, mesh);
         };
       }
     });

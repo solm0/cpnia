@@ -2,14 +2,14 @@ import { RefObject, useEffect, useRef, useState } from "react";
 import { Core, Field, PlayerData } from "../W3G2";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
-import { Color, Mesh, MeshStandardMaterial, Object3D, PointLight, Vector3 } from "three";
+import { AnimationClip, AnimationMixer, Color, LoopRepeat, Mesh, MeshStandardMaterial, Object3D, PointLight, Vector3 } from "three";
 import { Physics } from "@react-three/rapier";
 import Player from "./Player";
 import { useFrame } from "@react-three/fiber";
 import CoreLabel from "./CoreLabel";
 
 export default function GameScene({
-  scoreRef, coresRef, playerRef, setScore, field, avatar,
+  scoreRef, coresRef, playerRef, setScore, field, avatar, coreAnim
 }: {
   scoreRef: RefObject<number>;
   coresRef: RefObject<Core[]>;
@@ -17,6 +17,7 @@ export default function GameScene({
   setScore: (score: number) => void;
   field: Field;
   avatar: Object3D;
+  coreAnim: AnimationClip[];
 }) {
   const nearestCoreRef = useRef<Core | null>(null);
   const targetDistance = 8;
@@ -25,6 +26,7 @@ export default function GameScene({
   const gamepad = useGamepadControls();
   const lightRef = useRef<PointLight>(null);
   const isBreaking = useRef<boolean>(false);
+  const mixers = useRef<AnimationMixer[]>([]);
 
   // map gltf 가져오기
 
@@ -65,9 +67,25 @@ export default function GameScene({
     );
   }, []);
 
+  useEffect(() => {
+    // 애니메이션
+    mixers.current = coresRef.current.map(core => {
+      const m = new AnimationMixer(core.object);
+      const clip = coreAnim[0];
+      const action = m.clipAction(clip);
+      
+      action.clampWhenFinished = true;
+      action.loop = LoopRepeat; // 기본은 반복
+      action.play();
+
+      return m;
+    });
+    return () => mixers.current.forEach(m => m.stopAllAction());
+  }, [coreAnim])
+
   const clickProcessed = useRef(false);
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     // --- 타겟 설정 ---
     const playerPos = playerRef.current.position;
     let nearestCore: Core | null = null;
@@ -103,7 +121,7 @@ export default function GameScene({
           .lerp(new Color(0x33ff66), ratio)
           .getHex();
         mat.emissive.set(isTarget ? lerped : 0x000000);
-        mat.emissiveIntensity = isTarget ? 0.5 : 0;
+        mat.emissiveIntensity = isTarget ? 0.4 : 0;
       });
     });
 
@@ -150,6 +168,9 @@ export default function GameScene({
         playerRef.current.position.z - 10
       )
     }
+
+    // --- 코어 부서짐 애니메이션
+    mixers.current.forEach(m => m.update(delta));
   })
 
   return (
@@ -162,6 +183,7 @@ export default function GameScene({
           key={core.id}
           object={core.object}
           position={core.position}
+          scale={15}
         />
       ))}
       {coreLabels.map(label => (

@@ -1,10 +1,10 @@
 import Scene from "../../util/Scene";
-import { RefObject, useRef, useState } from "react";
-import { Environment, Html } from "@react-three/drei";
+import { RefObject, useEffect, useRef, useState } from "react";
+import { Environment, Html, useGLTF } from "@react-three/drei";
 import { Bloom, ChromaticAberration, DepthOfField, EffectComposer, HueSaturation, Noise, } from "@react-three/postprocessing";
 import { BlendFunction } from 'postprocessing'
 import { Physics } from "@react-three/rapier";
-import { Object3D, Quaternion, Vector3 } from "three";
+import { AnimationMixer, LoopOnce, Object3D, Quaternion, Vector3 } from "three";
 import Player from "./W3G3/Player";
 import FullScreenModal from "../../util/FullScreenModal";
 import Button from "../../util/Button";
@@ -37,6 +37,8 @@ const phaseConfig: Config[] = [
   }
 ]
 
+useGLTF.preload('/models/gate.glb');
+
 function GameScene({
   onGameEnd, timerRef, healthRef, avatar,
 }: {
@@ -52,6 +54,34 @@ function GameScene({
   const length = 500;
   const exitPos = new Vector3(length, length, -length);
 
+  const gate = useGLTF('/models/gate.glb');
+  const mixer = useRef<AnimationMixer | null>(null);
+  
+  useEffect(() => {
+    if (gate) {
+      mixer.current = new AnimationMixer(gate.scene);
+      return () => {
+        mixer.current?.stopAllAction();
+        mixer.current = null;
+      }
+    }
+  }, [gate]);
+
+  useEffect(() => {
+    if (!mixer.current || !gate.animations.length) return;
+    const action = mixer.current.clipAction(gate.animations[0]);
+    action.setLoop(LoopOnce, 0);
+    action.clampWhenFinished = true;
+    action.play();
+
+    const onFinished = () => {
+      hasGateOpen.current = true; // 열린 상태 저장
+      mixer.current?.removeEventListener('finished', onFinished);
+    };
+  
+    mixer.current.addEventListener('finished', onFinished);
+  }, [])
+
   const initialPlayer = {
     position: new Vector3(0,0,0),
     rotation: new Quaternion()
@@ -63,6 +93,7 @@ function GameScene({
   const isColliding = useRef(false);
   const phaseRef = useRef(0);
   const [phase, setPhase] = useState(0);
+  const hasGateOpen = useRef(false);
 
   function CollideDebris() {
     healthRef.current -= 1;
@@ -76,7 +107,7 @@ function GameScene({
     }
   }
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     // --- 타이머 ---
     if (timerRef.current.running) {
       timerRef.current.elapsed = (performance.now() - timerRef.current.startTime) / length;
@@ -117,8 +148,12 @@ function GameScene({
       setPhase(2);
     }
 
-    // --- crowdRef line 업데이트 ---
-    // 플레이어를 둘러싸고 랜덤한 위치에 
+    // --- 문 열림 ---
+    if (!mixer.current) return;
+
+    if (dist < 20 && !hasGateOpen.current) {
+      mixer.current?.update(delta);
+    }
   })
 
   return (
@@ -142,6 +177,11 @@ function GameScene({
         >
           <div>출구는 여기에</div>
         </Html>
+        <primitive
+          object={gate.scene}
+          position={exitPos}
+          scale={35}
+        />
 
         <group ref={arrowRef}>
           <mesh position={[0, 1, 0]}>

@@ -40,7 +40,7 @@ export function Avatar({
     if (!mixer.current || !anim.animations.length) return;
 
     const clip = anim.animations[0];
-    console.log('anim', clip.name)
+    // console.log('anim', clip.name)
 
     if (actionsRef.current) {
       actionsRef.current.fadeOut(0.2);

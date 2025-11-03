@@ -191,7 +191,7 @@ export default function PlayerWithStair({
     }
 
     if (activeAction !== nextAction) {
-      console.log(nextAction)
+      // console.log(nextAction)
       setActiveAction(nextAction);
     }
 
