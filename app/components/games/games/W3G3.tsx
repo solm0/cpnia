@@ -16,6 +16,7 @@ import DebrisPool from "./W3G3/DebrisPool";
 import Health from "./W3G3/Health";
 import CollisionOverlay from "./W3G3/CollisionOverlay";
 import LinePool from "./W3G3/LinePool";
+import StartScreen from "./StartScreen";
 
 interface Config {
   lines: string[],
@@ -161,10 +162,21 @@ function GameScene({
       {/* <Planes /> */}
       <Physics gravity={[0, 7, 0]}>
         {/* 조각들 */}
-        <DebrisPool playerRef={playerRef} count={150} radius={150} collideDebris={CollideDebris} />
+        <DebrisPool
+          playerRef={playerRef}
+          count={150}
+          radius={150}
+          collideDebris={CollideDebris}
+          timerRef={timerRef}
+        />
 
         {/* 대사들 */}
-        <LinePool playerRef={playerRef} lines={phaseConfig[phase].lines} lineStyle={phaseConfig[phase].lineStyle} />
+        <LinePool
+          playerRef={playerRef}
+          lines={phaseConfig[phase].lines}
+          lineStyle={phaseConfig[phase].lineStyle}
+          timerRef={timerRef}
+        />
 
         {/* 필터 */}
         <CollisionOverlay isColliding={isColliding} playerRef={playerRef} />
@@ -211,9 +223,16 @@ export default function W3G3({
   onGameEnd: (success: boolean) => void;
   avatar: Object3D;
 }) {
-  const [hasStarted, setHasStarted] = useState(false);
-  const { timerRef, start } = useTimerRef();
+  const { timerRef } = useTimerRef();
   const healthRef = useRef(10);
+
+  const handleStart = () => {
+    if (!timerRef.current.running) {
+      timerRef.current.startTime = performance.now();
+      timerRef.current.elapsed = 0;
+      timerRef.current.running = true;
+    }
+  }
   
   return (
     <main className="w-full h-full">
@@ -240,24 +259,15 @@ export default function W3G3({
       </Scene>
 
       {/* 게임 인터페이스 */}
-      {!hasStarted &&
-        <FullScreenModal>
-          <p>난 시민권을 원했지, 여기서 엔트로피 조각에 맞아 죽는 걸 원하진 않았어! 이 무질서로부터 도망쳐야겠어.</p>
-          <Button
-            onClick={() => {
-              setHasStarted(true);
-              start();
-            }}
-            label="시작하기"
-            worldKey={worldKey}
-            id={'tempId'}
-          />
-        </FullScreenModal>
-      }
-
+      <StartScreen
+        worldKey={worldKey}
+        gameKey={gameKey}
+        handleStart={handleStart}
+        desc="코어가 완전히 붕괴하여 무질서만이 가득합니다. 그게 무엇이든, 물질들에 충돌하지 말고 대문을 찾아 이곳을 나가tㅓㅑㅇㄴㄴㅁㅇiej9-whf]qqjepfㅇ83 ㅇ ff   f"
+        buttonLabel="시작하기"
+      />
 
       <Health healthRef={healthRef} />
-
     </main>
   )
 }

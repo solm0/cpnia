@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, RefObject } from "react";
 import { Group, Vector3 } from "three";
 import { useFrame } from "@react-three/fiber";
 import { createFragment } from "./Fragment";
@@ -14,13 +14,19 @@ export default function DebrisPool({
   playerRef,
   radius = 500,
   detectRadius = 5,
-  collideDebris
+  collideDebris,
+  timerRef,
 }: {
   count?: number;
   playerRef: { current: { position: Vector3 } };
   radius?: number;
   detectRadius?: number;
   collideDebris: () => void;
+  timerRef: RefObject<{
+    startTime: number;
+    elapsed: number;
+    running: boolean;
+  }>;
 }) {
   const groupRef = useRef<Group>(null!);
   const objects = useRef<DebrisObject[]>([]);
@@ -51,6 +57,8 @@ export default function DebrisPool({
   }, [count, radius]);
 
   useFrame((_, delta) => {
+    if (!timerRef.current.running) return;
+    
     const playerPos = playerRef.current.position;
 
     for (const obj of objects.current) {

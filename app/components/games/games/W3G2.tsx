@@ -7,6 +7,7 @@ import { useGLTF } from "@react-three/drei";
 import GameScene from "./W3G2/GameScene";
 import Ui from "./W3G2/Ui";
 import MiniMap from "./W3G2/MiniMap";
+import StartScreen from "./StartScreen";
 
 export interface Core {
   id: number;
@@ -142,18 +143,14 @@ export default function W3G2({
       </div>
 
       {/* 게임 인터페이스 */}
-      {!hasStarted &&
-        <FullScreenModal>
-          <p>코어를 찾아서 부수세요.</p>
-          <Button
-            onClick={() => setHasStarted(true)}
-            label="시작하기"
-            worldKey={worldKey}
-            id={'tempId'}
-          />
-        </FullScreenModal>
-      }
-
+      <StartScreen
+        worldKey={worldKey}
+        gameKey={gameKey}
+        handleStart={() => setHasStarted(true)}
+        desc="코어가 일부 붕괴하여 분말로 인해 앞이 잘 보이지 않습니다. 나침반을 보고 코어 덩어리를 찾아 마저 파괴하십시오!"
+        style='text-white'
+        buttonLabel="시작하기"
+      />
       <Ui score={score} leftSec={leftSec} />
     </main>
   )

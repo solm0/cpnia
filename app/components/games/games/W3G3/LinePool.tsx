@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, RefObject } from "react";
 import { Group, Vector3 } from "three";
 import { useFrame } from "@react-three/fiber";
 import { Billboard, Html, Text } from "@react-three/drei";
@@ -13,13 +13,19 @@ export default function LinePool({
   lines,
   maxCount = 100,
   spawnInterval = 0.5, // 초 단위 (기본 1초마다 생성)
-  lineStyle
+  lineStyle,
+  timerRef,
 }: {
   playerRef: { current: { position: Vector3 } };
   lines: string[];
   maxCount?: number;
   spawnInterval?: number;
   lineStyle: string;
+  timerRef: RefObject<{
+    startTime: number;
+    elapsed: number;
+    running: boolean;
+  }>;
 }) {
   const [, setVersion] = useState(0); // local state to trigger rerender
 
@@ -41,7 +47,7 @@ export default function LinePool({
   }, []);
 
   useFrame((_, delta) => {
-    if (!playerRef.current) return;
+    if (!playerRef.current || !timerRef.current.running) return;
     timeAccumulator.current += delta;
 
     // 일정 시간마다 새로운 텍스트 생성

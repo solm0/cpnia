@@ -1,14 +1,13 @@
 import Scene from "../../util/Scene";
 import { useEffect, useRef, useState } from "react";
 import { Billboard, Environment, OrbitControls, Text, useGLTF } from "@react-three/drei";
-import FullScreenModal from "../../util/FullScreenModal";
-import Button from "../../util/Button";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { AnimationMixer, Group, LoopRepeat, Object3D, Vector3 } from "three";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
 import { DepthOfField, EffectComposer } from "@react-three/postprocessing";
+import StartScreen from "./StartScreen";
 
 function Player({
   width, cubeMap, onGameEnd, timeRef, runningRef, avatar
@@ -227,29 +226,6 @@ function GameScene({
   )
 }
 
-function StartScreen({worldKey, handleStart}: {worldKey: string; handleStart:() => void;}) {
-  const [hasStarted, setHasStarted] = useState(false);
-
-  return (
-    <>
-      {!hasStarted &&
-        <FullScreenModal>
-          <p>핑크 타일만 터치하세요</p>
-          <Button
-            onClick={() => {
-              handleStart();
-              setHasStarted(true);
-            }}
-            label="시작하기"
-            worldKey={worldKey}
-            id={'tempId'}
-          />
-        </FullScreenModal>
-      }
-    </>
-  )
-}
-
 export default function W3G1({
   worldKey, gameKey, onGameEnd, avatar,
 }: {
@@ -310,7 +286,14 @@ export default function W3G1({
 
       {/* 게임 인터페이스 */}
 
-      <StartScreen worldKey={worldKey} handleStart={handleStart} />
+      <StartScreen
+        worldKey={worldKey}
+        gameKey={gameKey}
+        handleStart={handleStart}
+        desc='파란 타일을 밟고 도시의 중심까지 도달하세요'
+        buttonLabel='시작하기'
+        style="text-white"
+      />
     </main>
   )
 }
