@@ -64,11 +64,7 @@ export default function W1G3({
       </Scene>
 
       {/* 게임 인터페이스 */}
-      <GameMenu
-        worldKey={worldKey}
-        gameKey={gameKey}
-        score={leftMoney.current}
-      />
+      <p>{leftMoney.current}</p>
     </main>
   )
 }

@@ -8,6 +8,7 @@ import { W2G1roundConfig } from "./roundConfig";
 import { Object3D, Vector3 } from "three";
 import Timer from "./W2G1/Timer";
 import Button from "../../util/Button";
+import StartScreen from "./StartScreen";
 
 export interface BodyData {
   ingr: string;
@@ -170,7 +171,12 @@ export default function W2G1({
     }
   }
 
-  function startRound(round: number) {
+  const roundReadyRef = useRef<number | null>(null);
+
+  function startRound() {
+    if (roundReadyRef.current === null) return;
+
+    const round = roundReadyRef.current;
     const time = W2G1roundConfig[round].time;
     secondsRef.current = time;
   
@@ -196,7 +202,9 @@ export default function W2G1({
         <Suspense fallback={<Loader />}>
           <BattleField
             round={round}
-            onRoundReady={startRound}
+            onRoundReady={(round: number) => {
+              roundReadyRef.current = round
+            }}
             abnormalRef={abnormal}
             spaceKeyRef={spaceKeyPressed}
           />
@@ -210,6 +218,13 @@ export default function W2G1({
         worldKey={worldKey}
         gameKey={gameKey}
         abnormalRef={abnormal}
+      />
+      <StartScreen
+        worldKey={worldKey}
+        gameKey={gameKey}
+        handleStart={startRound}
+        desc="우리 피자 재료가 아닌 스파이를 찾아 공격하라!"
+        buttonLabel="시작하기"
       />
     </main>
   )

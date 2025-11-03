@@ -131,7 +131,8 @@ export default function RouletteTable({
         anchorX="center"
         anchorY="middle"
       >
-        당신의선택은?? enter를 눌러 확정하십쇼..
+        On Time 퀘스트 3
+        당신이 선택한 숫자가 당첨될까요? enter를 눌러 확정
       </Text>
       <group
         key={coinIsOn.current}

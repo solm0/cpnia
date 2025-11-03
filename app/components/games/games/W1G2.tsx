@@ -55,12 +55,10 @@ function Ui({
 
   return (
     <>
-      <GameMenu
-        worldKey={worldKey}
-        gameKey={gameKey}
-        score={successCount}
-      />
+      <p className="w-full flex justify-center text-2xl">{successCount}</p>
       <div className="w-screen h-screen pt-60 pointer-events-none absolute">
+        <p>On Time 퀘스트 2</p>
+        <p>슬롯머신에서 세 개의 같은 숫자가 나오면 성공! 6회의 기회가 주어집니다</p>
         {motionPhase.current === 'idle'
           ? (
             <Button

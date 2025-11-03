@@ -1,17 +1,15 @@
 import { useFrame, } from "@react-three/fiber";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { useMemo, useEffect, useState, useRef } from "react";
-import { Mesh, MeshStandardMaterial, Group } from "three";
+import { Mesh, MeshStandardMaterial, Group, Vector3 } from "three";
 import { useGLTF } from "@react-three/drei";
 
 export default function Fugitive({
   scale = 1,
-  position = [0, 0, 0],
-  rotation = [0, 0, 0],
+  position,
 }: {
   scale?: number;
-  position?: [number, number, number];
-  rotation?: [number, number, number];
+  position?: Vector3
 }) {
   const gltf = useGLTF("/models/avatars/redPap.gltf");
   const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
@@ -63,9 +61,9 @@ export default function Fugitive({
     if (groupRef.current) {
       const time = performance.now() / 30; // tweak this speed
       const intensity = 0.05; // how much to shake
-      groupRef.current.rotation.x = rotation[0] + Math.sin(time) * intensity;
-      groupRef.current.rotation.y = rotation[1] + Math.cos(time * 1.3) * intensity;
-      groupRef.current.rotation.z = rotation[2] + Math.sin(time * 0.7) * intensity;
+      groupRef.current.rotation.x = Math.sin(time) * intensity;
+      groupRef.current.rotation.y = Math.cos(time * 1.3) * intensity;
+      groupRef.current.rotation.z = Math.sin(time * 0.7) * intensity;
     }
   });
 
@@ -82,7 +80,6 @@ export default function Fugitive({
       }}
       scale={scale}
       position={position}
-      rotation={rotation}
     >
       <primitive object={clonedScene} />
     </group>

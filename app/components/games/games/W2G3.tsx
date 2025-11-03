@@ -4,7 +4,10 @@ import { useState } from "react";
 import CameraController from "./W2G1/CameraController";
 import { FugitiveLineModal } from "../../maps/interfaces/NpcLineModals";
 import Fugitive from "./W2G3/Fugitive";
-import { Object3D } from "three";
+import { Object3D, Vector3 } from "three";
+import { OrbitControls, useGLTF } from "@react-three/drei";
+
+useGLTF.preload('/models/w2g3map.gltf');
 
 export default function W2G3({
   worldKey, gameKey, onGameEnd, avatar
@@ -14,7 +17,20 @@ export default function W2G3({
   onGameEnd: (success: boolean) => void;
   avatar: Object3D;
 }) {
-  // 게임마다 다른 게임 상태 저장. 점수만 Game으로 올려줌.
+  const map = useGLTF('/models/w2g3map.gltf').scene;
+  const initialPos = new Vector3(0,0,0);
+  const mapPos = new Vector3(
+    initialPos.x -50,
+    initialPos.y -10,
+    initialPos.z - 17
+  );
+  const mapScale = 0.5;
+  const fugitivePos = new Vector3(
+    initialPos.x - 30 * mapScale,
+    0,
+    initialPos.z + 1 * mapScale,
+  )
+
   const [score, setScore] = useState(0);
   const [round, setRound] = useState(1);
 
@@ -49,9 +65,22 @@ export default function W2G3({
         <group
           onClick={() => setIsOpen(true)}
         >
-          <Fugitive />
+          <Fugitive position={fugitivePos} />
         </group>
 
+        {/* 맵 */}
+        <primitive
+          object={map}
+          scale={mapScale}
+          position={mapPos}
+        />
+        <OrbitControls />
+
+        {/* 천장 */}
+        <mesh rotation-x={-Math.PI / 2} position={[0,0,0]} receiveShadow>
+          <planeGeometry args={[50,50]} />
+          <meshStandardMaterial color="white" />
+        </mesh>
 
         {/* 카메라, 컨트롤 */}
         <CameraController />

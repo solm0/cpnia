@@ -110,6 +110,8 @@ export default function W1G1({
 
       {/* 게임 인터페이스 */}
       <div className="flex flex-col items-center justify-center gap-2 h-screen bg-[#00000007] pointer-events-none absolute right-0 top-0 w-1/2">
+        <p>On Time 퀘스트 1</p>
+        <p>인디언포커 한 판을 이기세요</p>
         <Ui
           hasPicked={hasPicked}
           pickCard={pickCard}
@@ -125,10 +127,6 @@ export default function W1G1({
           cards={cards}
         />
       </div>
-      <GameMenu
-        worldKey={worldKey}
-        gameKey={gameKey}
-      />
     </main>
   )
 }
