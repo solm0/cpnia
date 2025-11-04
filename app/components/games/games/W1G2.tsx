@@ -5,6 +5,7 @@ import SlotGame from "./W1G2/SlotGame";
 import Button from "../../util/Button";
 import { Object3D } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
+import AudioPlayer from "../../util/AudioPlayer";
 
 function Ui({
   successRef, motionPhase, onGameEnd, worldKey, gameKey,
@@ -116,6 +117,7 @@ export default function W1G2({
   onGameEnd: (success: boolean) => void;
   avatar: Object3D;
 }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
   const motionPhase = useRef<'idle' | 'toSide' | 'handle' | 'toFront' | 'cylinder' | 'done'>('idle');
   const successRef = useRef<boolean>(null);
   const trialRef = useRef(0); // ui와 관련없음, 마지막에 이기게 해주기 위한 것
@@ -221,6 +223,8 @@ export default function W1G2({
         {/* 빛 */}
         <directionalLight intensity={3} position={[0,30,40]} />
       </Scene>
+
+      <AudioPlayer src={`/audio/time_bg.mp3`} audioRef={audioRef} />
     </main>
   )
 }

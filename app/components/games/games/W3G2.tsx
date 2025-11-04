@@ -8,6 +8,7 @@ import GameScene from "./W3G2/GameScene";
 import Ui from "./W3G2/Ui";
 import MiniMap from "./W3G2/MiniMap";
 import StartScreen from "./StartScreen";
+import AudioPlayer from "../../util/AudioPlayer";
 
 export interface Core {
   id: number;
@@ -36,6 +37,7 @@ export default function W3G2({
   onGameEnd: (success: boolean) => void;
   avatar: Object3D;
 }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
   const sec = 90;
   const initialPlayer = {
     position: new Vector3(0,0,0),
@@ -152,6 +154,7 @@ export default function W3G2({
         buttonLabel="시작하기"
       />
       <Ui score={score} leftSec={leftSec} />
+      <AudioPlayer src={`/audio/entropy_bg.mp3`} audioRef={audioRef} />
     </main>
   )
 }

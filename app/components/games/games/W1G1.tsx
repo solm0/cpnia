@@ -5,6 +5,7 @@ import { useGLTF } from "@react-three/drei";
 import { Object3D } from "three";
 import Table from "./W1G1/Table";
 import Ui from "./W1G1/Ui";
+import AudioPlayer from "../../util/AudioPlayer";
 
 export interface gameRefProp {
   card: number | null,
@@ -20,6 +21,7 @@ export default function W1G1({
   onGameEnd: (success: boolean) => void;
   avatar: Object3D;
 }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
   // 모델 가져오기
   const cards: Record<number, Object3D> = {
     2: useGLTF('/models/card-2.gltf').scene,
@@ -127,6 +129,8 @@ export default function W1G1({
           cards={cards}
         />
       </div>
+
+      <AudioPlayer src={`/audio/time_bg.mp3`} audioRef={audioRef} />
     </main>
   )
 }

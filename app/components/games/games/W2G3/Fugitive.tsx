@@ -3,18 +3,24 @@ import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { useMemo, useEffect, useState, useRef } from "react";
 import { Mesh, MeshStandardMaterial, Group, Vector3 } from "three";
 import { useGLTF } from "@react-three/drei";
+import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
 
 export default function Fugitive({
   scale = 1,
   position,
+  setIsOpen,
 }: {
   scale?: number;
-  position?: Vector3
+  position?: Vector3;
+  setIsOpen: (isOpen: boolean) => void;
 }) {
   const gltf = useGLTF("/models/avatars/redPap.gltf");
   const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
   const [hovered, setHovered] = useState(false);
   const groupRef = useRef<Group>(null);
+
+  const focusedId = use3dFocusStore((s) => s.focusedObj?.id);
+  const id = 'fugitive'
 
   // shader highlight setup
   useEffect(() => {
@@ -22,6 +28,12 @@ export default function Fugitive({
       if ((child as Mesh).isMesh) {
         child.castShadow = true;
         child.receiveShadow = true;
+        child.userData = {
+          id: id,
+          onClick: () => {
+            setIsOpen(true);
+          },
+        }
 
         const mesh = child as Mesh;
         mesh.material = (mesh.material as MeshStandardMaterial).clone();
@@ -53,7 +65,10 @@ export default function Fugitive({
       if ((child as Mesh).isMesh) {
         const shader = child.userData.shader;
         if (shader?.uniforms?.uHighlight) {
-          shader.uniforms.uHighlight.value = hovered ? 1 : 0;
+          shader.uniforms.uHighlight.value = hovered
+            ? 1
+            : focusedId === id
+              ? 1 : 0;
         }
       }
     });

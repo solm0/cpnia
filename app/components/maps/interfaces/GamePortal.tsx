@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Mesh, MeshStandardMaterial } from "three";
 import { useFrame } from "@react-three/fiber";
 import { useRouter } from "next/navigation";
+import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
 
 export default function GamePortal({
   modelSrc, locked, worldKey, gameKey, scale = 1
@@ -13,9 +14,12 @@ export default function GamePortal({
   gameKey: string;
   scale?: number;
 }) {
+  const id = `${worldKey}-gameportal-${gameKey}`;
+  const focusedId = use3dFocusStore((s) => s.focusedObj?.id);
+
   const gltf = useGLTF(modelSrc).scene;
   gltf.userData = {
-    id: `${worldKey}-gameportal-${gameKey}`,
+    id: id,
     onClick: () => {
       if (!locked) {
         router.push(`/${worldKey}?game=${gameKey}`)
@@ -65,7 +69,10 @@ export default function GamePortal({
       if ((child as Mesh).isMesh) {
         const shader = child.userData.shader;
         if (shader?.uniforms?.uHighlight) {
-          shader.uniforms.uHighlight.value = hovered ? 1 : 0;
+          shader.uniforms.uHighlight.value = hovered
+          ? 1
+          : focusedId === id
+              ? 1 : 0;
         }
       }
     });

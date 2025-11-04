@@ -8,6 +8,7 @@ import { AnimationMixer, Group, LoopRepeat, Object3D, Vector3 } from "three";
 import { useAnimGltf } from "@/app/lib/hooks/useAnimGltf";
 import { DepthOfField, EffectComposer } from "@react-three/postprocessing";
 import StartScreen from "./StartScreen";
+import AudioPlayer from "../../util/AudioPlayer";
 
 function Player({
   width, cubeMap, onGameEnd, timeRef, runningRef, avatar
@@ -234,6 +235,7 @@ export default function W3G1({
   onGameEnd: (success: boolean) => void;
   avatar: Object3D;
 }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
   const width = 3;
   const startTimeRef = useRef<number>(0);
   const runningRef = useRef<boolean>(false);
@@ -294,6 +296,8 @@ export default function W3G1({
         buttonLabel='시작하기'
         style="text-white"
       />
+
+      <AudioPlayer src={`/audio/entropy_bg.mp3`} audioRef={audioRef} />
     </main>
   )
 }

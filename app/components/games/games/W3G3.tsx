@@ -17,6 +17,7 @@ import Health from "./W3G3/Health";
 import CollisionOverlay from "./W3G3/CollisionOverlay";
 import LinePool from "./W3G3/LinePool";
 import StartScreen from "./StartScreen";
+import AudioPlayer from "../../util/AudioPlayer";
 
 interface Config {
   lines: string[],
@@ -223,6 +224,7 @@ export default function W3G3({
   onGameEnd: (success: boolean) => void;
   avatar: Object3D;
 }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
   const { timerRef } = useTimerRef();
   const healthRef = useRef(10);
 
@@ -268,6 +270,7 @@ export default function W3G3({
       />
 
       <Health healthRef={healthRef} />
+      <AudioPlayer src={`/audio/entropy_bg.mp3`} audioRef={audioRef} />
     </main>
   )
 }

@@ -5,6 +5,7 @@ import { OrbitControls } from "@react-three/drei";
 import RouletteRoll from "./W1G3/RouletteRoll";
 import RouletteTable from "./W1G3/RouletteTable";
 import { Object3D } from "three";
+import AudioPlayer from "../../util/AudioPlayer";
 
 export default function W1G3({
   worldKey, gameKey, onGameEnd, avatar
@@ -14,6 +15,7 @@ export default function W1G3({
   onGameEnd: (success: boolean) => void;
   avatar: Object3D;
 }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [trial, setTrial] = useState(1)
   const leftMoney = useRef(100);
   const [betNum, setBetNum] = useState<number | null>(null);
@@ -65,6 +67,8 @@ export default function W1G3({
 
       {/* 게임 인터페이스 */}
       <p>{leftMoney.current}</p>
+
+      <AudioPlayer src={`/audio/time_bg.mp3`} audioRef={audioRef} />
     </main>
   )
 }

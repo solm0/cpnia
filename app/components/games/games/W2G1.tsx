@@ -9,6 +9,7 @@ import { Object3D, Vector3 } from "three";
 import Timer from "./W2G1/Timer";
 import Button from "../../util/Button";
 import StartScreen from "./StartScreen";
+import AudioPlayer from "../../util/AudioPlayer";
 
 export interface BodyData {
   ingr: string;
@@ -126,6 +127,7 @@ export default function W2G1({
   onGameEnd: (success: boolean) => void;
   avatar: Object3D;
 }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [round, setRound] = useState(1);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -226,6 +228,8 @@ export default function W2G1({
         desc="우리 피자 재료가 아닌 스파이를 찾아 공격하라!"
         buttonLabel="시작하기"
       />
+
+      <AudioPlayer src={`/audio/sacrifice_bg.mp3`} audioRef={audioRef} />
     </main>
   )
 }

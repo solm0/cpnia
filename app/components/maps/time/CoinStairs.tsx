@@ -1,9 +1,10 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
-import { Object3D } from "three";
+import { MeshStandardMaterial, Object3D } from "three";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { Mesh } from "three";
+import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
 
 useGLTF.preload('/models/coin.gltf');
 
@@ -29,12 +30,14 @@ function SpinningCoin({
   idx: number;
 }) {
   const ref = useRef<Object3D>(null);
+  const id = `time-stair-${idx}`;
+  const focusedId = use3dFocusStore((s) => s.focusedObj?.id);
 
   coin.userData = {
-    id: `time-stair-${idx}`,
+    id: id,
     onClick: () => {
       if (!locked) {
-        handleClickStair(idx)
+        handleClickStair(idx);
       }
     },
   }
@@ -43,9 +46,42 @@ function SpinningCoin({
       if ((child as Mesh).isMesh) {
         const mesh = child as Mesh;
         mesh.castShadow = mesh.receiveShadow = true;
+        mesh.material = (mesh.material as MeshStandardMaterial).clone();
+  
+        const mat = mesh.material as MeshStandardMaterial;
+        mat.onBeforeCompile = (shader) => {
+          shader.uniforms.uHighlight = { value: 0 };
+  
+          shader.fragmentShader = `
+            uniform float uHighlight;
+          ` + shader.fragmentShader;
+  
+          shader.fragmentShader = shader.fragmentShader.replace(
+            `#include <dithering_fragment>`,
+            `
+              #include <dithering_fragment>
+              if (uHighlight > 0.5) {
+                gl_FragColor.rgb += vec3(0.2, 0.2, 0.2);
+              }
+            `
+          );
+  
+          mesh.userData.shader = shader;
+        };
       }
     });
-  }, [coin])
+  }, [coin]);
+
+  useMemo(() => {
+    coin.traverse((child) => {
+      if ((child as Mesh).isMesh) {
+        const shader = child.userData.shader;
+        if (shader?.uniforms?.uHighlight) {
+          shader.uniforms.uHighlight.value = focusedId === id ? 1 : 0;
+        }
+      }
+    });
+  }, [focusedId]);
 
   useFrame(({ clock }) => {
     if (!ref.current) return;

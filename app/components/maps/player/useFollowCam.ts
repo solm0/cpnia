@@ -11,9 +11,21 @@ export function useFollowCam(
   gamepad: {
     axes: number[];
     buttons: Record<string, boolean>;
+  },
+  limits?: {
+    zoomMin?: number;
+    zoomMax?: number;
+    pitchMin?: number;
+    pitchMax?: number;
   }
 ) {
   const { camera } = useThree();
+
+  // 기본 제한값
+  const zoomMin = limits?.zoomMin ?? 10;
+  const zoomMax = limits?.zoomMax ?? 300;
+  const pitchMin = limits?.pitchMin ?? -1;
+  const pitchMax = limits?.pitchMax ?? 1;
 
   // Camera rotation pivots
   const yaw = useMemo(() => new Object3D(), []);
@@ -45,10 +57,10 @@ export function useFollowCam(
       yaw.rotation.y -= rotateSpeed;
     }
     if (pressedKeys.has("KeyI") || (gamepad && gamepad.axes[3] < -deadzone)) {
-      pitch.rotation.x = Math.max(-1, pitch.rotation.x - rotateSpeed);
+      pitch.rotation.x = Math.max(pitchMin, pitch.rotation.x - rotateSpeed);
     }
     if (pressedKeys.has("KeyK") || (gamepad && gamepad.axes[3] > deadzone)) {
-      pitch.rotation.x = Math.min(1, pitch.rotation.x + rotateSpeed);
+      pitch.rotation.x = Math.min(pitchMax, pitch.rotation.x + rotateSpeed);
     }
 
     const zoomSpeed = 2;
@@ -62,13 +74,13 @@ export function useFollowCam(
       }
     }
   
-    zoomDistance.current = Math.min(Math.max(zoomDistance.current, 10), 300);
+    zoomDistance.current = Math.min(Math.max(zoomDistance.current, zoomMin), zoomMax);
   }
 
   function onWheel(e: WheelEvent) {
     e.preventDefault();
     zoomDistance.current += e.deltaY * 0.01;
-    zoomDistance.current = Math.min(Math.max(zoomDistance.current, 10), 300);
+    zoomDistance.current = Math.min(Math.max(zoomDistance.current, zoomMin), zoomMax);
   }
 
   useEffect(() => {

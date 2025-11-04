@@ -1,14 +1,13 @@
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
-import { useState } from "react";
-import CameraController from "./W2G1/CameraController";
+import { useRef, useState } from "react";
 import { FugitiveLineModal } from "../../maps/interfaces/NpcLineModals";
-import Fugitive from "./W2G3/Fugitive";
-import { Object3D, Vector3 } from "three";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import { Object3D } from "three";
+import { useGLTF } from "@react-three/drei";
+import AudioPlayer from "../../util/AudioPlayer";
+import { GameScene } from "./W2G3/GameScene";
 
 useGLTF.preload('/models/w2g3map.gltf');
-
 export default function W2G3({
   worldKey, gameKey, onGameEnd, avatar
 }: {
@@ -17,20 +16,7 @@ export default function W2G3({
   onGameEnd: (success: boolean) => void;
   avatar: Object3D;
 }) {
-  const map = useGLTF('/models/w2g3map.gltf').scene;
-  const initialPos = new Vector3(0,0,0);
-  const mapPos = new Vector3(
-    initialPos.x -50,
-    initialPos.y -10,
-    initialPos.z - 17
-  );
-  const mapScale = 0.5;
-  const fugitivePos = new Vector3(
-    initialPos.x - 30 * mapScale,
-    0,
-    initialPos.z + 1 * mapScale,
-  )
-
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [score, setScore] = useState(0);
   const [round, setRound] = useState(1);
 
@@ -44,8 +30,6 @@ export default function W2G3({
   }
   
   const [isOpen, setIsOpen] = useState(false);
-
-  // 라운드마다 다른 대사와 답변을 렌더, 콜백으로 setScore
 
   function handleAnswerClick(point: number, round: number) {
     const newScore = score + point
@@ -62,32 +46,7 @@ export default function W2G3({
     <main className="w-full h-full">
       {/* 게임 */}
       <Scene>
-        <group
-          onClick={() => setIsOpen(true)}
-        >
-          <Fugitive position={fugitivePos} />
-        </group>
-
-        {/* 맵 */}
-        <primitive
-          object={map}
-          scale={mapScale}
-          position={mapPos}
-        />
-        <OrbitControls />
-
-        {/* 천장 */}
-        <mesh rotation-x={-Math.PI / 2} position={[0,0,0]} receiveShadow>
-          <planeGeometry args={[50,50]} />
-          <meshStandardMaterial color="white" />
-        </mesh>
-
-        {/* 카메라, 컨트롤 */}
-        <CameraController />
-
-        {/* 조명, 색 */}
-        <directionalLight intensity={1} position={[20,10,30]} color={'white'} />
-        <directionalLight intensity={2} position={[0,10,0]} color={'orange'} castShadow/>
+        <GameScene setIsOpen={setIsOpen} avatar={avatar} />
         <color attach="background" args={["gray"]} />
       </Scene>
 
@@ -108,6 +67,8 @@ export default function W2G3({
         gameKey={gameKey}
         score={score}
       />
+
+      <AudioPlayer src={`/audio/sacrifice_bg.mp3`} audioRef={audioRef} />
     </main>
   )
 }

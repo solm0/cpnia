@@ -40,7 +40,7 @@ export default function MapNpc({
       closeIsChatOpen(false);
     },
   }
-  console.log(id, focusedId, clonedScene.userData);
+  // console.log(id, focusedId, clonedScene.userData);
   
   // inject shader only once
   useMemo(() => {

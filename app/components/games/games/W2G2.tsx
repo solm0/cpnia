@@ -1,10 +1,11 @@
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
 import { useGLTF } from "@react-three/drei";
-import { Suspense, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import ShootingRange from "./W2G2/ShootingRange";
 import Crowd from "./W2G2/Crowd";
 import { Object3D } from "three";
+import AudioPlayer from "../../util/AudioPlayer";
 
 export default function W2G2({
   worldKey, gameKey, onGameEnd, avatar
@@ -14,6 +15,7 @@ export default function W2G2({
   onGameEnd: (success: boolean) => void;
   avatar: Object3D;
 }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [round, setRound] = useState(1);
 
   function onRoundEnd(success: boolean) {
@@ -73,6 +75,8 @@ export default function W2G2({
         gameKey={gameKey}
         score={round}
       />
+
+      <AudioPlayer src={`/audio/sacrifice_bg.mp3`} audioRef={audioRef} />
     </main>
   )
 }

@@ -13,13 +13,13 @@ import { useFollowCam } from "../player/useFollowCam";
 import { CuboidCollider } from "@react-three/rapier";
 import { usePlayerStore } from "@/app/lib/state/playerStore";
 import { degToRad } from "three/src/math/MathUtils.js";
-import { Focusable3d, use3dFocusStore } from "@/app/lib/gamepad/inputManager";
+import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
 
 const rectArea: Boundary[] = [
   { type: "rect", center: [90, -10], size: [365, 130] }
 ];
 
-function getNearbyMeshes(origin: Vector3, radius: number, scene: Scene) {
+export function getNearbyMeshes(origin: Vector3, radius: number, scene: Scene) {
   const nearby: Mesh[] = [];
   scene.traverse((obj) => {
     if ((obj as Mesh).isMesh && obj.visible) {
@@ -32,7 +32,7 @@ function getNearbyMeshes(origin: Vector3, radius: number, scene: Scene) {
   return nearby;
 }
 
-function hasAncestorWithId(obj: Object3D, id: string): boolean {
+export function hasAncestorWithId(obj: Object3D, id: string): boolean {
   let current: Object3D | null = obj;
   while (current) {
     if (current.userData?.id === id) return true;
@@ -41,7 +41,7 @@ function hasAncestorWithId(obj: Object3D, id: string): boolean {
   return false;
 }
 
-function findAncestorWithId(obj: Object3D): Object3D | null {
+export function findAncestorWithId(obj: Object3D): Object3D | null {
   let current: Object3D | null = obj;
   while (current) {
     if (current.userData?.id) return current;

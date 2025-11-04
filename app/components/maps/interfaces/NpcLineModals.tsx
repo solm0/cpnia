@@ -222,7 +222,7 @@ export function FugitiveLineModal({
             worldKey="sacrifice"
             label="닫기"
             onClick={() => setIsOpen(false)}
-            id={'tempId'}
+            id='w2g3-1'
           />
         </div>
       </div>
@@ -239,7 +239,7 @@ export function FugitiveLineModal({
           {options.map((option, idx) => 
             <SacrificeOptionButton
               key={idx}
-              id={`tempId`}
+              id={`w2g3-2-${idx}`}
               onClick={() => handleAnswerClick(option.score, round)}
               label={option.answer}
               gainedScore={option.score}
