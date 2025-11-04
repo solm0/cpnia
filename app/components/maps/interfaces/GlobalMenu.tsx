@@ -124,6 +124,14 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
 
       {/* 오른쪽 */}
       <div className="absolute w-auto h-auto top-8 right-8 text-white">
+        <div className="flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity -translate-x-14">
+          <Button
+            id='3-1-0'
+            onClick={() => {}}
+            label={<></>}
+            worldKey={worldKey}
+          />
+        </div>
         {/* 홈버튼 */}
         <div className="flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity -translate-x-14">
           <Button

@@ -1,11 +1,14 @@
 import Scene from "../../util/Scene";
 import GameMenu from "../interfaces/GameMenu";
 import { useRef, useState } from "react";
-import { useGLTF } from "@react-three/drei";
+import { OrbitControls, useGLTF } from "@react-three/drei";
 import { Object3D } from "three";
 import Table from "./W1G1/Table";
 import Ui from "./W1G1/Ui";
 import AudioPlayer from "../../util/AudioPlayer";
+import Model from "../../util/Model";
+import { degToRad } from "three/src/math/MathUtils.js";
+import { Bloom, DepthOfField, EffectComposer } from "@react-three/postprocessing";
 
 export interface gameRefProp {
   card: number | null,
@@ -34,6 +37,7 @@ export default function W1G1({
     9: useGLTF('/models/card-9.gltf').scene,
     10: useGLTF('/models/card-10.gltf').scene,
   }
+  const card = useGLTF("/models/card.glb").scene;
 
   const coin = useGLTF('/models/coin.gltf').scene;
 
@@ -96,8 +100,8 @@ export default function W1G1({
   return (
     <main className="w-full h-full">
       {/* 게임 */}
-      <div className="w-[calc(100%-20rem)] h-full">
-        <Scene>
+      <div className="w-full h-full">
+        <Scene >
           <Table
             hasPicked={hasPicked}
             gameRef={gameRef}
@@ -107,13 +111,23 @@ export default function W1G1({
             coin={coin}
             motionPhase={motionPhase}
           />
+          <primitive
+            object={card}
+            scale={10}
+            position={[0,-250,-300]}
+            rotation={[0,degToRad(-40),0]}
+          />
+
+          <color attach="background" args={["#101010"]} />
+          <EffectComposer>
+            <DepthOfField focusDistance={0} focalLength={0.3} bokehScale={8} height={480} />
+            <Bloom luminanceThreshold={0.1} luminanceSmoothing={0.03} height={300} />
+          </EffectComposer>
         </Scene>
       </div>
 
       {/* 게임 인터페이스 */}
-      <div className="flex flex-col items-center justify-center gap-2 h-screen bg-[#00000007] pointer-events-none absolute right-0 top-0 w-1/2">
-        <p>On Time 퀘스트 1</p>
-        <p>인디언포커 한 판을 이기세요</p>
+      <div className="flex flex-col items-center justify-center gap-2 h-screen pointer-events-none absolute right-0 top-0 w-1/2">
         <Ui
           hasPicked={hasPicked}
           pickCard={pickCard}

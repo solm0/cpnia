@@ -58,8 +58,8 @@ export const gamePortals: Record<string, gamePortalProp[]> = {
     {
       label: 'game 3',
       gameKey: 'game3',
-      rule: '떨고 있는 도망자를 설득해서 피자로 데려오세요.',
-      position: [241, -8.5,-78.8], // 104, -71, -254.3
+      rule: '피자가 되기 싫어 파프리카 한 명이 도망쳐 숨었습니다. 그를 찾으세요. 그리고 설득하세요.',
+      position: [241, -8.5,-78.8],
       rotation: [0, 0, 0],
       scale: 0.35,
       model: '/models/door.glb',

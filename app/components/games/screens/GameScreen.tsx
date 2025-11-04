@@ -11,6 +11,8 @@ import W3G2 from "../games/W3G2";
 import W3G3 from "../games/W3G3";
 import PausedScreen from "../../util/PausedScreen";
 import { Object3D } from "three";
+import Button from "../../util/Button";
+import Image from "next/image";
 
 export default function GameScreen({
   worldKey, gameKey, handleGameEnd, avatar
@@ -55,6 +57,20 @@ export default function GameScreen({
         onGameEnd={handleGameEnd}
         avatar={avatar}
       />
+
+      {/* 오른쪽 */}
+      <div className="absolute w-auto h-auto top-8 right-8 text-white">
+        <div className="flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity -translate-x-14">
+          <Button
+            id='3-1-0'
+            onClick={() => {}}
+            label={<></>}
+            worldKey={worldKey}
+          />
+        </div>
+        {/* 일시정지 버튼 (아래에있음) */}
+      </div>
+
       <PausedScreen
         worldKey={worldKey}
         isInMap={false}

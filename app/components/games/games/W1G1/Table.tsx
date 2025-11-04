@@ -228,7 +228,7 @@ export default function Table({
   });
 
   return (
-    <>
+    <group position={[-0.7,0,0]}>
       {/* npc */}
       <Npc
         avatarPos={avatarPos}
@@ -250,12 +250,12 @@ export default function Table({
         position={[0,0,0]}
         scale={tableScale}
       />
-      <BoxHelper
+      {/* <BoxHelper
         width={1}
         depth={tableSurface.sizeZ}
         center={tableSurface.center}
         color="green"
-      />
+      /> */}
 
       {/* 각자의 칩 */}
       <PosHelper
@@ -312,8 +312,9 @@ export default function Table({
         />
       }
 
-      {/* <OrbitControls /> */}
       <directionalLight intensity={3} position={[0, 10, 5]} />
-    </>
+      <directionalLight intensity={1} color={'yellow'} position={[0, 10, 5]} />
+      
+    </group>
   )
 }

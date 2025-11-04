@@ -8,6 +8,62 @@ import UiCoinPile from "./UiCoinPile";
 import SmallScene from "@/app/components/util/SmallScene";
 import CardTurn from "./CardTurn";
 
+function Introduction({
+  pickCard, 
+}: {
+  pickCard: () => void;
+}) {
+  const lines = [
+    ['On Time 퀘스트 1', '인디언포커 한 판을 이기세요'],
+    ['규칙 설명을 해주지! 한 번만 할 테니 잘 들으라고.'],
+    ['카드를 한 장씩 뽑을거야. 자기 카드는 못 보고 상대 카드만 볼 수 있어.'],
+    ['그 후 돌아가면서 베팅을 할거야. 나중에 카드를 깠을때 높은 숫자인 사람이 베팅된 칩을 다 가져가.'],
+    ['네 카드가 상대보다 높은 것 같다면, 상대가 계속 베팅하도록 긴장한 척 연기해야 해.', '반대로 상대 카드가 당신보다 높은 것 같다면 상대가 포기하도록 자신만만한 척 연기해.'],
+    ['쉽지? 이제 시작하자. 카드를 한 장 뽑아.'],
+  ]
+  const [index, setIndex] = useState(0);
+  return (
+    <div className="flex flex-col gap-8 w-96 bg-white rounded-2xl">
+      {index === 0 ?
+        <div className="flex flex-col gap-2">
+          {lines[index].map(line =>
+            <p key={line}>{line}</p>
+          )}
+          <Button
+            label="다음"
+            onClick={() => setIndex(prev => prev+1)}
+            worldKey='time'
+            id='w1g1-1'
+          />
+        </div>
+        :
+        <>
+          <div className="flex flex-col gap-2">
+            {lines[index].map(line => 
+              <p key={line}>{line}</p>
+            )}
+          </div>
+          {index === lines.length ?
+            <Button
+              label="카드 뽑기"
+              onClick={pickCard}
+              worldKey='time'
+              id='w1g1-1'
+            />
+          :
+            <Button
+              label="다음"
+              onClick={() => setIndex(prev => prev+1)}
+              worldKey='time'
+              id='w1g1-1'
+            />
+          }
+        </>
+      }
+    </div>
+  )
+}
+
 export default function Ui({
   hasPicked, pickCard, gameRef, turn, minNum,
   currentNum,
@@ -83,22 +139,10 @@ export default function Ui({
 
   if (!hasPicked) {
     // --- 게임 시작 ---
+    
     return (
       <>
-        <div className="flex flex-col gap-8">
-          <p>인디언포커 설명:</p>
-          <p>자기카드는 못보고 상대카드만 볼수있어요</p>
-          <p>베팅이 끝나고 카드를 깠을때 높은숫자인 사람이 칩을 다 가져가요</p>
-          <p>당신의 카드가 상대보다 높은 것 같나요? 그럼 상대가 계속 베팅하도록 긴장한 척 연기하세요.</p>
-          <p>상대 카드가 당신보다 높은 것 같나요? 그럼 상대가 포기하도록 자신만만한 척 연기하세요.</p>
-          <p>준비 되셨나요?</p>
-        </div>
-        <Button
-          label="카드 뽑기"
-          onClick={pickCard}
-          worldKey={worldKey}
-          id={'tempId'}
-        />
+        <Introduction pickCard={pickCard} />
         <UiCoinPile
           coin={coin}
           count={gameRef.current[0].leftChips}

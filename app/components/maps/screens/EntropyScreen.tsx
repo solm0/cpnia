@@ -1,6 +1,6 @@
 import Scene from "../../util/Scene";
 import { EntropyLights } from "../Lights";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { EntropyNpcLineModal } from "../interfaces/NpcLineModals";
 import { chatNpcs } from "@/app/lib/data/positions/chatNpcs";
 import ChatNpcScreen from "../interfaces/chatnpc/ChatNpcScreen";
@@ -10,10 +10,88 @@ import Npcs from "../Npcs";
 import { EntropyEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
 import Model from "../../util/Model";
-import PlayerEntropy from "../player/PlayerEntropy";
-import { Object3D } from "three";
+import PlayerEntropy from "../entropy/PlayerEntropy";
+import { AnimationMixer, LoopRepeat, Object3D } from "three";
 import { useGLTF } from "@react-three/drei";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
+import { useFrame } from "@react-three/fiber";
+import ExplodingModel from "../entropy/ExplodingModel";
+
+useGLTF.preload("/models/entropy.glb");
+useGLTF.preload("/models/entropy-2.glb");
+
+export function Map({
+  stage
+}: {
+  stage: number
+}) {
+  const gate = useGLTF('/models/gate.glb').scene;
+  const mixer = useRef<AnimationMixer | null>(null);
+
+  const map1 = useGLTF("/models/entropy-1.glb");
+  const map2 = useGLTF("/models/entropy-2-output.glb");
+
+  useEffect(() => {
+    mixer.current = new AnimationMixer(stage === 0 ? map1.scene : map2.scene);
+    return () => {
+      mixer.current?.stopAllAction();
+    };
+  }, [map1, map2, stage]);
+
+  useEffect(() => {
+    if (!mixer.current) return;
+    const anim = stage === 0 ? map1.animations[0] : map2.animations[0];
+    if (!anim) return;
+  
+    const action = mixer.current.clipAction(anim);
+    action.play();
+  
+  }, [map1, map2]);
+
+  useFrame((_, delta) => {
+    mixer.current?.update(delta);
+  })
+
+
+  if (stage === 0) {
+
+    return (
+      <>
+        {/* 지형 */}
+        <Model
+          scene={map1.scene}
+          scale={50}
+        />
+        <primitive
+          object={gate}
+          position={[0,0,0]}
+          scale={100}
+        />
+      </>
+    )
+  } else if (stage === 1) {
+    
+
+    return (
+      <>
+        {/* 지형 */}
+        <Model
+          scene={map2.scene}
+          scale={50}
+        />
+        <primitive
+          object={gate}
+          position={[0,0,0]}
+          scale={100}
+        />
+      </>
+    )
+  } else {
+    return (
+      <ExplodingModel exploded={true} />
+    )
+  }
+}
 
 export default function EntropyScreen({
   avatar,
@@ -25,7 +103,6 @@ export default function EntropyScreen({
   const npcModel = useMemo(() => {
     return Array.from({ length: 4 }, () => clone(npcModelScene));
   }, [npcModelScene]);
-  const map1 = useGLTF("/models/entropy-2.glb").scene;
 
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
 
@@ -41,18 +118,10 @@ export default function EntropyScreen({
           {/* 빛 */}
           <EntropyLights />
 
-          {/* 지형 */}
-          <Model
-            scene={map1}
-            scale={100}
-          />
+          <Map stage={1} />
 
           {/* 포탈들 */}
           <Portals worldKey={worldKey} />
-
-          {/* 기타 모델들 */}
-
-          {/* 소품 */}
 
           {/* npc들 */}
           <Npcs
@@ -70,8 +139,9 @@ export default function EntropyScreen({
 
         {/* 효과 */}
         <EntropyEffects />
-        <directionalLight intensity={10} position={[10,80,10]} />
-        <directionalLight intensity={10} position={[-10,80,-10]} />
+        <directionalLight intensity={10} position={[10,80,10]} castShadow receiveShadow  />
+        <directionalLight intensity={10} position={[-10,80,-10]} castShadow receiveShadow />
+        <directionalLight intensity={10} color={'blue'} position={[10,80,50]} castShadow receiveShadow />
       </Scene>
       
       {/* --- 월드 인터페이스 --- */}
