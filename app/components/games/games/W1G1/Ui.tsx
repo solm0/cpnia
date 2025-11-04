@@ -43,7 +43,7 @@ function Introduction({
               <p key={line}>{line}</p>
             )}
           </div>
-          {index === lines.length ?
+          {index === lines.length-1 ?
             <Button
               label="카드 뽑기"
               onClick={pickCard}
