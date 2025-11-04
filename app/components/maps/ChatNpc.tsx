@@ -66,7 +66,7 @@ export function ChatNpcAvatar({
         }
       });
       model.userData = {
-        id: 'its me'
+        id: 'its chatnpc'
       }
     }
 
@@ -169,7 +169,7 @@ export default function ChatNpc({
     if (!body.current) return;
 
     const playerPos = usePlayerStore.getState().position;
-    const target = { x: playerPos.x + 8, y: playerPos.y, z: playerPos.z -5 };
+    const target = { x: playerPos.x + 15, y: playerPos.y, z: playerPos.z - 15 };
 
     // lerp smoothly
     const lerpFactor = speed * delta;

@@ -199,7 +199,7 @@ export default function Player({
     const nearby = getNearbyMeshes(playerPos, 20, scene)
       .filter(obj => 
         !isDescendant(obj, playerRoot) &&
-        !hasAncestorWithId(obj, 'its me')
+        !hasAncestorWithId(obj, 'its me') && !hasAncestorWithId(obj, 'its chatnpc')
       );
 
     // --- 여기서부터 ---

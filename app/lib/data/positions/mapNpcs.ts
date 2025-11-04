@@ -58,8 +58,8 @@ export const mapNpcs: Record<string, mapNpcProp[]> = {
       name: '파친코 위에서 발견한 주민',
       position: [
         stagePositions.pachinko.x - 2,
-        stagePositions.pachinko.y + stagePositions.pachinko.scale * 28.2,
-        stagePositions.pachinko.z + 2.3
+        stagePositions.pachinko.y + stagePositions.pachinko.scale * 20,
+        stagePositions.pachinko.z + 19
       ],
       rotation: [0, 0 ,0],
       type: 'special',

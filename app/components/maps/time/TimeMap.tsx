@@ -40,8 +40,8 @@ export const coinStairs: coinStairProp[] = [
       stagePositions.card.z + stagePositions.card.scale,
     ],
     top: [
-      stagePositions.pachinko.x - stagePositions.pachinko.scale * 25,
-      stagePositions.pachinko.y + stagePositions.pachinko.scale * 18,
+      stagePositions.pachinko.x - stagePositions.pachinko.scale * 21,
+      stagePositions.pachinko.y + stagePositions.pachinko.scale * 19,
       stagePositions.pachinko.z - stagePositions.pachinko.scale * 5
     ],
     count: 5,
@@ -49,9 +49,9 @@ export const coinStairs: coinStairProp[] = [
   // 2-3
   {
     bottom: [
-      stagePositions.pachinko.x - stagePositions.pachinko.scale * 10,
+      stagePositions.pachinko.x - stagePositions.pachinko.scale * 12,
       stagePositions.pachinko.y + stagePositions.pachinko.scale * 20,
-      stagePositions.pachinko.z - stagePositions.pachinko.scale * 23
+      stagePositions.pachinko.z - stagePositions.pachinko.scale * 18
     ],
     top: [
       stagePositions.roulette.x * stagePositions.roulette.scale * 0.2,
@@ -146,6 +146,13 @@ export default function TimeMap({
   }, [npcModelScene, gandalf]);
   const floor = useGLTF('/models/floor.gltf').scene;
   const stair = useGLTF('/models/stair.gltf').scene;
+  stair.userData = {
+    id: `${worldKey}-npc-파친코 위에서 발견한 주민`,
+    onClick: () => {
+      setActiveNpc('파친코 위에서 발견한 주민');
+      setIsChatOpen(false);
+    },
+  }
 
   function handleClickStair(clickedStair: number) {
     setClickedStair(clickedStair);

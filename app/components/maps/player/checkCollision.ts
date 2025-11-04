@@ -22,7 +22,10 @@ export function checkCollision(nextPos: {x: number, y: number, z: number }, worl
       const dx = nextPos.x - cx;
       const dz = nextPos.z - cz;
       const dist = Math.sqrt(dx*dx + dz*dz);
-      if (dist < radius + 0.5) {console.log('circle collision');return true};
+      if (dist < radius + 0.5) {
+        console.log('circle collision');
+        return true
+      };
     } else {
       const [ox, oy, oz] = obs.position;
       const [sx, sy, sz] = obs.size?.map(v=>v/2) ?? [2,2,2];

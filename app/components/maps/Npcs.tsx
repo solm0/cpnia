@@ -101,14 +101,14 @@ export default function Npcs({
       )}
 
       {/* 챗 npc */}
-      {/* <ChatNpc
+      <ChatNpc
         name={chatNpc.name}
         hoveredNpc={hoveredNpc}
         setHoveredNpc={setHoveredNpc}
         setIsChatOpen={setIsChatOpen}
         closeActiveNpc={setActiveNpc}
         model={models[3]}
-      /> */}
+      />
     </>
   )
 }

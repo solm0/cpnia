@@ -89,7 +89,6 @@ export default function MapNpc({
         }
       }
     });
-    if (focusedId === id) console.log(focusedId, id)
   }, [clonedScene, hoveredNpc, activeNpc, name, focusedId]);
 
   useEffect(() => {

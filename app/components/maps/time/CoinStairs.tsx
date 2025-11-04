@@ -1,10 +1,13 @@
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { useGLTF } from "@react-three/drei";
+import { Html, useGLTF } from "@react-three/drei";
 import { MeshStandardMaterial, Object3D } from "three";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { Mesh } from "three";
 import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
+import { stagePositions } from "@/app/lib/data/positions/stagePositions";
+import { radToDeg } from "three/src/math/MathUtils.js";
+import Button from "../../util/Button";
 
 useGLTF.preload('/models/coin.gltf');
 
@@ -32,12 +35,15 @@ function SpinningCoin({
   const ref = useRef<Object3D>(null);
   const id = `time-stair-${idx}`;
   const focusedId = use3dFocusStore((s) => s.focusedObj?.id);
+  const [isOpen, setIsOpen] = useState(false);
 
   coin.userData = {
     id: id,
     onClick: () => {
       if (!locked) {
         handleClickStair(idx);
+      } else {
+        setIsOpen(true);
       }
     },
   }
@@ -98,6 +104,13 @@ function SpinningCoin({
   return (
     <group ref={ref} position={position} scale={scale}>
       <primitive object={coin} scale={1} />
+      {isOpen && (
+        <Html distanceFactor={8} className="w-200" position={[0,2,0]}>
+          <div className="w-400 text-wrap break-keep text-8xl leading-[1.7em] p-20 bg-[#ff000050] rounded-4xl backdrop-blur-2xl">
+            느낌표 이미지가 달려 있는 npc를 클릭해 이번 스테이지의 게임을 먼저 하고 오세요!
+          </div>
+        </Html>
+      )}
     </group>
   );
 }
@@ -129,9 +142,16 @@ export default function CoinStairs({
   const clonedCoins = useMemo(() => {
     return Array.from({ length: count }, () => clone(coin));
   }, [coin, count]);
+  const coinAbove = useMemo(() => clone(coin), [coin]);
 
   return (
     <>
+      <primitive
+        object={coinAbove}
+        scale={5}
+        position={[stagePositions.pachinko.x, stagePositions.pachinko.y + 75, stagePositions.pachinko.z]}
+        rotation={[radToDeg(60), 0, radToDeg(0)]}
+      />
       {clonedCoins.map((coin, i) => {
         const x = startPosition[0] + xDistance * i;
         const y = startPosition[1] + yDistance * i;

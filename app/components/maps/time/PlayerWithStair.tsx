@@ -234,7 +234,7 @@ export default function PlayerWithStair({
     const nearby = getNearbyMeshes(playerPos, 30, scene)
       .filter(obj => 
         !isDescendant(obj, playerRoot) &&
-        !hasAncestorWithId(obj, 'its me')
+        !hasAncestorWithId(obj, 'its me') && !hasAncestorWithId(obj, 'its chatnpc')
       );
 
     // --- 여기서부터 ---

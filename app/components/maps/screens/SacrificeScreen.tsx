@@ -17,7 +17,6 @@ import { useGLTF } from "@react-three/drei";
 import { Object3D, Vector3 } from "three";
 import Glass from "../sacrifice/Glass";
 import PizzaLine from "../sacrifice/PizzaLine";
-import Crowd from "../../games/games/W2G2/Crowd";
 import PizzaCrowd from "../sacrifice/PizzaCrowd";
 
 useGLTF.preload("/models/animations/idle.glb");
@@ -75,9 +74,9 @@ export default function SacrificeScreen({
 
   const config: {playerPos: Vector3, playerRot: Vector3, camYRot: number} = {
     playerPos: new Vector3(
-      stagePosition.x + 400 * stagePosition.scale,
+      stagePosition.x + 410 * stagePosition.scale,
       stagePosition.y + 39.5 * stagePosition.scale,
-      stagePosition.z - 380 * stagePosition.scale
+      stagePosition.z - 390 * stagePosition.scale
     ),
     playerRot: new Vector3(0, -Math.PI, 0),
     camYRot: 105
