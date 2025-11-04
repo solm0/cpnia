@@ -4,6 +4,7 @@ import { ConfirmModal } from "./CofirmModal";
 import Button from "@/app/components/util/Button";
 import UiCoinPile from "./UiCoinPile";
 import { Object3D } from "three";
+import { Box } from "./Ui";
 
 export function BetInput({
   minNum, gameRef, betChips, turn, worldKey,
@@ -45,36 +46,17 @@ export function BetInput({
   } else {
     return (
       <>
-        <div className="flex flex-col gap-10">
-          <div className="flex flex-col gap-2">
-            <span>콜: 상대방과 같은 양을 베팅합니다. 카드를 오픈해 승자를 가릅니다.</span>
-            <span>레이즈: 상대방보다 올려 베팅합니다. 베팅을 지속합니다.</span>
-            <span>폴드: 게임을 포기합니다. 베팅된 칩 {betChips}개는 상대의 것이 됩니다.</span>
-          </div>
-  
-          <div className="flex flex-col gap-2">
-            <span>남은 칩: {gameRef.current[turn % 2].leftChips}개</span>
-            <span>베팅할 경우 남은 칩: {gameRef.current[turn % 2].leftChips - num}개</span>
-            <span>베팅한 칩: {gameRef.current[turn % 2].betChips}개</span>
-            <div>최소 베팅가능 칩 갯수: {minNum}</div>
-          </div>
-  
+        <Box line={`내가 베팅한 ${minNum}개만큼, 또는 더 올려서 베팅할 수 있어. 단, 올리지 않는다면 게임을 종료하고 카드를 오픈하게 되지.`} bubble={true}>
+          <></>
+        </Box>
+
+        <div className="flex flex-col gap-10 p-4 bg-neutral-800 text-white rounded-2xl font-bold">
+          <span>{num}개 베팅할 경우 칩 {gameRef.current[turn % 2].leftChips - num}개 남음</span>
+
           {turn % 2 === 0 && (
             // 인풋
-            <div className="flex flex-col gap-2">
-              <div>내가 베팅할 칩 갯수: {num}</div>
-              <div className="flex gap-2">
-                <Button
-                  label="+"
-                  onClick={() => {
-                    if (num < gameRef.current[0].leftChips) {
-                      setNum(prev => prev + 1);
-                    }
-                  }}
-                  disabled={num >= gameRef.current[0].leftChips ? true : false}
-                  worldKey={worldKey}
-                  id={'tempId'}
-                />
+            <div className="flex flex-col gap-4 items-center">
+              <div className="flex gap-2 items-center">
                 <Button
                   label="-"
                   onClick={() => {
@@ -84,28 +66,42 @@ export function BetInput({
                   }}
                   disabled={num <= minNum ? true : false}
                   worldKey={worldKey}
-                  id={'tempId'}
+                  id='w1g1-1'
                 />
+                <div className="p-4">{num}</div>
+                <Button
+                  label="+"
+                  onClick={() => {
+                    if (num < gameRef.current[0].leftChips) {
+                      setNum(prev => prev + 1);
+                    }
+                  }}
+                  disabled={num >= gameRef.current[0].leftChips ? true : false}
+                  worldKey={worldKey}
+                  id='w1g1-2'
+                  />
+              </div>
+  
+              <Button
+                label="베팅하기"
+                worldKey={worldKey}
+                id='w1g1-3'
+                onClick={() => setModal('bet')}
+                important={true}
+              />
+
+              <div className="flex gap-2">
                 <Button
                   label="올인"
                   onClick={() => setNum(gameRef.current[0].leftChips)}
                   worldKey={worldKey}
-                  id={'tempId'}
-                />
-              </div>
-  
-              <div className="flex gap-2">
-                <Button
-                  label="베팅"
-                  worldKey={worldKey}
-                  id={'tempId'}
-                  onClick={() => setModal('bet')}
+                  id='w1g1-4'
                 />
                 <Button
                   label="폴드"
                   worldKey={worldKey}
                   onClick={() => setModal('fold')}
-                  id={'tempId'}
+                  id='w1g1-5'
                 />
               </div>
             </div>

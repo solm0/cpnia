@@ -25,7 +25,7 @@ export default function CardTurn({
       object={object}
       position={[0,0,0]}
       rotation={[-Math.PI/2,Math.PI,0]}
-      scale={0.1}
+      scale={0.14}
     />
   )
 }

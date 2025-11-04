@@ -22,19 +22,20 @@ export function ConfirmModal({
   let label;
   switch (behavior) {
     case 'bet': label = `${num}개의 칩을 베팅합니다.`; break;
-    case 'fold': label = `폴드합니다. 베팅된 칩 ${betChips} 개는 상대의 것이 됩니다.`; break;
-    case 'allIn': label = `칩이 부족하여 남은 칩 ${num}을 올인합니다`; break;
+    case 'fold': label = `폴드합니다. 베팅된 칩 ${betChips}개는 상대의 것이 됩니다.`; break;
+    case 'allIn': label = `칩이 부족하여 남은 칩 ${num}개를 올인합니다.`; break;
     default: label = 'behavior가 없습니다.'
   }
   
   return (
-    <div className="absolute top-0 left-0 w-96 h-52 -translate-x-1/2 -translate-y-1/2 backdrop-blur-2xl flex flex-col gap-8 items-center justify-center">
+    <div className="gap-8 w-96 h-auto p-4 bg-yellow-600 text-white rounded-2xl font-bold flex flex-col items-center justify-center">
+      <p className="text-7xl">!</p>
       <p>{label}</p>
       <div className="flex gap-2">
         <Button
           worldKey={worldKey}
           label="예"
-          id={'tempId'}
+          id='w1g1-6'
           onClick={() => {
             if (behavior === 'bet') {
               motionPhase.current = 'bet';
@@ -53,16 +54,18 @@ export function ConfirmModal({
               }, 1000)
             }
           }}
+          important={true}
         />
         <Button
           worldKey={worldKey}
-          label="다시고를래요"
+          label="다시 고를래요"
           onClick={() => {
             setModal(null);
           }}
-          id={'tempId'}
+          id='w1g1-7'
         />
       </div>
     </div>
+    
   )
 }

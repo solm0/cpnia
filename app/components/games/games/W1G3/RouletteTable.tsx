@@ -157,7 +157,7 @@ export default function RouletteTable({
       {selected &&
         <Html>
           <div className="absolute top-0 left-0 w-96 h-52 -translate-x-1/2 -translate-y-1/2 backdrop-blur-2xl flex flex-col gap-8 items-center justify-center">
-            <p>진짜베팅하겠습니까??</p>
+            <p>베팅하겠습니까??</p>
             <div className="flex gap-2">
               <Button
                 worldKey={worldKey}
