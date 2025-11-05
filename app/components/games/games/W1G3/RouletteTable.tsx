@@ -89,6 +89,7 @@ export default function RouletteTable({
       {/* 테이블 */}
       <group
         scale={tableScale}
+        position={[-tableScale*3,0,0]}
       >
         {grid.map((row, rowIndex) => {
           return row.map((num, colIndex) => (
@@ -118,22 +119,12 @@ export default function RouletteTable({
       <primitive
         object={coin}
         ref={coinRef}
-        position={[pos.col * tableScale * gutter, -pos.row * tableScale * gutter, 0.2]}
+        position={[pos.col * tableScale * gutter -tableScale*3, -pos.row * tableScale * gutter, 0.2]}
         rotation={[Math.PI/2, 0, 0]}
-        scale={0.1}
+        scale={2}
       />
 
       {/* ui */}
-      <Text
-        position={[0, 15, 0]}
-        fontSize={1}
-        color={'black'}
-        anchorX="center"
-        anchorY="middle"
-      >
-        On Time 퀘스트 3
-        당신이 선택한 숫자가 당첨될까요? enter를 눌러 확정
-      </Text>
       <group
         key={coinIsOn.current}
         position={[0,10,0]}
@@ -154,22 +145,30 @@ export default function RouletteTable({
         </Text>
       </group>
 
+      <Html className="hidden">
+        <Button
+          label={<></>}
+          id='w1g3-1'
+          important={true}
+          onClick={() => setSelected(true)}
+        />
+      </Html>
+
       {selected &&
         <Html>
-          <div className="absolute top-0 left-0 w-96 h-52 -translate-x-1/2 -translate-y-1/2 backdrop-blur-2xl flex flex-col gap-8 items-center justify-center">
-            <p>베팅하겠습니까??</p>
-            <div className="flex gap-2">
+          <div className="absolute top-0 left-0 w-96 h-auto p-4 -translate-x-1/2 -translate-y-1/2 bg-neutral-800 text-white rounded-2xl flex flex-col gap-16 items-center justify-center">
+            <p>{coinIsOn.current}로 베팅하겠습니까??</p>
+            <div className="flex gap-4 flex-col">
               <Button
-                worldKey={worldKey}
                 label="예"
                 onClick={() => setBetNum(coinIsOn.current)}
-                id={'tempId'}
+                id='w1g3-2'
+                important={true}
               />
               <Button
-                worldKey={worldKey}
                 label="다시고를래요"
                 onClick={() => setSelected(false)}
-                id={'tempId'}
+                id='w1g3-3'
               />
             </div>
           </div>

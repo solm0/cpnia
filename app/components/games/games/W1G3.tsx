@@ -1,5 +1,4 @@
 import Scene from "../../util/Scene";
-import GameMenu from "../interfaces/GameMenu";
 import { useEffect, useRef, useState } from "react";
 import { OrbitControls } from "@react-three/drei";
 import RouletteRoll from "./W1G3/RouletteRoll";
@@ -42,6 +41,11 @@ export default function W1G3({
   
   return (
     <main className="w-full h-full">
+      <div className="absolute top-10 left-1/2 -translate-x-1/2 flex flex-col w-full items-center text-center gap-4 text-lg">
+        <div className="font-bold">On Time 퀘스트 3</div>
+        {!betNum && <p className="w-[25rem] break-keep text-wrap">왼쪽 스틱으로 동전을 움직여 숫자를 고르고, A를 눌러 확정하세요.</p>}
+      </div>
+      
       {/* 게임 */}
       <Scene>
         {!betNum ? (
@@ -59,6 +63,7 @@ export default function W1G3({
               onRoundEnd={onRoundEnd}
               onGameEnd={onGameEnd}
               moneyRef={leftMoney}
+              trial={trial}
             />
             <OrbitControls minDistance={90} maxDistance={100} />
           </>
@@ -66,7 +71,16 @@ export default function W1G3({
       </Scene>
 
       {/* 게임 인터페이스 */}
-      <p>{leftMoney.current}</p>
+      {betNum &&
+        <>
+          <div className="absolute top-8 left-8 flex flex-col gap-4 text-white">
+            <p>현재 남은 시간(재화): {leftMoney.current}일</p>
+            <p>라운드: {trial}</p>
+          </div>
+
+          <p className="absolute top-8 left-1/2 -translate-x-1/2 w-[25rem] break-keep text-wrap text-white text-3xl text-center">룰렛을 돌립시다.</p>
+        </>
+      }
 
       <AudioPlayer src={`/audio/time_bg.mp3`} audioRef={audioRef} />
     </main>

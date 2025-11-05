@@ -1,12 +1,13 @@
 import Model from "@/app/components/util/Model";
-import { SurfaceHelper } from "../W2G2/SurfaceHelper";
 import { Mesh, Vector3 } from "three";
 import RouletteNumbers from "./RouletteNumbers";
-import { RefObject, useMemo, useRef, useState } from "react";
-import { useFrame } from "@react-three/fiber";
+import { RefObject, useEffect, useMemo, useRef, useState } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 import { Html, useGLTF } from "@react-three/drei";
 import Button from "@/app/components/util/Button";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
+import { TimeEffects } from "@/app/components/maps/Effects";
+import { TimeLights } from "@/app/components/maps/Lights";
 
 export function Ui({
   success, setSuccess, onRoundEnd, onGameEnd, moneyRef, setUiState
@@ -23,50 +24,55 @@ export function Ui({
     console.log('성공')
 
     return (
-      <Html>
-        <div>성공! 축하드립니다 시간을 많이 얻으셧네요.</div>
+      <Html className="w-96 rounded-2xl bg-white p-8 -translate-x-1/2 flex flex-col gap-4 items-start">
+        <p className="break-keep">성공! 축하드립니다. 시간을 많이 얻으셨네요.</p>
         <Button
-          worldKey="sacrifice"
+          worldKey="time"
           label="확인"
           onClick={() => onRoundEnd(true)}
-          id={'tempId'}
+          id='w1g3-2'
+          important={true}
         />
       </Html>
     )
   } else {
     console.log('실패')
     return (
-      <Html>
-        <div>실패. 다시 하시겠습니까?</div>
-        <Button
-          worldKey="sacrifice"
-          label="예"
-          onClick={() => {
-            onRoundEnd(false);
-            setSuccess(null);
-            setUiState("idle");
-          }}
-          id={'tempId'}
-        />
-        <Button
-          worldKey="sacrifice"
-          label="아니오"
-          onClick={() => onGameEnd(false)}
-          id={'tempId'}
-        />
+      <Html className="w-96 rounded-2xl bg-white p-8 -translate-x-1/2 flex flex-col gap-4 items-start">
+        <p className="break-keep">실패. 다시 하시겠습니까?</p>
+        <div className="flex gap-4">
+          <Button
+            worldKey="time"
+            label="예"
+            onClick={() => {
+              onRoundEnd(false);
+              setSuccess(null);
+              setUiState("idle");
+            }}
+            id='w1g3-1'
+            important={true}
+          />
+          <Button
+            worldKey="time"
+            label="아니오"
+            onClick={() => onGameEnd(false)}
+            id='w1g3-2'
+          />
+        </div>
       </Html>
     )
   }
 }
 
 export default function RouletteRoll({
-  n, betNum, onRoundEnd, onGameEnd, moneyRef
+  n, betNum, onRoundEnd, onGameEnd, moneyRef, trial
 }: {
   n: number;
   betNum: number;
   onRoundEnd: (success: boolean) => void;
   onGameEnd: (success: boolean) => void;
   moneyRef: RefObject<number>;
+  trial: number;
 }) {
   const roulette = useGLTF("/models/roulette.gltf").scene;
 
@@ -78,17 +84,24 @@ export default function RouletteRoll({
   const pressedKeys = useKeyboardControls();
   const outwardProgress = useRef<number | null>(null);
 
+  const { camera } = useThree();
+
+  useEffect(() => {
+    camera.position.set(0,8,10);
+    camera.lookAt(0, 0, 0);
+  }, [camera, trial]);
+
   // 룰렛 설정
   const roulettePos = [0, 0, 0] as [number, number, number]
-  const rouletteScale = 0.02
+  const rouletteScale = 4
   const rouletteSurface = {
     center: new Vector3(
       roulettePos[0],
-      roulettePos[1] + rouletteScale * 60,
+      roulettePos[1] + rouletteScale,
       roulettePos[2],
     ),
     normal: new Vector3(0, 1, 0).normalize(),
-    radius: rouletteScale * 2000
+    radius: rouletteScale * 10
   }
 
   // 공 설정
@@ -200,12 +213,12 @@ export default function RouletteRoll({
         scale={rouletteScale}
         position={roulettePos}
       />
-      <SurfaceHelper
+      {/* <SurfaceHelper
         center={rouletteSurface.center}
         normal={rouletteSurface.normal}
         radius={rouletteSurface.radius}
         color="red"
-      />
+      /> */}
       <RouletteNumbers
         numWithAngle={numWithAngle}
         center={rouletteSurface.center}
@@ -219,6 +232,16 @@ export default function RouletteRoll({
       </mesh>
 
       {/* ui */}
+      {uiState === 'idle' &&
+        <Html className="absolute top-1/2 left-1/2 -translate-x-1/2 bg-neutral-800 p-4">
+          <Button
+            label='공 굴리기'
+            id='w1g3-1'
+            important={true}
+            onClick={() => startRoll()}
+          />
+        </Html>
+      }
       {uiState === "done" && success !== null &&
         <Ui
           success={success}
@@ -231,8 +254,8 @@ export default function RouletteRoll({
       }
 
       {/* 빛 */}
-      <directionalLight intensity={3} position={[0,8,0]} color={'white'} />
-      <ambientLight intensity={0.5} color={'white'} />
+      <TimeEffects />
+      <TimeLights />
     </>
   )
 }
