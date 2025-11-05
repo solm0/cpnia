@@ -4,8 +4,10 @@ import { RefObject, useEffect, useRef, useState } from "react";
 import SlotGame from "./W1G2/SlotGame";
 import Button from "../../util/Button";
 import { Object3D } from "three";
-import { degToRad } from "three/src/math/MathUtils.js";
+import { degToRad, radToDeg } from "three/src/math/MathUtils.js";
 import AudioPlayer from "../../util/AudioPlayer";
+import { TimeEffects } from "../../maps/Effects";
+import { TimeLights } from "../../maps/Lights";
 
 function Ui({
   successRef, motionPhase, onGameEnd, worldKey, gameKey,
@@ -22,16 +24,16 @@ function Ui({
   handleRotProg: RefObject<number>;
   resetRound: () => void;
 }) {
-  const [, setVersion] = useState(0); // local state to trigger rerender
+  // const [, setVersion] = useState(0); // local state to trigger rerender
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (successRef.current !== null) {
-        setVersion(v => v + 1); // force rerender when ref is set
-      }
-    }, 16); // 60fps
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (successRef.current !== null) {
+  //       setVersion(v => v + 1); // force rerender when ref is set
+  //     }
+  //   }, 16); // 60fps
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const [trial, setTrial] = useState(1);
   const [successCount, setSuccessCount] = useState(0);
@@ -56,53 +58,30 @@ function Ui({
 
   return (
     <>
-      <p className="w-full flex justify-center text-2xl">{successCount}</p>
-      <div className="w-screen h-screen pt-60 pointer-events-none absolute">
-        <p>On Time 퀘스트 2</p>
-        <p>슬롯머신에서 세 개의 같은 숫자가 나오면 성공! 6회의 기회가 주어집니다</p>
-        {motionPhase.current === 'idle'
-          ? (
-            <Button
-              worldKey="time"
-              label="시작"
-              onClick={() => {
+      <div className="w-screen h-screen pointer-events-none absolute">
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 p-4 rounded-2xl bg-white text-neutral-700 flex flex-col gap-4 z-80 items-center text-center">
+          <p className="font-bold">On Time 퀘스트 2</p>
+          <p>슬롯머신에서 세 개의 같은 숫자가 나오면 성공!<br/> 6회의 기회가 주어집니다</p>
+          <p className="w-full flex justify-center text-2xl">지금까지 번 시간: {successCount * 10}일</p>
+          <p>라운드: {trial}</p>
+          <Button
+            onClick={() => {
+              if (motionPhase.current === 'idle') {
                 motionPhase.current = 'toSide'
                 resetRound();
-              }}
-              id={'tempId'}
-            />
-          )
-          : motionPhase.current === 'done' && successRef.current === true
-            ? (
-              <div>
-                <div>성공</div>
-                <Button
-                  onClick={() => {
-                    motionPhase.current = 'idle';
-                    onRoundEnd(true);
-                  }}
-                  label="한 번 더 시도"
-                  worldKey="time"
-                  id={'tempId'}
-                />
-              </div>
-            )
-            : motionPhase.current === 'done' && successRef.current === false
-            ? (
-              <div>
-                <div>실패</div>
-                <Button
-                  onClick={() => {
-                    motionPhase.current = 'idle';
-                    onRoundEnd(false);
-                  }}
-                  label="다시 시도"
-                  worldKey="time"
-                  id={'tempId'}
-                />
-              </div>
-            )
-            : null
+              } else if (motionPhase.current === 'done') {
+                motionPhase.current = 'idle';
+                onRoundEnd(successRef.current ? true : false);
+              }
+            }}
+            label={motionPhase.current === 'idle' ? '시도' : '확인'}
+            worldKey="time"
+            id='1'
+            important={true}
+          />
+        </div>
+        {motionPhase.current === 'done' &&
+          <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-30 h-30 flex items-center justify-center rounded-full bg-yellow-300 text-black text-5xl flex flex-col gap-4 z-80 items-center text-center">{successRef.current ? '성공!' : '꽝!'}</div>
         }
       </div>
     </>
@@ -221,7 +200,10 @@ export default function W1G2({
         />
         
         {/* 빛 */}
-        <directionalLight intensity={3} position={[0,30,40]} />
+        <group rotation={[0,radToDeg(-10),0]}>
+          <TimeLights />
+        </group>
+        <TimeEffects />
       </Scene>
 
       <AudioPlayer src={`/audio/time_bg.mp3`} audioRef={audioRef} />
