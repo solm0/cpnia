@@ -55,8 +55,8 @@ export const coinStairs: coinStairProp[] = [
     ],
     top: [
       stagePositions.roulette.x * stagePositions.roulette.scale * 0.2,
-      stagePositions.roulette.y + stagePositions.roulette.scale * 0.7,
-      stagePositions.roulette.z + stagePositions.roulette.scale * 12
+      stagePositions.roulette.y + stagePositions.roulette.scale * 1.5,
+      stagePositions.roulette.z + stagePositions.roulette.scale * 10
     ],
     count: 10,
   },

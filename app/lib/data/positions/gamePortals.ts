@@ -35,7 +35,7 @@ export const gamePortals: Record<string, gamePortalProp[]> = {
       rule: '알아서 잘 해보세요',
       position: [
         stagePositions.roulette.x - 42,
-        stagePositions.roulette.y + 1.5,
+        stagePositions.roulette.y + 5,
         stagePositions.roulette.z + 20
       ],
       rotation: [0, 0, 0],
