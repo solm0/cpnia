@@ -49,7 +49,7 @@ function SpinningCoin({
       // }
     },
   }
-  console.log(isOpen)
+
   useMemo(() => {
     coin.traverse((child) => {
       if ((child as Mesh).isMesh) {

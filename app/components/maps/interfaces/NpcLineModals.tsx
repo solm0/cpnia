@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { nanumGothicCodingBold } from "@/app/lib/fonts";
 import OptionButton from "../../util/OptionButton";
+import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
 
 export function TimeNpcLineModal({
   worldKey, name, setActiveNpc,
@@ -29,6 +30,9 @@ export function TimeNpcLineModal({
     length = lines.length;
     line = lines[lineIndex];
   }
+
+  use3dFocusStore.getState().setFocusedObj(null);
+  console.log(use3dFocusStore.getState().focusedObj);
 
   const router = useRouter();
 

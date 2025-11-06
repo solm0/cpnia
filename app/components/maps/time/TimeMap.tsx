@@ -201,7 +201,7 @@ export default function TimeMap({
       playerPos: new Vector3(
         stagePositions.pachinko.x,
         stagePositions.pachinko.y,
-        stagePositions.pachinko.z + 30
+        stagePositions.pachinko.z + 35
       ),
       playerRot: new Vector3(0,Math.PI,0),
       camXRot: 15,
