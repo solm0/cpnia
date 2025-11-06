@@ -62,6 +62,7 @@ export default function W2G2({
             onRoundEnd={onRoundEnd}
             prey={obj}
             pizzaMoveSpeed={pizzaMoveSpeed}
+            round={round}
           />
 
           {/* 구경꾼 */}

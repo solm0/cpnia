@@ -9,6 +9,10 @@ import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { SlingshotString } from "./SlingshotString";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { TrajectoryLine } from "./\bTrajectoryLine";
+import { SacrificeEffects } from "@/app/components/maps/Effects";
+import { SacrificeLights } from "@/app/components/maps/Lights";
+import { degToRad } from "three/src/math/MathUtils.js";
+import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
 
 const pizzaSurface = {
   center: new Vector3(0, 10, -10),
@@ -19,35 +23,29 @@ const pizzaSurface = {
 export default function ShootingRange({
   onRoundEnd,
   prey,
-  pizzaMoveSpeed,
+  pizzaMoveSpeed, round,
 }:{
   onRoundEnd: (success: boolean) => void;
   prey: [string, Object3D<Object3DEventMap>];
   pizzaMoveSpeed: number;
+  round: number;
 }) {
-  const kitchen = useGLTF("/models/kitchen.glb").scene;
+  const kitchen = useGLTF("/models/shop.gltf").scene;
   const slingshot = useGLTF("/models/slingshot.glb").scene;
 
-  // 카메라
-  const { camera } = useThree();
-
-  useEffect(() => {
-    camera.position.set(0, 30, 70);
-    camera.lookAt(pizzaSurface.center);
-  }, [camera]);
-
+  
   // 피자
   const pizzaModelScale = 1.2;
   const pizzaPos = useRef(pizzaSurface.center.clone());
   const pizzaOffset = useRef(new Vector3(0, -3, -2));
   const pizzaModelPos = useRef(pizzaPos.current.clone().add(pizzaOffset.current));
-
+  
   const maxX = 10;
   const minX = -10;
   const direction = useRef(1);
-
+  
   // 새총
-  const slingshotCenter = [0,30,90] as [number, number, number];
+  const slingshotCenter = [0,10,85] as [number, number, number];
   const slingshotScale = 0.1;
   const leftAnchor = new Vector3(
     slingshotCenter[0] - 28 * slingshotScale,
@@ -64,6 +62,17 @@ export default function ShootingRange({
     (leftAnchor.y + rightAnchor.y) / 2 -1,
     (leftAnchor.z + rightAnchor.z) / 2,
   )
+  
+  // 카메라
+  const { camera } = useThree();
+
+  useEffect(() => {
+    camera.position.set(
+      slingshotCenter[0],
+      slingshotCenter[1]+15,
+      slingshotCenter[2]+35);
+    camera.lookAt(pizzaSurface.center);
+  }, [camera, round]);
 
   // 조준
   const pullPos = useRef(restPos.clone());
@@ -75,7 +84,7 @@ export default function ShootingRange({
   const gravity = new Vector3(0, -9.8, 0);
   const deltaT = 0.05;
   const maxTime = 5;
-  const speedFactor = 3;
+  const speedFactor = 5;
 
   const isFlying = useRef(false);
   const flightPath = useRef<Vector3[]>([new Vector3(0, 0, 0), new Vector3(0, 0, 0)]);
@@ -95,11 +104,12 @@ export default function ShootingRange({
     }
 
     pizzaModelPos.current.copy(pizzaPos.current).add(pizzaOffset.current);
+    pizzaSurface.center.copy(pizzaPos.current);
 
     // --- 조준 ---
     if (!isFlying.current) {
       // pullPos
-      const moveSpeed = 3; // units/sec
+      const moveSpeed = 10; // units/sec
       const deadzone = 0.5;
       const input = new Vector3();
 
@@ -165,7 +175,7 @@ export default function ShootingRange({
     }
 
     // check space key
-    if (pressedKeys.current.has("Space")) {
+    if (pressedKeys.current.has("Space") || gamepad.current.buttons[1]) {
       if (!isFlying.current && flightPath.current.length > 0) {
         isFlying.current = true;
         flightIndex.current = 0;
@@ -175,15 +185,8 @@ export default function ShootingRange({
 
   return (
     <>
-      <OrbitControls
-        target={pizzaSurface.center}
-        minDistance={130}
-        maxDistance={140}
-        minPolarAngle={Math.PI / 2.6} // pitch
-        maxPolarAngle={Math.PI / 2.5}
-        minAzimuthAngle={-Math.PI / 8} // yaw
-        maxAzimuthAngle={Math.PI / 8} 
-      />
+
+      {/* <OrbitControls /> */}
 
       {/* 지형 */}
       {/* <mesh rotation-x={-Math.PI / 2} position={[0,0,0]} receiveShadow>
@@ -193,8 +196,8 @@ export default function ShootingRange({
       <Model
         scene={kitchen}
         scale={1}
-        position={[-60,-30.6,68]}
-        rotation={[0,0,0]}
+        position={[-85,-30.6,0]}
+        rotation={[0,degToRad(170),0]}
       />
 
       {/* 피자 */}
@@ -203,12 +206,12 @@ export default function ShootingRange({
         normal={pizzaSurface.normal}
         scale={pizzaModelScale}
       />
-      <SurfaceHelper
+      {/* <SurfaceHelper
         center={pizzaPos.current}
         normal={pizzaSurface.normal}
         radius={pizzaSurface.radius}
         color="red"
-      />
+      /> */}
 
       {/* 새총 */}
       <Model
@@ -254,13 +257,8 @@ export default function ShootingRange({
         />
       )}
 
-      {/* 빛 */}
-      <directionalLight
-        intensity={3}
-        position={[50,80,-30]}
-        color={'white'}
-        castShadow
-      />
+      <SacrificeEffects />
+      <SacrificeLights />
       <color attach="background" args={["white"]} />
     </>
   )
