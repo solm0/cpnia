@@ -17,6 +17,7 @@ export function TimePlayerAnswerOptions({
   return (
     <div className="relative flex flex-col items-start w-auto h-auto border-2 border-[#ffffff70] bg-black p-4 gap-2">
       <div className="absolute top-0 left-0 w-full h-full -z-10" />
+      <div className="text-center w-full">또는 다음 중 선택</div>
       
       {playerLines.map(index => {
         const line = chatPlayerLines[formality ?? '하십시오체'][index];
@@ -50,7 +51,8 @@ export function SacrificePlayerAnswerOptions({
   return(
     <div className="relative -translate-x-4 flex flex-col items-start w-auto h-auto rounded-2xl p-4 gap-2">
       <div className="absolute top-0 left-0 w-full h-full -z-10" />
-      
+      <div className="text-center w-full text-yellow-300">또는 다음 중 선택</div>
+
       {playerLines.map(index => {
         const line = chatPlayerLines[formality ?? '하십시오체'][index];
 

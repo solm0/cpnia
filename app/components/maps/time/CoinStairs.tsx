@@ -40,12 +40,13 @@ function SpinningCoin({
   coin.userData = {
     id: id,
     onClick: () => {
-      console.log(locked)
-      if (!locked) {
-        handleClickStair(idx);
-      } else {
-        setIsOpen(true);
-      }
+      handleClickStair(idx);
+      // console.log(locked)
+      // if (!locked) {
+      //   handleClickStair(idx);
+      // } else {
+      //   setIsOpen(true);
+      // }
     },
   }
   console.log(isOpen)
@@ -170,7 +171,8 @@ export default function CoinStairs({
             coin={coin}
             scale={coinScale}
             handleClickStair={handleClickStair}
-            locked={locked}
+            // locked={locked}
+            locked={false}
             idx={idx}
           />
         );

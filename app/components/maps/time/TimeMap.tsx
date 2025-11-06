@@ -178,9 +178,9 @@ export default function TimeMap({
   // 게임 1을 하기 전 stage는 0, 1층으로 올라가는 계단의 idx는 0
   // 게임 2를 하기 전 stage는 1, 2층으로 올라가는 계단의 idx는 1
   // stage가 idx보다 작거나 같으면 isLocked = true
-  function isLocked(stairIdx: number, stage:number) {
-    return Number(stage) <= Number(stairIdx)
-  }
+  // function isLocked(stairIdx: number, stage:number) {
+  //   return Number(stage) <= Number(stairIdx)
+  // }
 
   const config: Record<number, {
     playerPos: Vector3, playerRot: Vector3,
@@ -301,19 +301,21 @@ export default function TimeMap({
         <group
           key={idx}
           onClick={() => {
-            if (!isLocked(idx, stage)) {
-              handleClickStair(idx);
-            }
+            handleClickStair(idx);
+            // if (!isLocked(idx, stage)) {
+            //   handleClickStair(idx);
+            // }
           }}
         >
           <GamePortalLabel
-            locked={isLocked(idx, stage)}
+            // locked={isLocked(idx, stage)}
+            locked={false}
             position={[
               coinStair.bottom[0],
               coinStair.bottom[1] + scale * 10,
               coinStair.bottom[2]
             ]}
-            label={isLocked(idx, stage) ? `${stage+1}번째 퀘스트 성공 후에 계단이 열립니다.` : undefined}
+            // label={isLocked(idx, stage) ? `${stage+1}번째 퀘스트 성공 후에 계단이 열립니다.` : undefined}
           />
           <CoinStairs
             endPosition={coinStair.bottom}
@@ -321,7 +323,8 @@ export default function TimeMap({
             count={coinStair.count}
             coinScale={scale * 3.5}
             handleClickStair={handleClickStair}
-            locked={isLocked(idx, stage)}
+            // locked={isLocked(idx, stage)}
+            locked={false}
             idx={idx}
           />
         </group>

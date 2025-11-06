@@ -22,12 +22,13 @@ export default function GamePortal({
   gltf.userData = {
     id: id,
     onClick: () => {
-      if (!locked) {
-        router.push(`/${worldKey}?game=${gameKey}`)
-      } else {
-        setIsOpen(true);
-        console.log('k')
-      }
+      router.push(`/${worldKey}?game=${gameKey}`)
+      // if (!locked) {
+      //   router.push(`/${worldKey}?game=${gameKey}`)
+      // } else {
+      //   setIsOpen(true);
+      //   console.log('k')
+      // }
     }
   }
   
@@ -94,11 +95,12 @@ export default function GamePortal({
       }}
       onClick={(e: MouseEvent) => {
         e.stopPropagation();
-        if (!locked) {
-          router.push(`/${worldKey}?game=${gameKey}`)
-        } else {
-          setIsOpen(true);
-        }
+        router.push(`/${worldKey}?game=${gameKey}`)
+        // if (!locked) {
+        //   router.push(`/${worldKey}?game=${gameKey}`)
+        // } else {
+        //   setIsOpen(true);
+        // }
       }}
       scale={scale}
     >

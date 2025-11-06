@@ -25,9 +25,9 @@ export default function Portals({
     stage = 'unknown';
   }
 
-  function isLocked(gameKey: string, stage:string) {
-    return Number(gameKey.slice(-1)) > Number(stage.slice(-1))
-  }
+  // function isLocked(gameKey: string, stage:string) {
+  //   return Number(gameKey.slice(-1)) > Number(stage.slice(-1))
+  // }
 
   return (
     <>
@@ -43,14 +43,16 @@ export default function Portals({
             label={game.label}
             worldKey={worldKey}
             gameKey={game.gameKey}
-            locked={isLocked(game.gameKey, stage)}
+            // locked={isLocked(game.gameKey, stage)}
+            locked={false}
             y={game.labelYPos}
           />
 
           {game.model ? (
             <GamePortal
               modelSrc={game.model}
-              locked={isLocked(game.gameKey, stage)}
+              // locked={isLocked(game.gameKey, stage)}
+              locked={false}
               worldKey={worldKey}
               gameKey={game.gameKey}
               scale={game.scale}

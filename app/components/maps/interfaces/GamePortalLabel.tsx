@@ -19,9 +19,14 @@ export default function GamePortalLabel({
     : [0,y,0] as [number, number, number];
 
   let iconUrl;
-  if (locked) {
-    iconUrl = '/images/locked.png'
-  } else if (!completed) {
+  // if (locked) {
+  //   iconUrl = '/images/locked.png'
+  // } else if (!completed) {
+  //   iconUrl = "/images/exclaim.png"
+  // } else {
+  //   iconUrl = '/images/check.png'
+  // }
+  if (!completed) {
     iconUrl = "/images/exclaim.png"
   } else {
     iconUrl = '/images/check.png'
