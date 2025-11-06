@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { Object3D, Raycaster, Vector2, Vector3 } from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { W2G1roundConfig, W2G1roundConfigProp } from "../roundConfig";
+import { W2G1roundConfig, W2G1roundConfigProp } from "./roundConfig";
 import { abnormIng, normIng } from "./ing";
 import Model from "@/app/components/util/Model";
 import { lerp } from "three/src/math/MathUtils.js";

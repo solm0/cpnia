@@ -45,7 +45,7 @@ export default function OptionButton({
       onClick={() => onClick?.()}
       className={`
         ${style}
-        ${isFocused ? "ring-4 ring-cyan-400 scale-105" : "opacity-80"}
+        ${isFocused ? "border-4 border-cyan-400 scale-105" : "opacity-80"}
       `}
       disabled={disabled ? true : false}
     >

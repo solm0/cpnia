@@ -1,10 +1,9 @@
 import Scene from "../../util/Scene";
-import GameMenu from "../interfaces/GameMenu";
 import { Suspense, useEffect, useRef, useState } from "react";
 import BattleField from "./W2G1/BattleField";
 import { degToRad } from "three/src/math/MathUtils.js";
 import Loader from "../../util/Loader";
-import { W2G1roundConfig } from "./roundConfig";
+import { W2G1roundConfig } from "./W2G1/roundConfig";
 import { Object3D, Vector3 } from "three";
 import Timer from "./W2G1/Timer";
 import StartScreen from "./StartScreen";
@@ -41,20 +40,18 @@ export function randomPosition(): [number, number, number] {
 }
 
 export function W2G1Interface({
-  round, gameOver, secondsRef, worldKey, gameKey, abnormalRef
+  round, gameOver, secondsRef, abnormalRef
 }: {
   round: number;
   gameOver:(success: boolean) => void;
   secondsRef: React.RefObject<number>;
-  worldKey: string;
-  gameKey: string;
   abnormalRef: React.RefObject<boolean | null>;
 }) {
   const [score, setScore] = useState(0);
   const [penalty, setPenalty] = useState(0);
 
   useEffect(() => {
-    if (score === W2G1roundConfig[round].abnormCount) {
+    if (score === W2G1roundConfig[round].goal) {
       gameOver(true);
       setScore(0);
     }
@@ -98,8 +95,9 @@ export function W2G1Interface({
       <div className="absolute top-8 left-8 flex flex-col gap-4 p-4 bg-white rounded-2xl">
         <p className="font-bold text-2xl">제 {round} 라운드</p>
         <div className="flex flex-col gap-2">
-          <p>남은 스파이 수: {score}/{W2G1roundConfig[round].abnormCount}</p>
+          <p>남은 스파이 수: {score}/{W2G1roundConfig[round].goal}</p>
           <p>주민을 잘못 맞춘 횟수: {penalty}/5</p>
+          <p>힌트: 피자 위에 있지 않은 재료를 주시하세요...</p>
           <Timer secondsRef={secondsRef} />
         </div>
       </div>
@@ -206,8 +204,6 @@ export default function W2G1({
         round={round}
         gameOver={gameOver}
         secondsRef={secondsRef}
-        worldKey={worldKey}
-        gameKey={gameKey}
         abnormalRef={abnormal}
       />
       <StartScreen
