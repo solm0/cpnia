@@ -71,7 +71,8 @@ export default function OnPizza({
           <primitive
             object={gltfMap[item.key].clone()}
             rotation={[Math.PI / 2, Math.PI / 2, 0]}
-        />
+            scale={1}
+          />
         </group>
       ))}
     </>

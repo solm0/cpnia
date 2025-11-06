@@ -77,10 +77,29 @@ interface Focus3d {
   setFocusedObj: (obj: Focusable3d | null) => void;
 }
 
-export const use3dFocusStore = create<Focus3d>((set) => ({
-  focusedObj: null as Focusable3d | null,
-  setFocusedObj: (obj: Focusable3d | null) => set({ focusedObj: obj }),
-}));
+export const use3dFocusStore = create<Focus3d>((set, get) => {
+  let resetTimer: NodeJS.Timeout | null = null;
+
+  return {
+    focusedObj: null as Focusable3d | null,
+    setFocusedObj: (obj: Focusable3d | null) => {
+      set({ focusedObj: obj });
+
+      // 타이머 리셋
+      if (resetTimer) clearTimeout(resetTimer);
+
+      // 새 포커스가 잡히면 5초 후 자동 해제
+      if (obj) {
+        resetTimer = setTimeout(() => {
+          if (get().focusedObj === obj) {
+            console.warn("focusedObj 자동 초기화됨 (timeout)");
+            set({ focusedObj: null });
+          }
+        }, 5000); // 5초 후 자동 초기화
+      }
+    },
+  };
+});
 
 function moveFocus(dir: Dir) {
   const { focusables, focusIndex, setFocusIndex } = use2dFocusStore.getState();

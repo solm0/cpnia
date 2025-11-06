@@ -17,7 +17,7 @@ export default function StartScreen({
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowButton(true), 0);
+    const timer = setTimeout(() => setShowButton(true), 500);
     return () => clearTimeout(timer);
   }, []);
 
