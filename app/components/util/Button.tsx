@@ -1,4 +1,4 @@
-import { jersey15 } from "@/app/lib/fonts";
+import { jersey15, nanumGothicCodingBold } from "@/app/lib/fonts";
 import { use2dFocusStore } from "@/app/lib/gamepad/inputManager";
 import { ReactNode, useEffect, useRef } from "react";
 
@@ -81,7 +81,8 @@ export default function Button({
           onClick={() => onClick?.()}
           className={`
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'}
-            "px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 break-keep w-auto pointer-events-auto"
+            ${nanumGothicCodingBold.className} font-bold
+            "w-auto px-3 py-1 bg-gray-400 hover:opacity-50 text-gray-900 border-2 border-blue-600 break-keep transition-opacity w-auto pointer-events-auto"
             ${isFocused ? "border-4 border-cyan-400 scale-120" : "opacity-80"}
           `}
           disabled={disabled ? true : false}

@@ -104,19 +104,20 @@ export default function Home() {
       
       </div>
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 text-white animate-pulse flex gap-2 items-center">
-          <p>게임패드 조작 시</p>
-          <div className="w-10 h-10">
-            <Image
-              src={isFocused ? "/images/y.png" : "/images/x.png"}
-              alt="button"
-              width={100}
-              height={100}
-            />
+        {!isFocused &&
+          <div className="absolute top-20 left-1/2 -translate-x-1/2 text-white animate-pulse flex gap-2 items-center">
+            <p>게임패드 조작 시</p>
+            <div className="w-10 h-10">
+              <Image
+                src="/images/x.png"
+                alt="button"
+                width={100}
+                height={100}
+              />
+            </div>
+            <p>눌러 월드 선택</p>
           </div>
-          <p>눌러</p>
-          <p>{isFocused ? '뒤로가기' : '월드 선택'}</p>
-        </div>
+        }
         {!isFocused && <HomeMenu />}
         {isFocused &&
           <>

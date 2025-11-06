@@ -38,7 +38,7 @@ export default function InterviewForms() {
   if (!worldTo) return;
 
   const questions = [
-    `${userName} 님은 왜 ${worldPortals.find(portal => portal.worldKey === worldTo)?.worldName ?? ''}에 가시나요?`,
+    `'${userName}' 님은 왜 ${worldPortals.find(portal => portal.worldKey === worldTo)?.worldName ?? ''} 나라에 오셨나요?`,
     '시민권을 얻으려고 하는 이유는 무엇인가요?'
   ]
 
@@ -89,10 +89,12 @@ export default function InterviewForms() {
     `}>
       {phase <= 2 ? (
         <>
-          <p>{phase}</p>
-          <label htmlFor="form" className="font-bold">
-            {phase === 1 ? questions[0] : questions[1]}
-          </label>
+          <div className="flex flex-col gap-2 items-center">
+            <p className="text-xl">{phase}/2</p>
+            <label htmlFor="form" className="font-bold">
+              {phase === 1 ? questions[0] : questions[1]}
+            </label>
+          </div>
           <form
             id='form'
             onSubmit={(e) => e.preventDefault()}

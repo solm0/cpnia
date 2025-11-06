@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Euler, Object3D, Quaternion, Vector3 } from "three";
+import { Euler, Mesh, Object3D, Quaternion, Scene, Vector3 } from "three";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useKeyboardControls } from "@/app/lib/hooks/useKeyboardControls";
 import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
 import { RigidBody } from "@react-three/rapier";
@@ -13,6 +13,38 @@ import { CuboidCollider } from "@react-three/rapier";
 import { usePlayerStore } from "@/app/lib/state/playerStore";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { checkCollision } from "../player/checkCollision";
+import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
+
+export function getNearbyMeshes(origin: Vector3, radius: number, scene: Scene) {
+  const nearby: Mesh[] = [];
+  scene.traverse((obj) => {
+    if ((obj as Mesh).isMesh && obj.visible) {
+      const pos = new Vector3();
+      obj.getWorldPosition(pos);
+      const dist = pos.distanceTo(origin);
+      if (dist <= radius) nearby.push(obj as Mesh);
+    }
+  });
+  return nearby;
+}
+
+export function hasAncestorWithId(obj: Object3D, id: string): boolean {
+  let current: Object3D | null = obj;
+  while (current) {
+    if (current.userData?.id === id) return true;
+    current = current.parent;
+  }
+  return false;
+}
+
+export function findAncestorWithId(obj: Object3D): Object3D | null {
+  let current: Object3D | null = obj;
+  while (current) {
+    if (current.userData?.id) return current;
+    current = current.parent;
+  }
+  return null;
+}
 
 export default function Player({
   worldKey, avatar, rectArea, center
@@ -36,6 +68,7 @@ export default function Player({
     pressedKeys.current,
     gamepad.current
   );
+  const { scene } = useThree();
 
   // chatnpc를 위한 player position 저장
   const setIsMoving = usePlayerStore((state) => state.setIsMoving);
@@ -184,6 +217,55 @@ export default function Player({
 
       const slerped = new Quaternion().slerpQuaternions(currentThreeQuat, targetQuat, delta * 10);
       body.current.setNextKinematicRotation(slerped);
+    }
+
+    // focusedObj를 찾는다
+    const playerPos = new Vector3(t.x, t.y, t.z);
+    const playerRoot = body.current as Object3D;
+
+    function isDescendant(child: Object3D, parent: Object3D): boolean {
+      let current: Object3D | null = child;
+      while (current) {
+        if (current === parent) return true;
+        current = current.parent;
+      }
+      return false;
+    }
+
+    const nearby = getNearbyMeshes(playerPos, 20, scene)
+      .filter(obj => 
+        !isDescendant(obj, playerRoot) &&
+        !hasAncestorWithId(obj, 'its me') && !hasAncestorWithId(obj, 'its chatnpc')
+      );
+
+    // --- 여기서부터 ---
+    let ancestor: Object3D | null = null;
+
+    if (nearby.length > 0) {
+      const nearest = nearby.reduce((prev, curr) => {
+        const prevPos = new Vector3(), currPos = new Vector3();
+        prev.getWorldPosition(prevPos);
+        curr.getWorldPosition(currPos);
+        return currPos.distanceTo(playerPos) < prevPos.distanceTo(playerPos) ? curr : prev;
+      });
+      ancestor = findAncestorWithId(nearest);
+    }
+
+    const prevFocused = use3dFocusStore.getState().focusedObj;
+
+    if (ancestor) {
+      if (!prevFocused || prevFocused.id !== ancestor.userData.id) {
+        use3dFocusStore.getState().setFocusedObj({
+          id: ancestor.userData.id,
+          onClick: ancestor.userData.onClick,
+        });
+        console.log(use3dFocusStore.getState().focusedObj)
+      }
+    } else {
+      if (prevFocused) {
+        use3dFocusStore.getState().setFocusedObj(null);
+        console.log(use3dFocusStore.getState().focusedObj)
+      }
     }
   });
 

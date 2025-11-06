@@ -52,18 +52,18 @@ export function SacrificeOptionButton({
 }
 
 export function EntropyOptionButton({
-  onClick, label
+  onClick, label, id
 }: {
   onClick: (param?: number | string | boolean | null) => void;
   label: string;
+  id: string;
 }) {
   return (
-    <div
-      tabIndex={0}
-      onClick={() => onClick?.()}
-      className="w-full text-lime-400 hover:opacity-50 transition-opacity flex items-center"
-    >
-      {label}
-    </div>
+    <OptionButton
+      id={id}
+      onClick={onClick}
+      style="w-full text-blue-600 hover:opacity-50 transition-opacity flex items-center"
+      label={label}
+    />
   )
 }

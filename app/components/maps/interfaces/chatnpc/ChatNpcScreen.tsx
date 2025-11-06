@@ -165,27 +165,26 @@ export default function ChatNpcScreen({
     else if (worldKey === 'entropy') return (
       <div
         className={`
-          text-white break-keep absolute top-24 right-8 transition-[width,height] bg-transparent flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-[#ffffff70] w-[30rem] h-2/3 overflow-visible
+          text-gray-900 break-keep absolute top-24 right-8 transition-[width,height] bg-gray-400 flex flex-col pointer-events-none items-center backdrop-blur-sm border-3 border-blue-600 w-[30rem] h-2/3 overflow-visible
           ${nanumGothicCodingBold.className}
         `}
         onWheel={(e) => {
           e.stopPropagation();
         }}
       >
-        <div className="absolute top-0 left-0 -z-10 w-full h-full bg-[#00000090] border-3 border-[#ffffff] blur-sm" />
         <div className="w-full flex items-center h-10 shrink-0">
-          <p className="h-full flex items-center justify-start text-center grow border-1 border-[#ffffff70] pl-4">
+          <p className="h-full flex items-center justify-start text-center grow border-1 border-blue-600 pl-4">
             {npcName}와의 대화
           </p>
           <Button
             onClick={() => setIsChatOpen(false)}
             label="닫기(Y)"
-            worldKey="time"
+            worldKey={worldKey}
             id='3-3-1'
           />
         </div>
   
-        <div className="border-1 border-[#ffffff70] h-[calc(100%-2.5rem)] w-full pointer-events-auto">
+        <div className="border-1 border-blue-600 h-[calc(100%-2.5rem)] w-full pointer-events-auto">
           <div
             ref={scrollRef}
             className="h-[calc(100%-9rem)] flex flex-col gap-2 overflow-y-scroll"

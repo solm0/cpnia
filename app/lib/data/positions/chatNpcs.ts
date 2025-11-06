@@ -23,7 +23,7 @@ export const chatNpcs: Record<string, chatNpcProp> = {
   entropy: {
     name: '페르디',
     world: '엔트로피체제',
-    position: [0,0,10],
+    position: [-50, 100, 10], // entropy screen 참조
     rotation: [0, Math.PI, 0],
   }
 }

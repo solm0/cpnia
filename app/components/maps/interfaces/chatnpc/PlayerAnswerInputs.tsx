@@ -70,5 +70,23 @@ export function EntropyPlayerAnswerInput({
   npcName: string;
   handleSubmit: () => void;
 }) {
-  return <div>dd</div>
+  return (
+    <div className="h-10 w-full flex gap-4 items-center max-w-6/7 ml-auto">
+      <Input
+        id='3-3-2'
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        disabled={loading}
+        placeholder={`${npcName}에게 물어보기`}
+        style="w-full h-full text-right text-blue-600 truncate"
+      />
+      <Button
+        onClick={() => handleSubmit()}
+        label="전송"
+        worldKey="entropy"
+        disabled={!input.trim()}
+        id='3-3-3-e'
+      />
+    </div>
+  )
 }

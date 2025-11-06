@@ -136,7 +136,7 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
         <div className="flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity -translate-x-14">
           <Button
             id='3-1-1'
-            onClick={() => router.push('/')}
+            onClick={() => {console.log('click'); router.push('/')}}
             label={<House className="w-7 h-7 -mx-2 text-white" />}
             worldKey={worldKey}
           />

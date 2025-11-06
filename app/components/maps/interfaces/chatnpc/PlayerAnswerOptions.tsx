@@ -77,5 +77,27 @@ export function EntropyPlayerAnswerOptions({
   formality: string | null;
   setInput: (input: string) => void
 }) {
-  return <div>dd</div>
+  function handleClick (line:string, index: number) {
+    setInput(line);
+    setPlayerLines(prev => prev.filter(i => i !== index));
+  }
+  return (
+    <div className="relative flex flex-col items-start w-auto h-auto border-2 border-blue-600 bg-gray-400 p-4 gap-2">
+      <div className="absolute top-0 left-0 w-full h-full -z-10" />
+      <div className="text-center w-full text-gray-900">또는 다음 중 선택</div>
+      
+      {playerLines.map(index => {
+        const line = chatPlayerLines[formality ?? '하십시오체'][index];
+
+        return (
+          <EntropyOptionButton
+            key={index}
+            id={`3-3-4-${index}`}
+            onClick={() => handleClick(line, index)}
+            label={`> ${line}`}
+          />
+        )
+      })}
+    </div>
+  )
 }

@@ -334,21 +334,52 @@ export function EntropyNpcLineModal({
   name: string;
   setActiveNpc: (name: string | null) => void;
 }) {
-  const line = FindNpcLine(name, worldKey);
+  const [lineIndex, setLineIndex] = useState(0);
+  const lines = FindNpcLine(name, worldKey);
+  const length = lines.length;
+  const line = lines[lineIndex];
 
+  use3dFocusStore.getState().setFocusedObj(null);
+  
   return (
     <div className={`
-      flex flex-col gap-2 w-full items-start
+      -translate-y-8 ml-8 mb-8 w-[60rem] h-[18rem] backdrop-blur-sm text-gray-900 flex flex-col items-start
       ${nanumGothicCodingBold.className}
+      border-2 border-blue-600 bg-gray-400
     `}>
-      <p>{name} says:</p>
-      <TypingText text={line[0] ?? 'npc line이 없음'} />
-      <Button
-        onClick={() => setActiveNpc(null)}
-        label="닫기"
-        worldKey={worldKey}
-        id={'tempId'}
-      />
+      
+      {/* 윗부분 */}
+      <div className="flex h-14 w-full shrink-0 border-1 border-blue-600 gap-4 items-center px-5">
+        <div className="w-5 h-5 flex items-center justify-center">
+          <div className="absolute w-3 h-3 bg-blue-600 rotate-45"/>
+          <div className="w-5 h-5 bg-blue-600 opacity-50 rotate-45"/>
+        </div>
+        {name}
+      </div>
+
+      {/* 본문 */}
+      <div className="w-full h-full border-1 border-blue-600 py-4 px-5">
+        <p className="max-w-[45rem] break-keep leading-7 overflow-y-scroll">
+          <TypingText text={line ?? 'npc line이 없음'} />
+        </p>
+
+        <OptionButton
+          id='3-2'
+          onClick={() => {
+            if (length > lineIndex+1) {
+              setLineIndex(lineIndex+1)
+            } else {
+              setActiveNpc(null)
+            }}}
+          label={
+            <>
+              <p className="absolute text-blue-600">&#9660;</p>
+              <p className="absolute translate-y-5 opacity-50 text-blue-600">&#9660;</p>
+            </>
+          }
+          style="fixed bottom-13 right-20 h-auto w-10 text-6xl animate-pulse"
+        />
+      </div>
     </div>
   )
 }
