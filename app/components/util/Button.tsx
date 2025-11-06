@@ -66,7 +66,7 @@ export default function Button({
           onClick={() => onClick?.()}
           className={`
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'}
-            "px-3 py-1 rounded-2xl bg-yellow-300 hover:opacity-50 transition-opacity text-gray-700 break-keep w-auto pointer-events-auto shrink-0"
+            "w-auto px-4 py-2 rounded-full text-lg font-bold bg-yellow-300 hover:opacity-50 transition-opacity text-gray-700 break-keep pointer-events-auto shrink-0"
             ${isFocused ? "ring-4 ring-cyan-400 scale-105" : "opacity-80"}
           `}
           disabled={disabled ? true : false}

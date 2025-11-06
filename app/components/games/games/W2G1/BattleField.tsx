@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useGLTF } from "@react-three/drei";
+import { OrbitControls, useGLTF } from "@react-three/drei";
 import { Object3D, Raycaster, Vector2, Vector3 } from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { W2G1roundConfig, W2G1roundConfigProp } from "../roundConfig";
@@ -7,11 +7,12 @@ import { abnormIng, normIng } from "./ing";
 import Model from "@/app/components/util/Model";
 import { lerp } from "three/src/math/MathUtils.js";
 import OnPizza from "./OnPizza";
-import CameraController from "./CameraController";
 import { EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 import { BodyData, center, isInsidePizza, pizzaRadius, randomPosition, sizeX, sizeY } from "../W2G1";
 import Body from "./Body";
 import { Physics } from "@react-three/rapier";
+import Player from "./Player";
+import { Boundary } from "@/app/components/maps/player/clampToBoundary";
 
 function generateBodies(config: W2G1roundConfigProp, setPizzaIng: (pizzaIng: string[]) => void) {
   const newBodies: BodyData[] = [];
@@ -58,13 +59,17 @@ function randomNearPosition(currentPos: Vector3, range: number = 2): [number, nu
   return [newX, currentPos.y, newZ];
 }
 
+useGLTF.preload("/models/shop.gltf");
+useGLTF.preload("/models/pizza.gltf");
+
 export default function BattleField({
-  round, onRoundReady, abnormalRef, spaceKeyRef
+  round, onRoundReady, abnormalRef, spaceKeyRef, avatar
 }: {
   round: number;
   onRoundReady: (round: number) => void;
   abnormalRef: React.RefObject<boolean | null>;
   spaceKeyRef: React.RefObject<boolean>;
+  avatar: Object3D;
 }) {
   const bodiesRef = useRef<(Object3D | null)[]>([]);
   const [bodiesState, setBodiesState] = useState<BodyData[]>([])
@@ -86,7 +91,7 @@ export default function BattleField({
     onion: useGLTF('/models/avatars/onion.glb').scene,
     olive: useGLTF('/models/avatars/olive.gltf').scene,
   };
-  const kitchen = useGLTF("/models/kitchen.glb").scene;
+  const kitchen = useGLTF("/models/shop.gltf").scene;
   const pizza = useGLTF("/models/pizza.gltf").scene;
 
   useEffect(() => {
@@ -220,6 +225,32 @@ export default function BattleField({
     }
     console.log('length', bodiesRef.current.length, bodiesState.length)
   });
+
+  const rectArea: Boundary[] = [
+    { type: "rect", center: [center.x, center.z], size: [sizeX, sizeY] }
+  ]
+  const config: {
+    playerPos: Vector3,
+    playerRot: Vector3,
+    camYRot: number,
+    camYPos: number,
+    camZPos: number,
+  } = {
+    playerPos: center,
+    playerRot: new Vector3(0, 0, 0),
+    camYRot: 0,
+    camYPos: 5,
+    camZPos: 10,
+  }
+
+  const pizzaArea: Boundary[] = [
+    {
+      type: "circle",
+      center: [center.x, center.z],
+      radius: pizzaRadius,
+      y: 5
+    }
+  ]
   
   return (
     <Physics>
@@ -270,7 +301,8 @@ export default function BattleField({
       <color attach="background" args={["blue"]} />
 
       {/* 카메라, 컨트롤 */}
-      <CameraController position={[-1.5, 5, 5]}/>
+      <Player rectArea={pizzaArea} config={config} avatar={avatar} />
+      {/* <OrbitControls /> */}
 
       {/* 효과 */}
       <EffectComposer>

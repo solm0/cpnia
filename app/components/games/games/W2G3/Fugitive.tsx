@@ -5,6 +5,8 @@ import { Mesh, MeshStandardMaterial, Group, Vector3 } from "three";
 import { useGLTF } from "@react-three/drei";
 import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
 
+useGLTF.preload("/models/avatars/redPap.gltf");
+
 export default function Fugitive({
   scale = 1,
   position,

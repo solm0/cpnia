@@ -17,7 +17,7 @@ export interface BodyData {
 }
 
 // 조리대
-export const sizeX = 60;
+export const sizeX = 58;
 export const sizeY = 20;
 export const center = new Vector3(-1.7,0,-5.5);
 
@@ -100,12 +100,7 @@ export function W2G1Interface({
           <p>남은 스파이 수: {score}/{W2G1roundConfig[round].abnormCount}</p>
           <p>벌점: {penalty}</p>
           <Timer secondsRef={secondsRef} />
-          <Button
-            worldKey={worldKey}
-            label="클릭"
-            onClick={() => setScore(score+1)}
-            id={'tempId'}
-          />
+          
         </div>
         
       </div>
@@ -209,6 +204,7 @@ export default function W2G1({
             }}
             abnormalRef={abnormal}
             spaceKeyRef={spaceKeyPressed}
+            avatar={avatar}
           />
         </Suspense>
       </Scene>
