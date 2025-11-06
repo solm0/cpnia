@@ -1,6 +1,7 @@
 'use client'
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
 
 export default function GameEndScreen({
   success, worldKey, gameKey, showCitizenship,
@@ -11,6 +12,8 @@ export default function GameEndScreen({
   showCitizenship: boolean;
 }) {
   const router = useRouter();
+  console.log('gameEndScreen called', use3dFocusStore.getState().focusedObj);
+  use3dFocusStore.getState().setFocusedObj(null);
   console.log('gameEndScreen called', success);
   
   useEffect(() => {

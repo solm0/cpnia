@@ -12,10 +12,13 @@ export const InputManager = {
     moveFocus(dir);
   },
   onConfirm: () => {
+    console.log('onConfirm 실행')
     const focusedObj = use3dFocusStore.getState().focusedObj;
     if (focusedObj) {
+      console.log('focusedObj가 있어서 클릭 불가')
       focusedObj.onClick?.();
     } else {
+      console.log('focusedObj가 없어서 클릭 가능')
       const uiFocus = use2dFocusStore.getState().focusables[
         use2dFocusStore.getState().focusIndex
       ];

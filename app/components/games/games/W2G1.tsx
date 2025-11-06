@@ -167,7 +167,7 @@ export default function W2G1({
       } else if (!pressed && prevPressed) {
         spaceKeyPressed.current = false;
         use3dFocusStore.getState().setFocusedObj(null);
-        console.log('타겟 나감');
+        console.log('타겟 나감', use3dFocusStore.getState().focusedObj);
       }
   
       prevPressed = pressed;

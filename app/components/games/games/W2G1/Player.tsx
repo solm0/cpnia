@@ -59,7 +59,6 @@ export default function Player({
     let vertical = 0;
     if (pressedKeys.current.has("KeyD") || gamepad.current.axes[0] > deadzone) {
       horizontal += speed;
-      console.log('d pressed')
       nextAction = 1
     }
     if (pressedKeys.current.has("KeyA") || gamepad.current.axes[0] < -deadzone) {
