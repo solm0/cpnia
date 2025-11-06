@@ -135,16 +135,25 @@ export default function Home() {
               <p className="font-bold">{worldData?.description}</p>
 
               <div className="flex gap-2">
-                <Button
-                    label="ENTER WORLD"
-                    onClick={() => router.push(`/interview?to=${focusedWorld}`)}
-                    id={`1-2-2`}
-                  />
-                <Button
-                  label="BACK"
-                  onClick={() => unFocusPortal()}
-                  id={`1-2-3`}
-                />
+                {worldData?.worldKey === 'entropy' ?
+                  <div className="flex flex-col gap-2 opacity-40 text-xl font-bold">
+                    <p>Comming Soon!</p>
+                    <p>11월 7일 대개봉</p>
+                  </div>
+                  :
+                  <>
+                    <Button
+                        label="ENTER WORLD"
+                        onClick={() => router.push(`/interview?to=${focusedWorld}`)}
+                        id={`1-2-2`}
+                      />
+                    <Button
+                      label="BACK"
+                      onClick={() => unFocusPortal()}
+                      id={`1-2-3`}
+                    />
+                  </>
+                }
               </div>
             </div>
 

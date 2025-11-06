@@ -1,13 +1,21 @@
-'use client'
-
-import { Billboard, useGLTF } from "@react-three/drei";
-import Model from "../../util/Model";
+import { useGLTF } from "@react-three/drei";
 import { Group, Vector3 } from "three";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
+import Model from "../../util/Model";
 
 export default function WorldPortal({
-  src, worldKey, position, rotation, scale, rotationAxis, rotationSpeed, onFocus, setFocusedWorld, id
+  src,
+  worldKey,
+  position,
+  rotation,
+  scale,
+  rotationAxis,
+  rotationSpeed,
+  onFocus,
+  setFocusedWorld,
+  id,
 }: {
   src: string;
   worldKey: string;
@@ -21,14 +29,14 @@ export default function WorldPortal({
   id: number;
 }) {
   const ref = useRef<Group | null>(null);
-  const icon = useGLTF(src).scene
+  const { scene } = useGLTF(src);
+
+  // 💎 독립된 복제본을 useMemo로 만들어둔다.
+  const clonedScene = useMemo(() => clone(scene), [scene]);
 
   useFrame((_, delta) => {
     if (!ref.current) return;
-    ref.current.rotateOnAxis(
-      new Vector3(...rotationAxis),
-      rotationSpeed * delta
-    );
+    ref.current.rotateOnAxis(new Vector3(...rotationAxis), rotationSpeed * delta);
   });
 
   return (
@@ -42,13 +50,7 @@ export default function WorldPortal({
         setFocusedWorld(worldKey);
       }}
     >
-      <Billboard>
-       
-      </Billboard>
-      <Model
-        scene={icon}
-        scale={scale}
-      />
+      <Model scene={clonedScene} scale={scale} />
     </group>
-  )
+  );
 }
