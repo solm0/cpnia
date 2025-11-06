@@ -8,6 +8,8 @@ import { Object3D, Vector3 } from "three";
 import Timer from "./W2G1/Timer";
 import StartScreen from "./StartScreen";
 import AudioPlayer from "../../util/AudioPlayer";
+import { useGamepadControls } from "@/app/lib/hooks/useGamepadControls";
+import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
 
 export interface BodyData {
   ingr: string;
@@ -72,6 +74,21 @@ export function W2G1Interface({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [abnormalRef]);
 
+  const gamepad = useGamepadControls();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (gamepad?.current?.buttons[1]) {
+        if (abnormalRef.current === true) {
+          setScore(prev => prev + 1);
+        } else if (abnormalRef.current === false) {
+          setPenalty(prev => prev + 1);
+        }
+      } 
+    }, 60);
+    return () => clearInterval(interval);
+  }, [gamepad]);
+
   // 페널티 게임종료
   useEffect(() => {
     if (penalty >= 5) {
@@ -121,6 +138,7 @@ export default function W2G1({
 
   const abnormal = useRef<boolean | null>(false); // 타겟에 뭔가가 있을때
   const spaceKeyPressed = useRef(false); // spaceKey 눌렸는지
+  const gamepad = useGamepadControls();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => { if(e.code==="Space") spaceKeyPressed.current = true };
@@ -132,6 +150,31 @@ export default function W2G1({
       window.removeEventListener("keyup", up);
     }
   }, []);
+
+  useEffect(() => {
+    let prevPressed = false;
+  
+    const interval = setInterval(() => {
+      const pressed = !!gamepad?.current?.buttons[1];
+  
+      if (pressed && !prevPressed) {
+        spaceKeyPressed.current = true;
+        use3dFocusStore.getState().setFocusedObj({
+          id: 'spy',
+          onClick: () => {},
+        });
+        console.log('타겟 들어옴');
+      } else if (!pressed && prevPressed) {
+        spaceKeyPressed.current = false;
+        use3dFocusStore.getState().setFocusedObj(null);
+        console.log('타겟 나감');
+      }
+  
+      prevPressed = pressed;
+    }, 16); // 약 60fps 주기
+  
+    return () => clearInterval(interval);
+  }, [gamepad]);
 
   // clear previous timer
   useEffect(() => {

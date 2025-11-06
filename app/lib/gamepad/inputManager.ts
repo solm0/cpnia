@@ -122,12 +122,3 @@ function moveFocus(dir: Dir) {
 
   if (next) setFocusIndex(focusables.indexOf(next));
 }
-
-// --- 위의 것을 레이캐스팅에서 접근
-// const intersect = raycaster.intersectObjects(scene.children, true)[0];
-// if (intersect) {
-//   const obj = intersect.object.userData;
-//   use3dFocusStore.getState().setFocusedObj(obj);
-// } else {
-//   use3dFocusStore.getState().setFocusedObj(null);
-// }
