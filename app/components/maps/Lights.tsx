@@ -114,6 +114,11 @@ export function SacrificeLights() {
 
 export function EntropyLights() {
   return (
-    <></>
+    <>
+      <directionalLight
+        intensity={10}
+        position={[10,80,10]} castShadow receiveShadow  />
+      <directionalLight intensity={10} color={'blue'} position={[10,80,50]} castShadow receiveShadow />
+    </>
   )
 }

@@ -1,5 +1,5 @@
 import { Environment } from "@react-three/drei";
-import { EffectComposer, DepthOfField, Bloom, Noise, Pixelation, Vignette, ChromaticAberration, BrightnessContrast} from "@react-three/postprocessing";
+import { EffectComposer, DepthOfField, Bloom, Noise, Pixelation, Vignette, ChromaticAberration, BrightnessContrast, HueSaturation} from "@react-three/postprocessing";
 import { BlendFunction } from 'postprocessing'
 import { radToDeg } from "three/src/math/MathUtils.js";
 
@@ -55,7 +55,12 @@ export function SacrificeEffects() {
 export function EntropyEffects() {
   return (
     <>
-      <color attach="background" args={["#101010"]} />
+        <EffectComposer>
+          <HueSaturation saturation={0.1} opacity={1} />
+          <Pixelation granularity={2} />
+          <BrightnessContrast opacity={0.4} blendFunction={BlendFunction.LINEAR_DODGE} />
+        </EffectComposer>
+      <Environment files={'/hdri/cloudSky.hdr'} background={true} environmentIntensity={0.05} />
     </>
   )
 }

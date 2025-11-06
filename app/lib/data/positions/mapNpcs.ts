@@ -1,5 +1,6 @@
 import { degToRad } from "three/src/math/MathUtils.js";
 import { stagePositions } from "./stagePositions";
+import { center, mapScale } from "@/app/components/maps/screens/EntropyScreen";
 
 export interface mapNpcProp {
   name: string;
@@ -95,17 +96,29 @@ export const mapNpcs: Record<string, mapNpcProp[]> = {
   entropy: [
     {
       name: '니아',
-      position: [-8,0,5],
+      position: [
+        center.x - 50 * mapScale,
+        center.y,
+        center.z + 5 * mapScale
+      ],
       rotation: [0, Math.PI ,0],
     },
     {
       name: '루벤',
-      position: [-3,0,5],
+      position: [
+        center.x + 40 * mapScale,
+        center.y,
+        center.z + 100 * mapScale
+      ],
       rotation: [0, Math.PI ,0],
     },
     {
       name: '밀라',
-      position: [2,0,5],
+      position: [
+        center.x + 80 * mapScale,
+        center.y,
+        center.z + 50 * mapScale
+      ],
       rotation: [0, Math.PI ,0],
     },
   ]

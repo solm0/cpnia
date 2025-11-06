@@ -10,79 +10,86 @@ import Npcs from "../Npcs";
 import { EntropyEffects } from "../Effects";
 import GlobalMenu from "../interfaces/GlobalMenu";
 import Model from "../../util/Model";
-import PlayerEntropy from "../entropy/PlayerEntropy";
-import { AnimationMixer, LoopRepeat, Object3D } from "three";
+import { AnimationMixer, Object3D, Vector3 } from "three";
 import { useGLTF } from "@react-three/drei";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { useFrame } from "@react-three/fiber";
 import ExplodingModel from "../entropy/ExplodingModel";
+import Player from "../entropy/Player";
+import { Boundary } from "../player/clampToBoundary";
+import { BoxHelper } from "../../games/games/W1G1/BoxHelper";
 
-useGLTF.preload("/models/entropy.glb");
+useGLTF.preload("/models/entropy-1.glb");
 useGLTF.preload("/models/entropy-2.glb");
+useGLTF.preload('/models/gate.glb');
 
 export function Map({
-  stage
+  stage, position, scale
 }: {
-  stage: number
+  stage: number;
+  position: Vector3;
+  scale: number;
 }) {
-  const gate = useGLTF('/models/gate.glb').scene;
-  const mixer = useRef<AnimationMixer | null>(null);
-
+  const gate = useGLTF('/models/gate.glb');
   const map1 = useGLTF("/models/entropy-1.glb");
-  const map2 = useGLTF("/models/entropy-2-output.glb");
+  const map2 = useGLTF("/models/entropy-2.glb");
+  const mapMixer = useRef<AnimationMixer | null>(null);
+  const gateMixer = useRef<AnimationMixer | null>(null);
 
   useEffect(() => {
-    mixer.current = new AnimationMixer(stage === 0 ? map1.scene : map2.scene);
+    mapMixer.current = new AnimationMixer(stage === 0 ? map1.scene : map2.scene);
+    gateMixer.current = new AnimationMixer(gate.scene);
     return () => {
-      mixer.current?.stopAllAction();
+      mapMixer.current?.stopAllAction();
     };
   }, [map1, map2, stage]);
 
   useEffect(() => {
-    if (!mixer.current) return;
-    const anim = stage === 0 ? map1.animations[0] : map2.animations[0];
-    if (!anim) return;
+    if (!mapMixer.current || !gateMixer.current) return;
+    const mapAnim = stage === 0 ? map1.animations[0] : map2.animations[0];
+    const gateAnim = gate.animations[0];
+    if (!mapAnim || !gateAnim) return;
   
-    const action = mixer.current.clipAction(anim);
-    action.play();
+    const mapAction = mapMixer.current.clipAction(mapAnim);
+    const gateAction = gateMixer.current.clipAction(gateAnim);
+
+    mapAction.play();
+    gateAction.play();
   
-  }, [map1, map2]);
+  }, [map1, map2, gate]);
 
   useFrame((_, delta) => {
-    mixer.current?.update(delta);
+    mapMixer.current?.update(delta);
+    gateMixer.current?.update(delta)
   })
 
-
-  if (stage === 0) {
-
+  if (stage === 0 || stage === 1) {
     return (
       <>
         {/* 지형 */}
         <Model
-          scene={map1.scene}
-          scale={50}
+          scene={
+            stage === 0
+             ? map1.scene
+             : map2.scene
+          }
+          scale={50 * scale}
+          position={[
+            position.x,
+            position.y,
+            position.z
+          ]}
+          rotation={[0, -Math.PI/2, 0]}
         />
         <primitive
-          object={gate}
-          position={[0,0,0]}
-          scale={100}
-        />
-      </>
-    )
-  } else if (stage === 1) {
-    
-
-    return (
-      <>
-        {/* 지형 */}
-        <Model
-          scene={map2.scene}
-          scale={50}
-        />
-        <primitive
-          object={gate}
-          position={[0,0,0]}
-          scale={100}
+          object={gate.scene}
+          position={[
+            position.x + 154 * scale,
+            position.y + 20 * scale,
+            position.z + 71 * scale
+          ]}
+          scale={100 * scale}
+          rotation={[0, Math.PI/2, 0]}
         />
       </>
     )
@@ -92,6 +99,9 @@ export function Map({
     )
   }
 }
+
+export const center = new Vector3(0,100,0);
+export const mapScale = 1;
 
 export default function EntropyScreen({
   avatar,
@@ -109,16 +119,27 @@ export default function EntropyScreen({
   const chatNpc = chatNpcs[worldKey];
   const [isChatOpen, setIsChatOpen] = useState(false)
 
+  const mapPos = new Vector3(
+    center.x,
+    center.y,
+    center.z
+  );
+
+  const rectArea: Boundary[] = [
+    { type: "rect", center: [center.x, center.z], size: [280, 260] }
+  ];
+
   return (
     <main className="w-full h-full">
       {/* 월드 씬 */}
       <Scene>
-        <Physics gravity={[0,-9,0]}>
+        <Physics>
 
-          {/* 빛 */}
-          <EntropyLights />
-
-          <Map stage={1} />
+          <Map 
+            stage={0}
+            position={mapPos}
+            scale={mapScale}
+          />
 
           {/* 포탈들 */}
           <Portals worldKey={worldKey} />
@@ -134,14 +155,22 @@ export default function EntropyScreen({
           />
 
           {/* 플레이어 */}
-          <PlayerEntropy worldKey={worldKey} avatar={avatar} />
+          <Player
+            worldKey={worldKey}
+            avatar={avatar}
+            rectArea={rectArea}
+            center={center}
+          />
+          <BoxHelper
+            center={new Vector3(rectArea[0].center[0], center.y, rectArea[0].center[1])}
+            width={rectArea[0]?.size?.[0] ?? 0}
+            depth={rectArea[0]?.size?.[1] ?? 0}
+          />
         </Physics>
 
         {/* 효과 */}
         <EntropyEffects />
-        <directionalLight intensity={10} position={[10,80,10]} castShadow receiveShadow  />
-        <directionalLight intensity={10} position={[-10,80,-10]} castShadow receiveShadow />
-        <directionalLight intensity={10} color={'blue'} position={[10,80,50]} castShadow receiveShadow />
+        <EntropyLights />
       </Scene>
       
       {/* --- 월드 인터페이스 --- */}
