@@ -13,6 +13,8 @@ import PausedScreen from "../../util/PausedScreen";
 import { Object3D } from "three";
 import Button from "../../util/Button";
 import Image from "next/image";
+import { House } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function GameScreen({
   worldKey, gameKey, handleGameEnd, avatar
@@ -46,6 +48,7 @@ export default function GameScreen({
     },
   };
 
+  const router = useRouter();
   const SelectedGame = gameMap[worldKey]?.[gameKey];
   if (!SelectedGame) return <div>게임을 찾을 수 없습니다</div>
   
@@ -60,11 +63,20 @@ export default function GameScreen({
 
       {/* 오른쪽 */}
       <div className="absolute w-auto h-auto top-8 right-8 text-white">
-        <div className="flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity -translate-x-14">
+        <div className="w-auto items-center hover:opacity-50 transition-opacity -translate-x-14 hidden">
           <Button
             id='3-1-0'
             onClick={() => {}}
             label={<></>}
+            worldKey={worldKey}
+          />
+        </div>
+        {/* 홈버튼 */}
+        <div className="flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity -translate-x-14">
+          <Button
+            id='3-1-1'
+            onClick={() => router.push('/')}
+            label={<House className="w-7 h-7 -mx-2 text-white" />}
             worldKey={worldKey}
           />
         </div>

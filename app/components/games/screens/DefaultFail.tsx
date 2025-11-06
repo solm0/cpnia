@@ -28,7 +28,7 @@ export default function DefaultFail() {
           />
           <OrbitControls minDistance={30} maxDistance={100} />
         </Scene>
-        <div className="absolute top-2/3 w-screen h-auto flex flex-col justify-center gap-4">
+        <div className="absolute top-2/3 w-screen h-auto flex flex-col items-center gap-4">
           <Button
             onClick={() => {
               router.push(`/${worldKey}?game=${gameKey}`);
