@@ -5,7 +5,7 @@ import { RigidBody } from "@react-three/rapier";
 import { useMemo, useState } from "react";
 import { chatNpcProp } from "@/app/lib/data/positions/chatNpcs";
 import { Billboard, Image, useGLTF } from "@react-three/drei";
-import { Object3D } from "three";
+import { Object3D, Vector3 } from "three";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
 useGLTF.preload('/models/avatars/cutter.gltf');
@@ -49,7 +49,7 @@ function NpcLabel({
 
 export default function Npcs({
   worldKey, activeNpc, setActiveNpc, setIsChatOpen, chatNpc,
-  models,
+  models, chatNpcPos,
 }: {
   worldKey: string;
   activeNpc: string | null;
@@ -57,6 +57,7 @@ export default function Npcs({
   setIsChatOpen: (isChatOpen: boolean) => void;
   chatNpc: chatNpcProp;
   models: Object3D[];
+  chatNpcPos?: Vector3;
 }) {
   const [hoveredNpc, setHoveredNpc] = useState<string | null>(null);
   const cutter = useGLTF('/models/avatars/cutter.gltf').scene;
@@ -108,6 +109,7 @@ export default function Npcs({
         setIsChatOpen={setIsChatOpen}
         closeActiveNpc={setActiveNpc}
         model={models[3]}
+        pos={chatNpcPos}
       />
     </>
   )

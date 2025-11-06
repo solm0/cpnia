@@ -1,3 +1,4 @@
+import { center, mapScale } from "@/app/components/maps/entropy/entropyPos";
 import { stagePositions } from "./stagePositions";
 
 export interface gamePortalProp {
@@ -70,23 +71,41 @@ export const gamePortals: Record<string, gamePortalProp[]> = {
     {
       label: 'game 1',
       gameKey: 'game1',
-      rule: '알아서 잘 해보세요',
-      position: [-10, 3, 0],
-      rotation: [0, 0, 0]
+      position: [
+        center.x + 80 * mapScale,
+        center.y + 3  * mapScale,
+        center.z
+      ],
+      rotation: [0, 0, 0],
+      model: '/models/core.glb',
+      scale: 30 * mapScale,
+      labelYPos: 8 * mapScale,
     },
     {
       label: 'game 2',
       gameKey: 'game2',
-      rule: '알아서 잘 해보세요',
-      position: [0, 3, -3],
-      rotation: [0, 0, 0]
+      position: [
+        center.x + 90 * mapScale,
+        center.y + 5  * mapScale,
+        center.z -3 * mapScale,
+      ],
+      rotation: [0, 0, 0],
+      model: '/models/core.glb',
+      scale: 50 * mapScale,
+      labelYPos: 12 * mapScale,
     },
     {
       label: 'game 3',
       gameKey: 'game3',
-      rule: '알아서 잘 해보세요',
-      position: [10, 3, 0],
-      rotation: [0, 0, 0]
+      position: [
+        center.x + 100 * mapScale,
+        center.y + 7  * mapScale,
+        center.z
+      ],
+      rotation: [0, 0, 0],
+      model: '/models/core.glb',
+      scale: 70 * mapScale,
+      labelYPos: 15 * mapScale,
     },
   ]
 }

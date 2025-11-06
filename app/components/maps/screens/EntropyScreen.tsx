@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { EntropyNpcLineModal } from "../interfaces/NpcLineModals";
 import { chatNpcs } from "@/app/lib/data/positions/chatNpcs";
 import ChatNpcScreen from "../interfaces/chatnpc/ChatNpcScreen";
-import Portals from "../Portals";
 import { Physics } from "@react-three/rapier";
 import Npcs from "../Npcs";
 import { EntropyEffects } from "../Effects";
@@ -18,15 +17,17 @@ import ExplodingModel from "../entropy/ExplodingModel";
 import Player from "../entropy/Player";
 import { Boundary } from "../player/clampToBoundary";
 import { BoxHelper } from "../../games/games/W1G1/BoxHelper";
+import { center, mapScale } from "../entropy/entropyPos";
+import EntropyGamePortal from "../entropy/EntropyGamePortal";
+import { useGameStore } from "@/app/lib/state/gameState";
 
 useGLTF.preload("/models/entropy-1.glb");
 useGLTF.preload("/models/entropy-2.glb");
 useGLTF.preload('/models/gate.glb');
 
 export function Map({
-  stage, position, scale
+  position, scale
 }: {
-  stage: number;
   position: Vector3;
   scale: number;
 }) {
@@ -36,17 +37,20 @@ export function Map({
   const mapMixer = useRef<AnimationMixer | null>(null);
   const gateMixer = useRef<AnimationMixer | null>(null);
 
+  const gameState = useGameStore(state => state.worlds['entropy'].games)
+  const completedCount = Object.values(gameState).filter(v => v === true).length;
+
   useEffect(() => {
-    mapMixer.current = new AnimationMixer(stage === 0 ? map1.scene : map2.scene);
+    mapMixer.current = new AnimationMixer(completedCount === 0 ? map1.scene : map2.scene);
     gateMixer.current = new AnimationMixer(gate.scene);
     return () => {
       mapMixer.current?.stopAllAction();
     };
-  }, [map1, map2, stage]);
+  }, [map1, map2, completedCount]);
 
   useEffect(() => {
     if (!mapMixer.current || !gateMixer.current) return;
-    const mapAnim = stage === 0 ? map1.animations[0] : map2.animations[0];
+    const mapAnim = completedCount === 0 ? map1.animations[0] : map2.animations[0];
     const gateAnim = gate.animations[0];
     if (!mapAnim || !gateAnim) return;
   
@@ -63,13 +67,13 @@ export function Map({
     gateMixer.current?.update(delta)
   })
 
-  if (stage === 0 || stage === 1) {
+  if (completedCount === 0 || completedCount === 1) {
     return (
       <>
         {/* 지형 */}
         <Model
           scene={
-            stage === 0
+            completedCount === 0
              ? map1.scene
              : map2.scene
           }
@@ -100,9 +104,6 @@ export function Map({
   }
 }
 
-export const center = new Vector3(0,100,0);
-export const mapScale = 1;
-
 export default function EntropyScreen({
   avatar,
 }: {
@@ -115,6 +116,11 @@ export default function EntropyScreen({
   }, [npcModelScene]);
 
   const [activeNpc, setActiveNpc] = useState<string | null>(null);
+  const chatNpcPos = new Vector3(
+    chatNpcs[worldKey].position[0],
+    chatNpcs[worldKey].position[1],
+    chatNpcs[worldKey].position[2]
+  );
 
   const chatNpc = chatNpcs[worldKey];
   const [isChatOpen, setIsChatOpen] = useState(false)
@@ -135,14 +141,13 @@ export default function EntropyScreen({
       <Scene>
         <Physics>
 
-          <Map 
-            stage={0}
+          <Map
             position={mapPos}
             scale={mapScale}
           />
 
           {/* 포탈들 */}
-          <Portals worldKey={worldKey} />
+          <EntropyGamePortal worldKey={worldKey} />
 
           {/* npc들 */}
           <Npcs
@@ -152,6 +157,7 @@ export default function EntropyScreen({
             setIsChatOpen={setIsChatOpen}
             chatNpc={chatNpc}
             models={npcModel}
+            chatNpcPos={chatNpcPos}
           />
 
           {/* 플레이어 */}
@@ -161,11 +167,11 @@ export default function EntropyScreen({
             rectArea={rectArea}
             center={center}
           />
-          <BoxHelper
+          {/* <BoxHelper
             center={new Vector3(rectArea[0].center[0], center.y, rectArea[0].center[1])}
             width={rectArea[0]?.size?.[0] ?? 0}
             depth={rectArea[0]?.size?.[1] ?? 0}
-          />
+          /> */}
         </Physics>
 
         {/* 효과 */}

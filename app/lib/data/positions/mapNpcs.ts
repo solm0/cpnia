@@ -1,6 +1,6 @@
 import { degToRad } from "three/src/math/MathUtils.js";
 import { stagePositions } from "./stagePositions";
-import { center, mapScale } from "@/app/components/maps/screens/EntropyScreen";
+import { center, mapScale } from "@/app/components/maps/entropy/entropyPos";
 
 export interface mapNpcProp {
   name: string;

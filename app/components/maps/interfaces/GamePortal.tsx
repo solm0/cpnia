@@ -1,9 +1,10 @@
 import { Html, useGLTF } from "@react-three/drei";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Mesh, MeshStandardMaterial } from "three";
 import { useFrame } from "@react-three/fiber";
 import { useRouter } from "next/navigation";
 import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
 export default function GamePortal({
   modelSrc, locked, worldKey, gameKey, scale = 1
@@ -19,7 +20,8 @@ export default function GamePortal({
   // const [isOpen, setIsOpen] = useState(false);
 
   const gltf = useGLTF(modelSrc).scene;
-  gltf.userData = {
+  const clonedGltf = useMemo(() => clone(gltf), [gltf]);
+  clonedGltf.userData = {
     id: id,
     onClick: () => {
       router.push(`/${worldKey}?game=${gameKey}`)
@@ -36,8 +38,8 @@ export default function GamePortal({
   const router = useRouter();
 
   useEffect(() => {
-    if (gltf) {
-      gltf.traverse((child) => {
+    if (clonedGltf) {
+      clonedGltf.traverse((child) => {
         if ((child as Mesh).isMesh) {
           const mesh = child as Mesh;
           mesh.castShadow = mesh.receiveShadow = true;
@@ -66,11 +68,11 @@ export default function GamePortal({
         }
       })
     }
-  }, [gltf]);
+  }, [clonedGltf]);
 
   useFrame(() => {
-    if (!gltf) return;
-    gltf.traverse((child) => {
+    if (!clonedGltf) return;
+    clonedGltf.traverse((child) => {
       if ((child as Mesh).isMesh) {
         const shader = child.userData.shader;
         if (shader?.uniforms?.uHighlight) {
@@ -111,7 +113,7 @@ export default function GamePortal({
           </div>
         </Html>
       )} */}
-      <primitive object={gltf} />
+      <primitive object={clonedGltf} />
     </group>
   )
 }

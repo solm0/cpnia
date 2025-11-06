@@ -2,7 +2,7 @@
 
 import { useFrame, } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
-import { Mesh, MeshStandardMaterial, AnimationAction, AnimationMixer, LoopRepeat, Object3D } from "three";
+import { Mesh, MeshStandardMaterial, AnimationAction, AnimationMixer, LoopRepeat, Object3D, Vector3 } from "three";
 import { usePlayerStore } from "@/app/lib/state/playerStore";
 import { Billboard, Image, Text, useGLTF } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
@@ -139,6 +139,7 @@ export default function ChatNpc({
   setIsChatOpen,
   closeActiveNpc,
   model,
+  pos,
 }: {
   name: string;
   hoveredNpc: string | null;
@@ -146,6 +147,7 @@ export default function ChatNpc({
   setIsChatOpen: (isChatOpen: boolean) => void;
   closeActiveNpc: (name: string | null) => void;
   model: Object3D;
+  pos?: Vector3;
 }) {
   // --- player가 움직이면 그 옆으로 따라가기
   const body = useRef<any>(null);
