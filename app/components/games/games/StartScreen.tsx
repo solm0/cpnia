@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FullScreenModal from "../../util/FullScreenModal";
 import Button from "../../util/Button";
 import { nanumGothicCoding } from "@/app/lib/fonts";
@@ -14,6 +14,12 @@ export default function StartScreen({
   style?: string;
 }) {
   const [hasStarted, setHasStarted] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowButton(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
@@ -28,16 +34,18 @@ export default function StartScreen({
               </div>
           </div>
           <div className="absolute top-1/2 scale-150">
-            <Button
-              onClick={() => {
-                handleStart();
-                setHasStarted(true);
-              }}
-              label={buttonLabel}
-              worldKey={worldKey}
-              id='6-1'
-              important={true}
-            />
+            {showButton &&
+              <Button
+                onClick={() => {
+                  handleStart();
+                  setHasStarted(true);
+                }}
+                label={buttonLabel}
+                worldKey={worldKey}
+                id='6-1'
+                important={true}
+              />
+            }
           </div>
         </FullScreenModal>
       }

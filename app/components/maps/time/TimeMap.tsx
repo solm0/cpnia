@@ -313,7 +313,7 @@ export default function TimeMap({
               coinStair.bottom[1] + scale * 10,
               coinStair.bottom[2]
             ]}
-            label={isLocked(idx, stage) ? `${stage+1}번째 게임 성공 후에 계단이 열립니다.` : undefined}
+            label={isLocked(idx, stage) ? `${stage+1}번째 퀘스트 성공 후에 계단이 열립니다.` : undefined}
           />
           <CoinStairs
             endPosition={coinStair.bottom}

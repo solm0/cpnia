@@ -1,11 +1,8 @@
-'use client'
-
 import { useGameStore } from "@/app/lib/state/gameState";
-import Label from "../../util/Label";
-import { Billboard, Image } from "@react-three/drei";
+import { Billboard, Image, Text } from "@react-three/drei";
 
 export default function GamePortalLabel({
-  label, worldKey, gameKey, locked, y = 5, position
+  worldKey, gameKey, locked, y = 5, position
 }: {
   label?: string;
   worldKey?: string;
@@ -37,8 +34,11 @@ export default function GamePortalLabel({
         scale={[2,2]}
         transparent
       />
-      {label && <Label text={label} position={[0, 2.5,0]}/>}
-      {completed !== null && <Label text={completed ? 'completed!' : 'not completed'} position={[0, 2, 0]} />}
+      {completed !== null &&
+        <Text position={[0, 2.3, 0]}>
+          {completed ? '완료된' : `퀘스트 ${gameKey?.slice(-1)}`}
+        </Text>
+      }
     </Billboard>
   )
 }

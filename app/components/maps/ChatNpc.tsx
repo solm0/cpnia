@@ -220,14 +220,15 @@ export default function ChatNpc({
         colliders={'cuboid'}
         type="kinematicPosition"
       >
-        <Billboard position={[0,7.5,0]}>
-          <Text fontSize={0.4}>{name}</Text>
+        <Billboard position={[0, 8, 0]}>
+          <Text fontSize={0.8} position={[0,6,0]}>{name}</Text>
           <Image
             url="/images/y.png"
-            scale={[1,1]}
-            position={[0,1.5,0]}
+            scale={[1.5, 1.5]}
+            position={[0, 4, 0]}
             transparent
           />
+          <Text fontSize={0.8} position={[0,2,0]}>눌러 대화창 열기</Text>
         </Billboard>
         
         <ChatNpcAvatar

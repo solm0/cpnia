@@ -40,6 +40,7 @@ function SpinningCoin({
   coin.userData = {
     id: id,
     onClick: () => {
+      console.log(locked)
       if (!locked) {
         handleClickStair(idx);
       } else {
@@ -47,6 +48,7 @@ function SpinningCoin({
       }
     },
   }
+  console.log(isOpen)
   useMemo(() => {
     coin.traverse((child) => {
       if ((child as Mesh).isMesh) {
