@@ -7,7 +7,6 @@ import Loader from "../../util/Loader";
 import { W2G1roundConfig } from "./roundConfig";
 import { Object3D, Vector3 } from "three";
 import Timer from "./W2G1/Timer";
-import Button from "../../util/Button";
 import StartScreen from "./StartScreen";
 import AudioPlayer from "../../util/AudioPlayer";
 
@@ -94,22 +93,16 @@ export function W2G1Interface({
           <div className="absolute top-1/2 -translate-y-1/2 left-0 w-20 h-[4px] bg-black"></div>
           <div className="absolute top-1/2 -translate-y-1/2 right-0 w-20 h-[4px] bg-black"></div>
         </div>
-
-        <div className="flex flex-col gap-2">
-          <p>라운드: {round}</p>
-          <p>남은 스파이 수: {score}/{W2G1roundConfig[round].abnormCount}</p>
-          <p>벌점: {penalty}</p>
-          <Timer secondsRef={secondsRef} />
-          
-        </div>
-        
       </div>
 
-      {/* 게임 인터페이스 */}
-      <GameMenu
-        worldKey={worldKey}
-        gameKey={gameKey}
-      />
+      <div className="absolute top-8 left-8 flex flex-col gap-4 p-4 bg-white rounded-2xl">
+        <p className="font-bold text-2xl">제 {round} 라운드</p>
+        <div className="flex flex-col gap-2">
+          <p>남은 스파이 수: {score}/{W2G1roundConfig[round].abnormCount}</p>
+          <p>주민을 잘못 맞춘 횟수: {penalty}/5</p>
+          <Timer secondsRef={secondsRef} />
+        </div>
+      </div>
     </>
   )
 }

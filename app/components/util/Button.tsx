@@ -52,7 +52,7 @@ export default function Button({
             ${small ? 'h-full' : 'py-1'}
             flex items-center border-1 border-[#ffffff70] pointer-events-auto hover:opacity-50 transition-opacity cursor-pointer
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'}
-            ${isFocused ? "ring-4 ring-cyan-400 scale-105" : "opacity-80"}
+            ${isFocused ? "border-4 border-cyan-400 scale-120" : "opacity-80"}
           `}
           disabled={disabled ? true : false}
         >
@@ -67,7 +67,7 @@ export default function Button({
           className={`
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'}
             "w-auto px-4 py-2 rounded-full text-lg font-bold bg-yellow-300 hover:opacity-50 transition-opacity text-gray-700 break-keep pointer-events-auto shrink-0"
-            ${isFocused ? "ring-4 ring-cyan-400 scale-105" : "opacity-80"}
+            ${isFocused ? "border-4 border-cyan-400 scale-120" : "opacity-80"}
           `}
           disabled={disabled ? true : false}
         >
@@ -82,7 +82,7 @@ export default function Button({
           className={`
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'opacity-100'}
             "px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 break-keep w-auto pointer-events-auto"
-            ${isFocused ? "ring-4 ring-cyan-400 scale-105" : "opacity-80"}
+            ${isFocused ? "border-4 border-cyan-400 scale-120" : "opacity-80"}
           `}
           disabled={disabled ? true : false}
         >
@@ -100,13 +100,14 @@ export default function Button({
             ${jersey15.className}
             relative flex gap-4 items-center justify-center pointer-events-auto
             group focus:outline-none
-            ${isFocused ? "ring-4 ring-cyan-400 scale-105" : "opacity-80"}
+            ${isFocused ? "border-4 border-cyan-400 scale-105" : "opacity-80"}
           `}
           disabled={disabled ? true : false}
         >
           <div className={`
-            hidden bg-white h-3 w-3 rotate-45
+             bg-white h-3 w-3 rotate-45
             ${small ? '' : 'group-focus:block'}
+            ${isFocused ? 'block': 'hidden'}
           `}/>
           <p className={`text-white text-2xl h-10 flex items-center ${disabled ? 'opacity-30 cursor-not-allowed' : 'opacity-100'}`}>{label}</p>
           <div className={`

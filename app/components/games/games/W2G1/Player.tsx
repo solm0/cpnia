@@ -10,34 +10,24 @@ import { Boundary, clampToBoundary } from "@/app/components/maps/player/clampToB
 import { useFollowCam } from "@/app/components/maps/player/useFollowCam";
 import { CuboidCollider } from "@react-three/rapier";
 import { usePlayerStore } from "@/app/lib/state/playerStore";
-import { Avatar } from "@/app/components/maps/player/Avatar";
+import { degToRad } from "three/src/math/MathUtils.js";
 
 export default function Player({
-  config, rectArea, avatar
+  config, rectArea,
 }: {
-  config?: { playerPos: Vector3, playerRot: Vector3, camYRot: number };
+  config?: { playerPos: Vector3, playerRot: Vector3, camXRot?: number, camYPos?: number, camYRot?: number, zoom?: number, }
   rectArea: Boundary[];
-  avatar: Object3D;
 }) {
-  const playerGrounded = useRef(false);
-  const inJumpAction = useRef(false);
   const body = useRef<any>(null);
-  const [activeAction, setActiveAction] = useState(0);
-
   const pressedKeys = useKeyboardControls();
   const gamepad = useGamepadControls();
   const { yaw } = useFollowCam(
     body,
-    [0, 0,0],
-    [0,0, 0],
+    [0, config?.camYPos ?? 0, config?.zoom ?? 0],
+    [degToRad(config?.camXRot ?? 20), degToRad(config?.camYRot ?? 0), 0],
     pressedKeys.current,
-    gamepad.current
+    gamepad.current,
   );
-
-  // chatnpc를 위한 player position 저장
-  const setIsMoving = usePlayerStore((state) => state.setIsMoving);
-  const setPosition = usePlayerStore((state) => state.setPosition);
-  const wasMoving = useRef(false);
 
   const inputVelocity = useMemo(() => new Vector3(), []);
 
@@ -61,7 +51,7 @@ export default function Player({
 
     const deadzone = 0.5;
     const speed = 1;
-    const moveSpeed = 20;
+    const moveSpeed = 10;
     let nextAction = 0; // idle
 
     // Input
@@ -94,40 +84,7 @@ export default function Player({
       horizontalInput.applyQuaternion(yawQuat);
     }
     
-    // Jump & gravity
-    if (playerGrounded.current) {
-      if ((pressedKeys.current.has("Space") || gamepad?.current.buttons[0]) && !inJumpAction.current) {
-        inputVelocity.y = 1;
-        playerGrounded.current = false;
-        inJumpAction.current = true;
-      }
-    } else {
-      inputVelocity.y -= 3 * delta;
-    }
-
-    if (inJumpAction.current) {
-      nextAction = 2;
-    } else if (horizontalInput.lengthSq() > 0) {
-      nextAction = 1;
-    } else {
-      nextAction = 0;
-    }
-    
     const t = body.current.translation();
-    
-    // --- chatnpc를 위한 player position 저장
-    const isInputting = horizontal !== 0 || vertical !== 0;
-    
-    if (isInputting && !wasMoving.current) {
-      setIsMoving(true);
-      wasMoving.current = true;
-    } else if (!isInputting && wasMoving.current) {
-      setIsMoving(false);
-      wasMoving.current = false;
-      
-      // player가 멈추면 final position 저장
-      setPosition({ x: t.x, y: t.y, z: t.z });
-    }
     
     // Move rigidbody
     const move = horizontalInput.clone();
@@ -138,18 +95,6 @@ export default function Player({
       y: Math.max(0, t.y + move.y * delta * moveSpeed),
       z: t.z + move.z * delta * moveSpeed,
     };
-    
-    // Reset jump state on ground
-    if (newPos.y <= 0 + 0.01) {
-      inputVelocity.y = 0;
-      playerGrounded.current = true;
-      inJumpAction.current = false;
-    }
-    
-    if (activeAction !== nextAction) {
-      console.log(nextAction)
-      setActiveAction(nextAction);
-    }
     
     const nextPos = clampToBoundary(newPos, rectArea);
     body.current.setNextKinematicTranslation(nextPos);
@@ -181,7 +126,6 @@ export default function Player({
         <mesh visible={false} castShadow receiveShadow>
           <CuboidCollider args={[0.5, 1, 0.5]} /> 
         </mesh>
-        {/* <Avatar animIndex={activeAction} avatar={avatar} /> */}
       </RigidBody>
       {/* <DebugBoundaries boundaries={rectArea} /> */}
     </>

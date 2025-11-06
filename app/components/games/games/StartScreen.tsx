@@ -36,6 +36,7 @@ export default function StartScreen({
               label={buttonLabel}
               worldKey={worldKey}
               id='6-1'
+              important={true}
             />
           </div>
         </FullScreenModal>

@@ -14,5 +14,5 @@ export default function Timer({
     return () => clearInterval(interval);
   }, [secondsRef]);
 
-  return <p>Time left: {display}s</p>;
+  return <p>남은 시간: {display}초</p>;
 }

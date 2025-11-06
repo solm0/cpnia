@@ -239,19 +239,10 @@ export default function BattleField({
     playerPos: center,
     playerRot: new Vector3(0, 0, 0),
     camYRot: 0,
-    camYPos: 5,
+    camYPos: 0,
     camZPos: 10,
   }
 
-  const pizzaArea: Boundary[] = [
-    {
-      type: "circle",
-      center: [center.x, center.z],
-      radius: pizzaRadius,
-      y: 5
-    }
-  ]
-  
   return (
     <Physics>
       {bodiesState.map((body, i) => (
@@ -301,7 +292,7 @@ export default function BattleField({
       <color attach="background" args={["blue"]} />
 
       {/* 카메라, 컨트롤 */}
-      <Player rectArea={pizzaArea} config={config} avatar={avatar} />
+      <Player rectArea={rectArea} config={config} />
       {/* <OrbitControls /> */}
 
       {/* 효과 */}
