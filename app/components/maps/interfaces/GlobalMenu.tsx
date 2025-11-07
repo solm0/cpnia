@@ -123,7 +123,7 @@ export default function GlobalMenu({worldKey}: {worldKey: string}) {
       </div>
 
       {/* 오른쪽 */}
-      <div className="absolute w-auto h-auto top-8 right-8 text-white">
+      <div className="absolute w-auto h-auto top-8 right-8 text-white pointer-events-auto">
         <div className="w-auto items-center hover:opacity-50 transition-opacity -translate-x-14 hidden">
           <Button
             id='3-1-0'

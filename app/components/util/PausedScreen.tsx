@@ -58,7 +58,7 @@ export default function PausedScreen({
         </div>
       </FullScreenModal>
     ) : (
-      <div className="fixed right-8 top-8 flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity">
+      <div className="fixed right-8 top-8 flex flex-col gap-2 w-auto items-center hover:opacity-50 transition-opacity pointer-events-auto">
         <Button
           id='3-1-2'
           onClick={() => setIsPaused(true)}

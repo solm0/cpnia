@@ -65,21 +65,23 @@ export default function EntropyGamePortal({
           <div className="font-bold break-keep">
             {lines[Number(open.slice(-1))-1]}
           </div>
-          <Button
-            onClick={() => router.push(`/${worldKey}?game=${open}`)}
-            label={`퀘스트 ${open.slice(-1)}으로 이동`}
-            id='game-open'
-            worldKey={worldKey}
-            important={true}
-          />
-          <Button
-            onClick={() => {
-              setOpen(null);
-            }}
-            label="닫기"
-            id='game-no-open'
-            worldKey={worldKey}
-          />
+          <div className="flex gap-4">
+            <Button
+              onClick={() => router.push(`/${worldKey}?game=${open}`)}
+              label={`퀘스트 ${open.slice(-1)}으로 이동`}
+              id='game-open'
+              worldKey={worldKey}
+              important={true}
+            />
+            <Button
+              onClick={() => {
+                setOpen(null);
+              }}
+              label="닫기"
+              id='game-no-open'
+              worldKey={worldKey}
+            />
+          </div>
         </Html>
       }
     </>

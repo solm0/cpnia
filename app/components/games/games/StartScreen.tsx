@@ -28,7 +28,7 @@ export default function StartScreen({
           <div className={`
             ${nanumGothicCoding.className} ${style} flex justify-center gap-8 w-[25rem] h-auto break-keep text-center items-center
           `}>
-              <div className="flex flex-col gap-4 bg-white rounded-2xl p-4 mt-20">
+              <div className={`flex flex-col gap-4 p-4 mt-20 ${worldKey === 'entropy' ? '' : 'bg-white rounded-2xl '}`}>
                 <p className="font-bold text-2xl">{worldKey} 퀘스트 {gameKey.slice(-1)}</p>
                 <p>{desc}</p>
               </div>

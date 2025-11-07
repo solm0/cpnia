@@ -63,7 +63,7 @@ export default function Player({
   const gamepad = useGamepadControls();
   const { yaw } = useFollowCam(
     body,
-    [0, 0, 20],
+    [0, 10, 20],
     [degToRad(20),0,0],
     pressedKeys.current,
     gamepad.current

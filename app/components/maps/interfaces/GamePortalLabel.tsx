@@ -40,8 +40,8 @@ export default function GamePortalLabel({
         transparent
       />
       {completed !== null &&
-        <Text position={[0, 2.3, 0]}>
-          {completed ? '완료된' : `퀘스트 ${gameKey?.slice(-1)}`}
+        <Text position={[0, 2.3, 0]} fontSize={0.5}>
+          {completed ? `퀘스트 ${gameKey?.slice(-1)}: 완료됨` : `퀘스트 ${gameKey?.slice(-1)}`}
         </Text>
       }
     </Billboard>

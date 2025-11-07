@@ -72,40 +72,40 @@ export const gamePortals: Record<string, gamePortalProp[]> = {
       label: 'game 1',
       gameKey: 'game1',
       position: [
-        center.x + 80 * mapScale,
-        center.y + 3  * mapScale,
-        center.z
+        center.x - 55 * mapScale,
+        center.y,
+        center.z - 70
       ],
       rotation: [0, 0, 0],
       model: '/models/core.glb',
-      scale: 30 * mapScale,
-      labelYPos: 8 * mapScale,
+      scale: 180 * mapScale,
+      labelYPos: 30 * mapScale,
     },
     {
       label: 'game 2',
       gameKey: 'game2',
       position: [
-        center.x + 90 * mapScale,
-        center.y + 5  * mapScale,
-        center.z -3 * mapScale,
+        center.x + 86 * mapScale,
+        center.y,
+        center.z -2 * mapScale,
       ],
       rotation: [0, 0, 0],
       model: '/models/core.glb',
-      scale: 50 * mapScale,
-      labelYPos: 12 * mapScale,
+      scale: 200 * mapScale,
+      labelYPos: 30 * mapScale,
     },
     {
       label: 'game 3',
       gameKey: 'game3',
       position: [
-        center.x + 100 * mapScale,
-        center.y + 7  * mapScale,
-        center.z
+        center.x - 33 * mapScale,
+        center.y,
+        center.z + 42 * mapScale
       ],
       rotation: [0, 0, 0],
       model: '/models/core.glb',
-      scale: 70 * mapScale,
-      labelYPos: 15 * mapScale,
+      scale: 140 * mapScale,
+      labelYPos: 30 * mapScale,
     },
   ]
 }

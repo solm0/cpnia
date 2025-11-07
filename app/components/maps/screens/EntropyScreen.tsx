@@ -12,7 +12,7 @@ import Model from "../../util/Model";
 import { AnimationMixer, Object3D, Vector3 } from "three";
 import { useGLTF } from "@react-three/drei";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import ExplodingModel from "../entropy/ExplodingModel";
 import Player from "../entropy/Player";
 import { Boundary } from "../player/clampToBoundary";
@@ -67,67 +67,43 @@ export function Map({
     gateMixer.current?.update(delta)
   })
 
-  return (
-    <>
-      {/* 지형 */}
-      <Model
-        scene={map1.scene}
-        scale={50 * scale}
-        position={[
-          position.x,
-          position.y,
-          position.z
-        ]}
-        rotation={[0, -Math.PI/2, 0]}
-      />
-      <primitive
-        object={gate.scene}
-        position={[
-          position.x + 154 * scale,
-          position.y + 20 * scale,
-          position.z + 71 * scale
-        ]}
-        scale={100 * scale}
-        rotation={[0, Math.PI/2, 0]}
-      />
-    </>
-  )
-
-  // if (completedCount === 0 || completedCount === 1) {
-  //   return (
-  //     <>
-  //       {/* 지형 */}
-  //       <Model
-  //         scene={
-  //           completedCount === 0
-  //            ? map1.scene
-  //            : map2.scene
-  //         }
-  //         scale={50 * scale}
-  //         position={[
-  //           position.x,
-  //           position.y,
-  //           position.z
-  //         ]}
-  //         rotation={[0, -Math.PI/2, 0]}
-  //       />
-  //       <primitive
-  //         object={gate.scene}
-  //         position={[
-  //           position.x + 154 * scale,
-  //           position.y + 20 * scale,
-  //           position.z + 71 * scale
-  //         ]}
-  //         scale={100 * scale}
-  //         rotation={[0, Math.PI/2, 0]}
-  //       />
-  //     </>
-  //   )
-  // } else {
-  //   return (
-  //     <ExplodingModel exploded={true} />
-  //   )
-  // }
+  if (completedCount === 0 || completedCount === 1) {
+    return (
+      <>
+        {/* 지형 */}
+        <Model
+          scene={
+            completedCount === 0
+             ? map1.scene
+             : map2.scene
+          }
+          scale={50 * scale}
+          position={[
+            position.x,
+            position.y,
+            position.z
+          ]}
+          rotation={[0, -Math.PI/2, 0]}
+        />
+        {completedCount === 0 &&
+          <primitive
+            object={gate.scene}
+            position={[
+              position.x + 154 * scale,
+              position.y + 20 * scale,
+              position.z + 71 * scale
+            ]}
+            scale={100 * scale}
+            rotation={[0, Math.PI/2, 0]}
+          />
+        }
+      </>
+    )
+  } else {
+    return (
+      <ExplodingModel exploded={true} />
+    )
+  }
 }
 
 export default function EntropyScreen({
@@ -166,7 +142,6 @@ export default function EntropyScreen({
       {/* 월드 씬 */}
       <Scene>
         <Physics>
-
           <Map
             position={mapPos}
             scale={mapScale}
