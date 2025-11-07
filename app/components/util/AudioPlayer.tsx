@@ -19,6 +19,16 @@ export default function AudioPlayer({
       .catch(err => console.error("Audio play failed:", err));
   }, [audioRef]);
 
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = "";
+        audioRef.current.load();
+      }
+    };
+  }, []);
+
 
   return (
     <audio
