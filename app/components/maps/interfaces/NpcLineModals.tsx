@@ -31,9 +31,6 @@ export function TimeNpcLineModal({
     line = lines[lineIndex];
   }
 
-  use3dFocusStore.getState().setFocusedObj(null);
-  console.log(use3dFocusStore.getState().focusedObj);
-
   const router = useRouter();
 
   const actions: Record<string, () => void> = {
@@ -42,7 +39,9 @@ export function TimeNpcLineModal({
         name === "카드게임장에서 발견한 주민" ? 'game1' : 'game2'
       }
     `),
-    "closeModal": () => setActiveNpc(null)
+    "closeModal": () => {
+      setActiveNpc(null);
+    }
   }
 
   return (
@@ -90,7 +89,7 @@ export function TimeNpcLineModal({
               if (length > lineIndex+1) {
                 setLineIndex(lineIndex+1)
               } else {
-                setActiveNpc(null)
+                setActiveNpc(null);
               }}}
             label={
               <>
@@ -115,13 +114,15 @@ export function PizzaCutterLineModal({
 }) {
   const lines = FindPizzaCutterLine(stage);
   const [lineIndex, setLineIndex] = useState(0);
-  const options = lines[lineIndex].options
+  const options = lines[lineIndex].options;
 
   const router = useRouter();
 
   const actions: Record<string, () => void> = {
     "goToGame": () => router.push(`/sacrifice?game=${stage}`),
-    "closeModal": () => setActiveNpc(null)
+    "closeModal": () => {
+      setActiveNpc(null);
+    }
   }
 
   return (
@@ -168,7 +169,7 @@ export function PizzaCutterLineModal({
               if (lines.length > lineIndex+1) {
                 setLineIndex(lineIndex+1)
               } else {
-                setActiveNpc(null)
+                setActiveNpc(null);
               }}}
             label={
               <>
@@ -225,7 +226,9 @@ export function FugitiveLineModal({
           <Button
             worldKey="sacrifice"
             label="닫기"
-            onClick={() => setIsOpen(false)}
+            onClick={() => {
+              setIsOpen(false);
+            }}
             id='w2g3-1'
           />
         </div>
@@ -338,8 +341,6 @@ export function EntropyNpcLineModal({
   const lines = FindNpcLine(name, worldKey);
   const length = lines.length;
   const line = lines[lineIndex];
-
-  use3dFocusStore.getState().setFocusedObj(null);
   
   return (
     <div className={`

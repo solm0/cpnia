@@ -14,11 +14,19 @@ export const InputManager = {
   onConfirm: () => {
     console.log('onConfirm 실행')
     const focusedObj = use3dFocusStore.getState().focusedObj;
-    if (focusedObj) {
-      console.log('focusedObj가 있어서 클릭 불가')
+    const isModalOpen = use3dFocusStore.getState().isModalOpen;
+
+    if (isModalOpen) {
+      console.log('모달이 열려 있어서 2d클릭 가능')
+      const uiFocus = use2dFocusStore.getState().focusables[
+        use2dFocusStore.getState().focusIndex
+      ];
+      uiFocus?.onClick?.();
+    } else if (focusedObj) {
+      console.log('focusedObj가 있어서 2d클릭 불가')
       focusedObj.onClick?.();
     } else {
-      console.log('focusedObj가 없어서 클릭 가능')
+      console.log('focusedObj가 없어서 2d클릭 가능')
       const uiFocus = use2dFocusStore.getState().focusables[
         use2dFocusStore.getState().focusIndex
       ];
@@ -75,6 +83,8 @@ export interface Focusable3d {
 interface Focus3d {
   focusedObj: Focusable3d | null;
   setFocusedObj: (obj: Focusable3d | null) => void;
+  isModalOpen: boolean;
+  setIsModalOpen: (isModalOpen: boolean) => void;
 }
 
 export const use3dFocusStore = create<Focus3d>((set, get) => {
@@ -98,6 +108,8 @@ export const use3dFocusStore = create<Focus3d>((set, get) => {
         }, 5000); // 5초 후 자동 초기화
       }
     },
+    isModalOpen: false,
+    setIsModalOpen: (isModalOpen: boolean) => set({ isModalOpen: isModalOpen })
   };
 });
 

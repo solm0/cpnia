@@ -67,41 +67,67 @@ export function Map({
     gateMixer.current?.update(delta)
   })
 
-  if (completedCount === 0 || completedCount === 1) {
-    return (
-      <>
-        {/* 지형 */}
-        <Model
-          scene={
-            completedCount === 0
-             ? map1.scene
-             : map2.scene
-          }
-          scale={50 * scale}
-          position={[
-            position.x,
-            position.y,
-            position.z
-          ]}
-          rotation={[0, -Math.PI/2, 0]}
-        />
-        <primitive
-          object={gate.scene}
-          position={[
-            position.x + 154 * scale,
-            position.y + 20 * scale,
-            position.z + 71 * scale
-          ]}
-          scale={100 * scale}
-          rotation={[0, Math.PI/2, 0]}
-        />
-      </>
-    )
-  } else {
-    return (
-      <ExplodingModel exploded={true} />
-    )
-  }
+  return (
+    <>
+      {/* 지형 */}
+      <Model
+        scene={map1.scene}
+        scale={50 * scale}
+        position={[
+          position.x,
+          position.y,
+          position.z
+        ]}
+        rotation={[0, -Math.PI/2, 0]}
+      />
+      <primitive
+        object={gate.scene}
+        position={[
+          position.x + 154 * scale,
+          position.y + 20 * scale,
+          position.z + 71 * scale
+        ]}
+        scale={100 * scale}
+        rotation={[0, Math.PI/2, 0]}
+      />
+    </>
+  )
+
+  // if (completedCount === 0 || completedCount === 1) {
+  //   return (
+  //     <>
+  //       {/* 지형 */}
+  //       <Model
+  //         scene={
+  //           completedCount === 0
+  //            ? map1.scene
+  //            : map2.scene
+  //         }
+  //         scale={50 * scale}
+  //         position={[
+  //           position.x,
+  //           position.y,
+  //           position.z
+  //         ]}
+  //         rotation={[0, -Math.PI/2, 0]}
+  //       />
+  //       <primitive
+  //         object={gate.scene}
+  //         position={[
+  //           position.x + 154 * scale,
+  //           position.y + 20 * scale,
+  //           position.z + 71 * scale
+  //         ]}
+  //         scale={100 * scale}
+  //         rotation={[0, Math.PI/2, 0]}
+  //       />
+  //     </>
+  //   )
+  // } else {
+  //   return (
+  //     <ExplodingModel exploded={true} />
+  //   )
+  // }
 }
 
 export default function EntropyScreen({
