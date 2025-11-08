@@ -7,7 +7,10 @@ export default function ExhibitionWrapper({ children }: { children: React.ReactN
 
   // 영상 파일 목록
   const videos = [
-    "/video/video.mp4",
+    'https://res.cloudinary.com/dz3ocjmfw/video/upload/v1762574308/7_%E1%84%92%E1%85%B4%E1%84%89%E1%85%A2%E1%86%BC_%E1%84%80%E1%85%A6%E1%84%8B%E1%85%B5%E1%86%B73_compressed_ank0ee.mp4',
+    'https://res.cloudinary.com/dz3ocjmfw/video/upload/v1762574303/3_%E1%84%89%E1%85%B5%E1%84%80%E1%85%A1%E1%86%AB_%E1%84%80%E1%85%A6%E1%84%8B%E1%85%B5%E1%86%B71_compressed_mfx0di.mp4',
+    'https://res.cloudinary.com/dz3ocjmfw/video/upload/v1762574299/1_%E1%84%92%E1%85%A9%E1%86%B7%E1%84%92%E1%85%AA%E1%84%86%E1%85%A7%E1%86%AB_compressed_yujcnj.mp4',
+    'https://res.cloudinary.com/dz3ocjmfw/video/upload/v1762574297/2_%E1%84%8B%E1%85%B5%E1%86%AB%E1%84%90%E1%85%A5%E1%84%87%E1%85%B2_compressed_w6156w.mp4',
   ];
 
   const [currentVideo, setCurrentVideo] = useState(videos[0]);
