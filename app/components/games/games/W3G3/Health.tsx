@@ -26,15 +26,18 @@ export default function Health({
     .getStyle();
 
   return (
-    <div className="absolute top-8 left-8 w-72 h-10 border-2 border-white rounded-full bg-white overflow-hidden">
-      <div
-        style={{
-          width: `${ratio * 100}%`,
-          height: "100%",
-          background: barColor,
-          transition: "width 0.1s linear, background 0.1s linear",
-        }}
-      />
-    </div>
+    <>
+      <div className="absolute top-8 left-8 w-72 h-10 border-2 border-white rounded-full bg-white overflow-hidden">
+        <div
+          style={{
+            width: `${ratio * 100}%`,
+            height: "100%",
+            background: barColor,
+            transition: "width 0.1s linear, background 0.1s linear",
+          }}
+        />
+      </div>
+      <div className="absolute top-22 left-8 bg-white p-2 text-black">키보드 조작: WASD로 xz축 이동, 위아래 방향키로 y축 이동</div>
+    </>
   )
 }
