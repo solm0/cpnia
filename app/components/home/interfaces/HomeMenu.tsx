@@ -7,9 +7,9 @@ import FullScreenModal from "../../util/FullScreenModal";
 import UserNameForm from "./UserNameForm";
 import CardModel from "./CardModel";
 import { worldPortals } from "@/app/lib/data/positions/worldPortals";
-import { jersey15, nanumGothicCoding, nanumGothicCodingBold } from "@/app/lib/fonts";
-import Logo from "./Logo";
+import { jersey15, nanumGothicCodingBold } from "@/app/lib/fonts";
 import LogoType from "./Logo";
+import BgmToggle from "../../util/BgmToggle";
 
 export default function HomeMenu() {
   const [isPurseOpen, setIsPurseOpen] = useState(false);
@@ -25,6 +25,10 @@ export default function HomeMenu() {
 
   return (
     <>
+      <div className="absolute top-8 right-8">
+        <BgmToggle />
+      </div>
+
       {/* 버튼들 */}
       <div className={`${jersey15.className} relative top-3/5 flex flex-col items-center gap-8 h-auto w-auto`}>
         <LogoType anim={true} />
@@ -89,11 +93,7 @@ export default function HomeMenu() {
               </p>
             </div>
             <div className="flex flex-col gap-4 w-auto text-center">
-              <h3 className="text-4xl">Credit</h3>
-              <p className={`${nanumGothicCodingBold.className} break-keep w-max-[35rem] leading-7`}>
-                제18회 조형전 시각디자인학과 기획전 A팀<br/>
-                백채민, 오서연, 정솔미, 남진영, 배경진, 안정원, 한예원
-              </p>
+              <a href="https://about-cpnia.vercel.app" target="_blank" className="text-xl underline underline-offset-4 hover:opacity-50">More Informations</a>
             </div>
           </div>
         </FullScreenModal>
