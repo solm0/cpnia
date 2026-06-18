@@ -5,6 +5,7 @@ import { useState } from "react";
 import { worldPortals } from "@/app/lib/data/positions/worldPortals";
 import { useRouter } from "next/navigation";
 import { Pause } from "lucide-react";
+import BgmToggle from "./BgmToggle";
 
 export default function PausedScreen({
   worldKey, isInMap = false,
@@ -55,6 +56,7 @@ export default function PausedScreen({
               id='4-1-3'
             />
           )}
+          <BgmToggle className="mb-2" />
         </div>
       </FullScreenModal>
     ) : (
