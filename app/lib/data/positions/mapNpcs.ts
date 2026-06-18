@@ -87,7 +87,7 @@ export const mapNpcs: Record<string, mapNpcProp[]> = {
     {
       name: '피자커팅기',
       position: [150, 0, -45],
-      rotation: [0, degToRad(200), 0],
+      rotation: [0, degToRad(150), 0],
       scale: 2.4,
       type: 'special',
       labelPos: [-1.8, 13, 1],

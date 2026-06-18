@@ -31,6 +31,7 @@ export default function ChatNpcScreen({
 
   const key: WorldKey = worldKey as WorldKey;
   const messages = storeMap[key](state => state.messages);
+  console.log(messages)
 
   const [loading, setLoading] = useState(false);
 

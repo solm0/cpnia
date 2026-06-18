@@ -5,7 +5,7 @@ import { Mesh, MeshStandardMaterial, Group, Vector3 } from "three";
 import { useGLTF } from "@react-three/drei";
 import { use3dFocusStore } from "@/app/lib/gamepad/inputManager";
 
-useGLTF.preload("/models/avatars/redPap.gltf");
+useGLTF.preload("/models/avatars/redpap.gltf");
 
 export default function Fugitive({
   scale = 1,
@@ -16,7 +16,7 @@ export default function Fugitive({
   position?: Vector3;
   setIsOpen: (isOpen: boolean) => void;
 }) {
-  const gltf = useGLTF("/models/avatars/redPap.gltf");
+  const gltf = useGLTF("/models/avatars/redpap.gltf");
   const clonedScene = useMemo(() => clone(gltf.scene), [gltf.scene]);
   const [hovered, setHovered] = useState(false);
   const groupRef = useRef<Group>(null);
