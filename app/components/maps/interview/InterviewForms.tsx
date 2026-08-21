@@ -77,7 +77,7 @@ export default function InterviewForms() {
     if (phase === 1) {
       setPhase(2);
     } else {
-      onSubmit(allAnswers.trim());
+      onSubmit(newAnswers.trim());
       setAllAnswers("");
     }
   }
